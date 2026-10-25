@@ -23,7 +23,7 @@ export default function Header() {
               </svg>
             </a>
           ) : null}
-          <Link href="/tunnel" className="btn btn-small">Make a crossing</Link>
+          <Link href="/tunnel" className="btn btn-small">Launch app</Link>
         </nav>
       </div>
     </header>

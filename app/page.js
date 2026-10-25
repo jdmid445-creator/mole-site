@@ -87,72 +87,86 @@ export default function Home() {
   return (
     <>
       <section className="hero">
-        <div className="container hero-grid">
-          <div className="hero-copy">
-            <p className="eyebrow hero-in" style={{ '--d': '40ms' }}>Non-custodial · Zero app fee · 13 chains</p>
-            <h1 className="hero-title hero-in" style={{ '--d': '100ms' }}>Swap crypto privately, across any chain.</h1>
-            <p className="lede hero-in" style={{ '--d': '180ms' }}>
-              Send from one wallet and receive in another, with no public link between them. From SOL to ETH, BTC and more.
-            </p>
-            <div className="cta-row hero-in" style={{ '--d': '260ms' }}>
-              <Link href="/tunnel" className="btn">Launch app</Link>
-              <Link href="/ghost" className="btn btn-ghost">Create a ghost wallet</Link>
+        <div className="container">
+          <div className="hero-panel">
+            <div className="hero-grid">
+              <div className="hero-copy">
+                <h1 className="hero-title hero-in" style={{ '--d': '60ms' }}>Swap crypto privately, across any chain.</h1>
+                <p className="lede hero-in" style={{ '--d': '140ms' }}>
+                  Send from one wallet, receive in another, with no public link between them. Non-custodial. Zero app fee.
+                </p>
+                <div className="cta-row hero-in" style={{ '--d': '220ms' }}>
+                  <Link href="/tunnel" className="btn">Launch app</Link>
+                  <Link href="/ghost" className="btn btn-ghost">Create a ghost wallet</Link>
+                </div>
+                <div className="hero-in" style={{ '--d': '300ms' }}>
+                  <NetworkStatus />
+                </div>
+              </div>
+              <HeroStage />
             </div>
-            <div className="hero-in" style={{ '--d': '340ms' }}>
-              <NetworkStatus />
+
+            <div className="hero-chains" aria-label="Supported chains">
+              <p className="kicker">Swap across 13 chains</p>
+              <ul className="chain-row" data-reveal>
+                {CHAIN_ROW.map((c, i) => (
+                  <li key={c.name} style={{ '--i': i }}>
+                    <ChainIcon chain={c.key} size={26} />
+                    {c.name}
+                  </li>
+                ))}
+              </ul>
             </div>
+
+            <ul className="stats" aria-label="At a glance" data-reveal>
+              <li><strong>13</strong><span>Chains supported</span></li>
+              <li><strong>100+</strong><span>Assets to swap</span></li>
+              <li><strong>0%</strong><span>App fee</span></li>
+              <li><strong>0</strong><span>Funds held by us</span></li>
+            </ul>
           </div>
-          <HeroStage />
-        </div>
-      </section>
-
-      <section className="chain-band" aria-label="Supported chains">
-        <div className="container">
-          <ul className="chain-row" data-reveal>
-            {CHAIN_ROW.map((c, i) => (
-              <li key={c.name} style={{ '--i': i }}>
-                <ChainIcon chain={c.key} size={28} />
-                {c.name}
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
-
-      <section className="section section-tight">
-        <div className="container">
-          <ul className="stats" aria-label="At a glance" data-reveal>
-            <li><strong>13</strong><span>chains supported</span></li>
-            <li><strong>100+</strong><span>assets to swap</span></li>
-            <li><strong>0%</strong><span>app fee</span></li>
-            <li><strong>0</strong><span>funds ever held by us</span></li>
-          </ul>
         </div>
       </section>
 
       <section id="products" className="section">
         <div className="container">
-          <p className="eyebrow" data-reveal>Products</p>
-          <h2 className="section-title" data-reveal>Everything you need to move privately</h2>
-          <ul className="products" data-reveal>
-            {PRODUCTS.map((p, i) => (
-              <li key={p.title} className="product" style={{ '--i': i }}>
-                <span className="product-icons" aria-hidden="true">
-                  {p.chains.map((c) => <ChainIcon key={c} chain={c} size={30} />)}
-                </span>
-                <h3>{p.title}</h3>
-                <p>{p.body}</p>
-                <Link href={p.href} className="btn btn-ghost btn-small">{p.cta}</Link>
-              </li>
-            ))}
-          </ul>
+          <h2 className="section-title" data-reveal>The privacy toolkit</h2>
+          <div className="panel" data-reveal>
+            <div className="panel-head">
+              <span>Parallax</span>
+              <Link href="/tunnel" className="btn btn-small">Launch app</Link>
+            </div>
+            <ul className="products">
+              {PRODUCTS.map((p) => (
+                <li key={p.title} className="product">
+                  <span className="product-icons" aria-hidden="true">
+                    {p.chains.map((c) => <ChainIcon key={c} chain={c} size={30} />)}
+                  </span>
+                  <h3>{p.title}</h3>
+                  <p>{p.body}</p>
+                  <Link href={p.href} className="btn btn-ghost btn-small">{p.cta}</Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section className="section section-flush">
+        <div className="container">
+          <div className="statement" data-reveal>
+            <p className="kicker">Your wallets. Your business.</p>
+            <p className="statement-text">
+              Every public swap draws a line between your wallets. Anyone can follow it. Parallax swaps across chains without
+              leaving that line behind.
+            </p>
+          </div>
         </div>
       </section>
 
       <section id="how" className="section">
         <div className="container">
-          <p className="eyebrow" data-reveal>How it works</p>
-          <h2 className="section-title" data-reveal>A crossing in four steps</h2>
+                    <h2 className="section-title" data-reveal>How a crossing works</h2>
           <ol className="timeline" data-reveal>
             {STEPS.map((s, i) => (
               <li key={s.title} style={{ '--i': i }}>
@@ -167,8 +181,7 @@ export default function Home() {
 
       <section id="features" className="section">
         <div className="container">
-          <p className="eyebrow" data-reveal>Features</p>
-          <h2 className="section-title" data-reveal>Private, not shady</h2>
+                    <h2 className="section-title" data-reveal>Private, not shady</h2>
           <p className="lede narrow" data-reveal>Privacy for normal people, not cover for bad actors.</p>
           <ul className="features" data-reveal>
             {FEATURES.map((c, i) => (
@@ -191,8 +204,8 @@ export default function Home() {
       </section>
 
       <section id="faq" className="section">
-        <div className="container faq-grid">
-          <div><p className="eyebrow" data-reveal>FAQ</p><h2 className="section-title" data-reveal>Questions</h2></div>
+        <div className="container faq-wrap">
+          <h2 className="section-title" data-reveal>Frequently asked questions</h2>
           <div className="faq" data-reveal>
             {FAQ.map((item) => (
               <details key={item.q}>

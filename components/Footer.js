@@ -6,17 +6,19 @@ export default function Footer() {
   return (
     <footer className="site-footer">
       <div className="container">
+        <div className="footer-top">
+          <Link href="/" className="brand" aria-label="Parallax home">
+            <Mole size={30} id="mole-footer" />
+            <span>Parallax</span>
+          </Link>
+          {SITE.xUrl ? (
+            <a className="footer-x" href={SITE.xUrl} target="_blank" rel="noopener noreferrer">
+              <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M17.75 3h3.07l-6.7 7.66L22 21h-6.17l-4.83-6.32L5.47 21H2.4l7.17-8.2L2 3h6.33l4.37 5.77L17.75 3zm-1.08 16.17h1.7L7.4 4.73H5.58l11.09 14.44z" /></svg>
+              Follow us on X
+            </a>
+          ) : null}
+        </div>
         <div className="footer-grid">
-          <div className="footer-brand">
-            <Link href="/" className="brand" aria-label="Parallax home">
-              <Mole size={30} id="mole-footer" />
-              <span>Parallax</span>
-            </Link>
-            <p className="muted small">Private cross-chain swaps. Non-custodial, zero app fee.</p>
-            {SITE.xUrl ? (
-              <a className="footer-x" href={SITE.xUrl} target="_blank" rel="noopener noreferrer">Follow us on X</a>
-            ) : null}
-          </div>
           <nav className="footer-col" aria-label="App">
             <h4>App</h4>
             <Link href="/tunnel">Make a crossing</Link>

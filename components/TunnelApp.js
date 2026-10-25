@@ -269,7 +269,7 @@ export default function TunnelApp() {
   // Placeholder refund address used only for price previews before a wallet is chosen. Nothing is ever sent to it.
   // (Public BIP test-vector addresses for the deposit-only chains.)
   const PREVIEW_REFUND = {
-    solana: '11111111111111111111111111111111',
+    solana: 'So11111111111111111111111111111111111111112',
     evm: '0x9858EfFD232B4033E47d90003D41EC34EcaEda94',
     btc: 'bc1qcr8te4kr609gcawutmrza0j4xv80jy8z306fyu',
     doge: 'DBus3bamQjgJULBJtYXpEzDWQRwF5iwxgC',

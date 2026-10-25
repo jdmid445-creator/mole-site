@@ -55,6 +55,18 @@ Next.js 14 (App Router, plain JS), @solana/web3.js, injected EVM wallets (no Wal
 proxy NEAR (`/api/tokens`, `/api/quote`, `/api/status`, `/api/submit`, `/api/solana/blockhash`, `/api/health`).
 Fonts: Sora + JetBrains Mono. Palette: bg #0C0A18, violet #5A41D6/#7B62F0, lime #C8FF2E, pink #FF8FB8.
 
+## Design (v2, 2026-10-24)
+
+References from owner: blackout.exchange, vanish.trade/us, veilit.xyz, web-4.app.
+- Veil + Web4 read fully; Blackout + Vanish render client-side, so only titles/colors were readable (Blackout bg #0b0b0f, tagline "trade perps nobody can see"). Ask owner for screenshots if we need to match them more closely.
+- Shared traits taken: near-black base, very short headlines, numbered steps, hidden-vs-public explanation, stats with real numbers, FAQ, closing CTA.
+- Deliberately skipped: scrolling ticker, ALL-CAPS labels, arrows on buttons, identical card grids.
+- Signature element: **parallax hero**, two tilted chain planes (Solana behind, Base in front) drifting with the pointer at different depths, creature between. Static on touch devices and with reduced motion.
+- Story section "Two views, no line": what Solana sees vs what Base sees.
+- Type: Bricolage Grotesque (opsz + wdth axes) for everything; JetBrains Mono only for addresses.
+- Copy: hero "Seen from one chain, it left. Seen from the other, it arrived." Primary action everywhere is "Make a crossing".
+- Real numbers only: 1 signature, 0 funds held, 0% app fee, 6 chains, ~24s from our test quote.
+
 ## Decisions and why
 
 - **No mixer / no custody.** Holding and forwarding user funds = unlicensed money transmission risk (Tornado Cash, Samourai cases). Use NEAR's network instead.
@@ -110,3 +122,4 @@ Fonts: Sora + JetBrains Mono. Palette: bg #0C0A18, violet #5A41D6/#7B62F0, lime 
   → favorites so far: **Vanish** (taken) and **Parallax**. Shared traits: 2–3 syllables, sharp consonants (V / X), real word, sounds cool said out loud, about disappearing or perception
 - "yk what why dont we go with parralax" → **decision: Parallax.** Site renamed same day.
 - "okay it works on my phone its all good, im gonna buy the domain after but lets make this tech a little better, im gonna input some websites i like and their designs, make my website similar ideas to theirs" → next: study owner's reference sites closely (fonts, spacing, motion, tone, structure) and redesign to match. Domain purchase comes after.
+- "just change up the website make it super nice and well go from there on things i want to change" → shipped design v2 (see Design section). Vercel build passed. Not yet visually checked by Claude (no browser available in session); asked owner for phone screenshots.

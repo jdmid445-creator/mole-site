@@ -39,8 +39,8 @@ a:hover { text-decoration: underline; }
 :focus-visible { outline: 2px solid var(--lime); outline-offset: 3px; border-radius: 6px; }
 .brand:focus-visible { outline-color: var(--lilac); }
 :focus:not(:focus-visible) { outline: none; }
-h1, h2, h3 { margin: 0 0 0.5em; font-weight: 700; letter-spacing: -0.025em; }
-h1 { font-size: clamp(2.5rem, 4.6vw, 5.1rem); line-height: 0.98; font-variation-settings: "wdth" 80; }
+h1, h2, h3 { margin: 0 0 0.5em; font-weight: 700; letter-spacing: -0.035em; }
+h1 { font-size: clamp(2.4rem, min(4.2vw, 8.4vh), 4.6rem); line-height: 1.02; letter-spacing: -0.045em; font-weight: 800; }
 h2 { font-size: clamp(1.9rem, 3.6vw, 2.9rem); line-height: 1.04; }
 h3 { font-size: 1.15rem; line-height: 1.25; letter-spacing: -0.01em; }
 p { margin: 0 0 1em; text-wrap: pretty; }
@@ -113,7 +113,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
   pointer-events: none;
 }
 .hero-grid { position: relative; display: grid; grid-template-columns: 1fr; gap: 12px; align-items: center; }
-@media (min-width: 960px) { .hero-grid { grid-template-columns: 1.05fr 0.95fr; gap: 24px; } .hero { padding: 4.5rem 0 4.5rem; } }
+@media (min-width: 960px) { .hero-grid { grid-template-columns: 1.05fr 0.95fr; gap: 24px; } .hero { padding: clamp(2rem, 6vh, 4.5rem) 0 clamp(2rem, 6vh, 4.5rem); } }
 .hero-title { margin: 0; }
 .hero-title .line { display: block; overflow: hidden; padding-bottom: 0.06em; white-space: nowrap; }
 @media (max-width: 420px) { .hero-title .line { white-space: normal; } }
@@ -122,9 +122,12 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .hero-note { margin: 22px 0 0; color: var(--muted); font-size: 0.92rem; }
 
 /* Parallax stage: two chain planes at different depths, creature between */
-.stage { --mx: 0; --my: 0; position: relative; height: 420px; perspective: 1100px; }
-@media (min-width: 960px) { .stage { height: 540px; } }
-@media (min-width: 1400px) { .stage { height: 37.5rem; } .plane { width: min(31rem, 94%); height: 14.5rem; } }
+.stage { --mx: 0; --my: 0; --h: 420px; position: relative; height: var(--h); perspective: 1100px; }
+@media (min-width: 960px) {
+  .stage { --h: clamp(400px, calc(100vh - 230px), 37.5rem); }
+  .stage .plane { width: min(calc(var(--h) * 0.84), 96%); height: calc(var(--h) * 0.39); }
+  .stage .stage-mole svg { width: calc(var(--h) * 0.56); }
+}
 .plane {
   position: absolute; left: 50%; width: min(440px, 92%); height: 210px;
   border-radius: 28px; border: 1px solid var(--line);
@@ -156,7 +159,6 @@ button, input, select, textarea { font: inherit; color: inherit; }
   transition: transform 0.25s ease-out;
 }
 .stage-mole svg { width: min(300px, 62vw); height: auto; display: block; }
-@media (min-width: 1400px) { .stage-mole svg { width: 21rem; } }
 .stage .mole-eyes { transform: translate(calc(var(--mx) * 9px), calc(var(--my) * 6px)); transition: transform 0.15s ease-out; }
 .stage .mole-body { transition: transform 0.2s ease; }
 .stage-mole:hover .mole-body { transform: translateY(-6px); }

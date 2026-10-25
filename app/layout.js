@@ -1,10 +1,10 @@
-import { Bricolage_Grotesque, JetBrains_Mono } from 'next/font/google';
+import { Manrope, JetBrains_Mono } from 'next/font/google';
 import './globals.css';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import MotionObserver from '@/components/MotionObserver';
 
-const display = Bricolage_Grotesque({ subsets: ['latin'], axes: ['opsz', 'wdth'], variable: '--font-display', display: 'swap' });
+const display = Manrope({ subsets: ['latin'], variable: '--font-display', display: 'swap' });
 const mono = JetBrains_Mono({ subsets: ['latin'], weight: ['400', '500'], variable: '--font-code', display: 'swap' });
 
 const siteUrl =

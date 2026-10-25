@@ -83,6 +83,9 @@ References from owner: blackout.exchange, vanish.trade/us, veilit.xyz, web-4.app
 - Look: sleek, works for a website; liked lo-fi doodle refs for meme coins but chose the soft/night character.
 - Doesn't want to make money from the tech; zero fees.
 - Writes short and casual — infer from context.
+- **No native/default browser styling on controls** ("there should be no silver on the boxes"). Every select, checkbox and input gets custom dark styling.
+- **Fonts must be clearly premium and actually load** ("make the fonts way better"). Root cause found: a :root `--font-sans` fallback overrode next/font's variable, so the system font showed. Never redeclare next/font CSS variables in :root.
+- **Wants rich, polished animation** like the reference sites ("make some animations… make it animated and look amazing"). This overrides the default "one motion moment" restraint. Always keep reduced-motion support.
 
 ## Open questions
 
@@ -123,3 +126,4 @@ References from owner: blackout.exchange, vanish.trade/us, veilit.xyz, web-4.app
 - "yk what why dont we go with parralax" → **decision: Parallax.** Site renamed same day.
 - "okay it works on my phone its all good, im gonna buy the domain after but lets make this tech a little better, im gonna input some websites i like and their designs, make my website similar ideas to theirs" → next: study owner's reference sites closely (fonts, spacing, motion, tone, structure) and redesign to match. Domain purchase comes after.
 - "just change up the website make it super nice and well go from there on things i want to change" → shipped design v2 (see Design section). Vercel build passed. Not yet visually checked by Claude (no browser available in session); asked owner for phone screenshots.
+- "okay first off this looks like shit make the fonts way better and there should be no silver on the boxes. also make some animations…" (screenshot of /tunnel) → fixed font bug, custom selects/checkbox, legend wrapping, gradient card, full animation pass. Vercel build passed. Still not visually checked by Claude (no browser connected).

@@ -20,17 +20,24 @@ export const metadata = {
   metadataBase: new URL(siteUrl),
   title: 'Parallax — private cross-chain swaps',
   description: 'Move value between chains without a public link between your wallets. Powered by NEAR Intents confidential swaps.',
-  icons: { icon: '/icon.svg' },
+  icons: {
+    icon: [{ url: '/favicon.ico', sizes: '48x48' }, { url: '/icon.svg', type: 'image/svg+xml' }],
+    apple: [{ url: '/apple-touch-icon.png', sizes: '180x180' }],
+  },
+  manifest: '/manifest.webmanifest',
+  appleWebApp: { title: 'Parallax', statusBarStyle: 'black-translucent' },
   openGraph: {
     title: 'Parallax — Private cross-chain swaps',
-    description: 'Swap across 13 chains with no public link between your wallets. Non-custodial. Zero fees.',
+    description: 'Swap across 13 chains with no public link between your wallets. Non-custodial. Zero app fee.',
     siteName: 'Parallax',
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
+    site: '@parallaxswap',
+    creator: '@parallaxswap',
     title: 'Parallax — Private cross-chain swaps',
-    description: 'Swap across 13 chains with no public link between your wallets. Non-custodial. Zero fees.',
+    description: 'Swap across 13 chains with no public link between your wallets. Non-custodial. Zero app fee.',
   },
 };
 

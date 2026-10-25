@@ -125,6 +125,7 @@ export default function TunnelApp() {
   const [swap, setSwap] = useState(null);
   const [busy, setBusy] = useState('');
   const [error, setError] = useState('');
+  const [needApp, setNeedApp] = useState(false);
   const swapRef = useRef(null);
 
   const fromChain = getChain(fromChainKey);
@@ -392,13 +393,14 @@ export default function TunnelApp() {
 
   async function chooseWallet({ thenSwap = false } = {}) {
     setError('');
+    setNeedApp(false);
     const kind = fromChain.wallet;
     const wallets = kind === 'solana' ? detectSolanaWallets() : await detectEvmWallets();
     if (wallets.length === 1 && !(walletMatches && !thenSwap)) {
       return connectWith(kind, wallets[0]);
     }
     if (!wallets.length && appLinks.length) {
-      setError('Open Parallax in your wallet app (buttons above) to swap from your phone.');
+      setNeedApp(true);
       return '';
     }
     setPicker({ kind, wallets, busyId: '', thenSwap });
@@ -848,6 +850,21 @@ export default function TunnelApp() {
           </label>
 
           {error ? <p className="notice notice-error" role="alert">{error}</p> : null}
+          {needApp && appLinks.length && payMode !== 'manual' ? (
+            <div className="open-in open-in-swap" role="status">
+              <p className="open-in-title">To swap from your phone, open Parallax inside your wallet app:</p>
+              <div className="open-in-row">
+                {appLinks.map((l) => (
+                  <a key={l.name} className="btn" href={l.href} onClick={rememberBeforeLeaving}>
+                    Open in {l.name}
+                  </a>
+                ))}
+              </div>
+              <button type="button" className="text-link" onClick={() => { setPayMode('manual'); setPayFrom(''); setNeedApp(false); }}>
+                Or pay from any wallet or exchange
+              </button>
+            </div>
+          ) : null}
 
           <button type="button" className="btn btn-swap" onClick={onSwap} disabled={Boolean(busy) || Boolean(picker?.busyId)}>
             {busy === 'open'

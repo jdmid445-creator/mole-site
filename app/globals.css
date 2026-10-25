@@ -631,3 +631,10 @@ html.motion .views[data-reveal].is-in .view-from, html.motion .views[data-reveal
 html.motion .st-copy { opacity: 0.25; transform: translateY(12px); filter: blur(3px); transition: opacity 1.8s cubic-bezier(.45,0,.25,1), transform 1.8s cubic-bezier(.45,0,.25,1), filter 1.5s ease; }
 html.motion .st-copy.is-lit { opacity: 1; transform: none; filter: none; }
 @media (prefers-reduced-motion: reduce) { html.motion .st-copy { opacity: 1; transform: none; filter: none; transition: none; } }
+.open-in-swap { margin: 0 0 12px; }
+.open-in-swap .text-link { justify-self: start; }
+@media (max-width: 480px) {
+  .built-on { gap: 10px 22px; }
+  .built-on-label { flex-basis: 100%; }
+  .built-on-name { font-size: 1.15rem; }
+}

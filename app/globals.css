@@ -129,11 +129,10 @@ button, input, select, textarea { font: inherit; color: inherit; }
 /* Parallax stage: two chain planes at different depths, creature between */
 .stage { --mx: 0; --my: 0; --h: 420px; position: relative; height: var(--h); perspective: 1100px; }
 @media (max-width: 959px) {
-  .stage { --h: 470px; }
   .stage .plane { height: 180px; }
   .stage .stage-mole svg { width: min(230px, 58vw); }
-  .plane-front { justify-content: flex-end; }
-  .plane-front .plane-name { position: absolute; right: 22px; top: 20px; }
+  .stage { --h: 500px; }
+  .stage-mole { transform: translate(-50%, -66%) translate3d(calc(var(--mx) * 8px), calc(var(--my) * 6px), 0); }
 }
 @media (min-width: 960px) {
   .stage { --h: clamp(400px, calc(100vh - 230px), 37.5rem); }

@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { CHAINS, getChain, isValidAddress, addressHint } from '@/lib/chains';
-import { toUnits, fromUnits, looksRound } from '@/lib/units';
+import { toUnits, fromUnits, looksRound, displayAmount } from '@/lib/units';
 import { connectSolana, connectEvm, sendSol, sendEvmNative, sendEvmToken } from '@/lib/wallets';
 import CopyButton from './CopyButton';
 
@@ -395,7 +395,7 @@ export default function TunnelApp() {
               </div>
               <div>
                 <span className="muted small">About</span>
-                <strong>{preview.amountOutFormatted ?? '—'} {toToken.symbol}</strong>
+                <strong>{displayAmount(preview.amountOutFormatted)} {toToken.symbol}</strong>
               </div>
               <div>
                 <span className="muted small">Time</span>
@@ -460,7 +460,7 @@ export default function TunnelApp() {
             </div>
             <div>
               <dt>Arriving</dt>
-              <dd>{swap.amountOutFormatted ? `~${swap.amountOutFormatted}` : '—'} {swap.symbolOut} on {toChain.label}</dd>
+              <dd>{swap.amountOutFormatted ? `~${displayAmount(swap.amountOutFormatted)}` : '—'} {swap.symbolOut} on {toChain.label}</dd>
             </div>
             {swap.txHash ? (
               <div>

@@ -3,7 +3,7 @@
 import { INSTALL } from '@/lib/wallets';
 
 // Lists the wallets this browser actually has. If there are none, shows where to get one.
-export default function WalletPicker({ kind, chainLabel, wallets, onPick, onClose, busyId }) {
+export default function WalletPicker({ kind, chainLabel, wallets, onPick, onClose, onManual, busyId }) {
   const label = chainLabel || (kind === 'solana' ? 'Solana' : 'browser');
   // Hide install links for wallets already here ("Rabby Wallet" counts as Rabby, "Coinbase Wallet" as Coinbase).
   const names = wallets.map((w) => w.name.toLowerCase());
@@ -37,6 +37,21 @@ export default function WalletPicker({ kind, chainLabel, wallets, onPick, onClos
           Install a wallet extension, then refresh this page. Or close this and send manually with a refund address.
         </p>
       )}
+
+      {onManual ? (
+        <>
+          <p className="wpick-sub">Trading app</p>
+          <ul className="wpick-list">
+            <li>
+              <button type="button" className="wpick-item" onClick={onManual}>
+                <span className="wpick-tile" aria-hidden="true">A</span>
+                <span>Axiom</span>
+                <em>Send from Axiom</em>
+              </button>
+            </li>
+          </ul>
+        </>
+      ) : null}
 
       {suggestions.length ? (
         <>

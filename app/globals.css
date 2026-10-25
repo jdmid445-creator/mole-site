@@ -551,6 +551,8 @@ html.motion .clean-grid[data-reveal].is-in li { opacity: 1; transform: none; }
 a.wpick-item em { color: var(--muted); }
 .wpick-sub { margin: 6px 0 0; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
 .wpick-note { margin: 0; }
+.wpick-tile { display: inline-grid; place-items: center; width: 28px; height: 28px; border-radius: 8px; flex: none !important; background: var(--surface-2); border: 1px solid var(--line); color: var(--lilac); font-weight: 800; font-size: 0.9rem; }
+.pay-alt { display: flex; flex-wrap: wrap; gap: 4px 20px; }
 .wallet-switch { appearance: none; margin-left: 10px; padding: 4px 12px; min-height: 32px; border-radius: 999px; border: 1px solid var(--line); background: none; color: var(--lilac); font: inherit; font-size: 0.85rem; cursor: pointer; }
 .wallet-switch:hover { border-color: var(--lilac); color: var(--text); }
 

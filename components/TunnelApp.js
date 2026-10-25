@@ -110,6 +110,7 @@ export default function TunnelApp() {
   const [picker, setPicker] = useState(null); // { kind, wallets, busyId, thenSwap }
   const [payMode, setPayMode] = useState('wallet'); // 'wallet' = approve in your wallet, 'manual' = send it yourself
   const [previewNote, setPreviewNote] = useState('');
+  const [payFrom, setPayFrom] = useState(''); // e.g. 'Axiom' when sending from a trading app's built-in wallet
   const [ack, setAck] = useState(false);
   const [ghostFor, setGhostFor] = useState(null); // 'single' | row index | null
 
@@ -184,6 +185,7 @@ export default function TunnelApp() {
     setFromAssetId('');
     setPreview(null);
     setPicker(null);
+    setPayFrom('');
   }, [fromChainKey]);
 
   useEffect(() => {
@@ -268,7 +270,7 @@ export default function TunnelApp() {
   // (Public BIP test-vector addresses for the deposit-only chains.)
   const PREVIEW_REFUND = {
     solana: '11111111111111111111111111111111',
-    evm: '0x000000000000000000000000000000000000dEaD',
+    evm: '0x9858EfFD232B4033E47d90003D41EC34EcaEda94',
     btc: 'bc1qcr8te4kr609gcawutmrza0j4xv80jy8z306fyu',
     doge: 'DBus3bamQjgJULBJtYXpEzDWQRwF5iwxgC',
     ltc: 'ltc1qjmxnz78nmc8nq77wuxh25n2es7rzm5c2rkk4wh',
@@ -456,6 +458,7 @@ export default function TunnelApp() {
       setSwap({
         id,
         split: quotes.length > 1,
+        payFrom: autoSend ? '' : payFrom,
         amountIn: fromUnits(units, fromToken.decimals),
         symbolIn: fromToken.symbol,
         symbolOut: toToken.symbol,
@@ -606,12 +609,16 @@ export default function TunnelApp() {
               </>
             ) : payMode === 'manual' ? (
               <>
-                <p className="pay-note">You'll get an address to send to, from any wallet or exchange. No connecting needed.</p>
+                <p className="pay-note">
+                  {payFrom
+                    ? `You'll get an address to send to. In ${payFrom}, use Withdraw and paste it. No connecting needed.`
+                    : "You'll get an address to send to, from Axiom, an exchange, or any wallet. No connecting needed."}
+                </p>
                 <label className="field">
-                  <span>Refund address: if anything fails, your coins come back here</span>
+                  <span>{payFrom ? `Your ${payFrom} wallet address (refunds go back here)` : 'Refund address: if anything fails, your coins come back here'}</span>
                   <input placeholder={addressHint(fromChainKey)} value={manualRefund} onChange={(e) => setManualRefund(e.target.value)} />
                 </label>
-                <button type="button" className="text-link" onClick={() => { setPayMode('wallet'); setError(''); }}>
+                <button type="button" className="text-link" onClick={() => { setPayMode('wallet'); setPayFrom(''); setError(''); }}>
                   Use my {fromChain.label} wallet instead
                 </button>
               </>
@@ -636,9 +643,16 @@ export default function TunnelApp() {
                 ) : (
                   <p className="pay-note">Your wallet pops up when you swap. Approve once and it's done.</p>
                 )}
-                <button type="button" className="text-link" onClick={() => { setPayMode('manual'); setPicker(null); setError(''); }}>
-                  No wallet here? Pay from any wallet or exchange instead
-                </button>
+                <div className="pay-alt">
+                  {walletKind === 'solana' ? (
+                    <button type="button" className="text-link" onClick={() => { setPayMode('manual'); setPayFrom('Axiom'); setPicker(null); setError(''); }}>
+                      Paying from Axiom?
+                    </button>
+                  ) : null}
+                  <button type="button" className="text-link" onClick={() => { setPayMode('manual'); setPayFrom(''); setPicker(null); setError(''); }}>
+                    No wallet here? Pay from any wallet or exchange
+                  </button>
+                </div>
               </>
             )}
             {picker && picker.kind === walletKind ? (
@@ -648,6 +662,7 @@ export default function TunnelApp() {
                 wallets={picker.wallets}
                 busyId={picker.busyId}
                 onPick={onPickWallet}
+                onManual={picker.kind === 'solana' ? () => { setPayMode('manual'); setPayFrom('Axiom'); setPicker(null); setError(''); } : null}
                 onClose={() => setPicker(null)}
               />
             ) : null}
@@ -856,7 +871,8 @@ export default function TunnelApp() {
             <div className="deposit-box">
               {pendingDeposits.length === 1 && !swap.split ? (
                 <p>
-                  Send exactly <strong>{pendingDeposits[0].amountIn} {swap.symbolIn}</strong> on {fromChain.label} to this deposit address:
+                  {swap.payFrom ? `In ${swap.payFrom}, tap Withdraw and send exactly ` : 'Send exactly '}
+                  <strong>{pendingDeposits[0].amountIn} {swap.symbolIn}</strong> on {fromChain.label} to this deposit address:
                 </p>
               ) : (
                 <p>

@@ -153,3 +153,4 @@ References from owner: blackout.exchange, vanish.trade/us, veilit.xyz, web-4.app
 - "shouldnt parallax on the top left be more on the left, and the icons up right more to the right?" → header now full-width. While checking found + fixed: phones were 20px too wide at load (pre-reveal slide-in), creature overlapping Base label on phones, hint placement.
 - "what should my X name be?" → suggested handles (see reply).
 - "make me a back banner" (X profile @parallaxswap) → 1500×500 X header in site style, kept clear of avatar overlap and mobile crop. Saved in brand/.
+- "how about a bio, and lets link my twitter on the website now somewhere" → X icon button in header (laptop + phone) and "X (@parallaxswap)" in footer; default in lib/site.js. Bio options given in chat.

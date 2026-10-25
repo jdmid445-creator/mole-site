@@ -78,13 +78,17 @@ button, input, select, textarea { font: inherit; color: inherit; }
 /* Header / footer */
 .site-header { position: sticky; top: 0; z-index: 20; background: rgba(12, 10, 24, 0.78); backdrop-filter: blur(12px); border-bottom: 1px solid var(--line-soft); }
 .header-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 68px; flex-wrap: wrap; }
-.site-header .header-row { max-width: none; padding: 0 clamp(16px, 2.6vw, 48px); }
+.site-header .header-row { max-width: none; padding: 0 var(--edge); min-height: 64px; }
+:root { --edge: clamp(14px, 1.25vw, 24px); }
+.brand svg { margin-left: -3px; }
 .brand { display: inline-flex; align-items: center; gap: 10px; color: var(--text); font-weight: 700; font-size: 1.15rem; letter-spacing: -0.02em; }
 .brand:hover { text-decoration: none; }
-.nav { display: flex; align-items: center; gap: 22px; flex-wrap: wrap; }
+.nav { display: flex; align-items: center; gap: 24px; flex-wrap: wrap; }
+.nav .nav-x { margin-left: 4px; }
+.nav .nav-x + .btn { margin-left: -12px; }
 .nav a:not(.btn) { color: var(--muted); font-size: 0.95rem; }
 .nav a:not(.btn):hover { color: var(--text); text-decoration: none; }
-.nav .nav-x { display: inline-grid; place-items: center; width: 44px; height: 44px; border-radius: 999px; border: 1px solid var(--line); color: var(--text); transition: border-color 0.2s ease, background 0.2s ease; }
+.nav .nav-x { display: inline-grid; place-items: center; width: 40px; height: 40px; border-radius: 999px; border: 1px solid var(--line); color: var(--text); transition: border-color 0.2s ease, background 0.2s ease; }
 .nav .nav-x:hover { border-color: var(--lilac); background: rgba(207, 198, 255, 0.08); text-decoration: none; }
 @media (max-width: 680px) { .nav a:not(.btn):not(.nav-x) { display: none; } .nav { gap: 10px; } }
 .site-footer { border-top: 1px solid var(--line-soft); padding: 56px 0 40px; margin-top: 24px; }
@@ -640,7 +644,7 @@ html.motion .st-copy.is-lit { opacity: 1; transform: none; filter: none; }
 }
 /* $PARALLAX contract bar (top of every page) */
 .ca-bar { background: #08061a; border-bottom: 1px solid var(--line-soft); font-size: 0.86rem; }
-.ca-bar-row { display: flex; align-items: center; justify-content: center; gap: 10px 14px; flex-wrap: wrap; min-height: 44px; padding: 6px clamp(16px, 2.6vw, 48px); }
+.ca-bar-row { display: flex; align-items: center; justify-content: center; gap: 10px 14px; flex-wrap: wrap; min-height: 40px; padding: 6px var(--edge); }
 .ca-bar-label { color: var(--lilac); font-weight: 700; letter-spacing: 0.04em; }
 .ca-bar-addr { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; color: var(--text); background: rgba(255,255,255,0.04); border: 1px solid var(--line-soft); border-radius: 8px; padding: 4px 8px; user-select: all; }
 .ca-bar-soon { color: var(--muted); }
@@ -657,3 +661,4 @@ html.motion .st-copy.is-lit { opacity: 1; transform: none; filter: none; }
   .ca-bar-label { white-space: nowrap; }
   .ca-bar-soon { white-space: nowrap; }
 }
+@media (max-width: 680px) { .nav .nav-x + .btn { margin-left: 0; } .nav .nav-x { margin-left: 0; } }

@@ -11,8 +11,9 @@ export default function Header() {
         </Link>
         <nav className="nav" aria-label="Main">
           <Link href="/#how">How it works</Link>
-          <Link href="/#token">Token</Link>
-          <Link href="/tunnel" className="btn btn-small">Launch app</Link>
+          <Link href="/#faq">Questions</Link>
+          <Link href="/#token">$PARALLAX</Link>
+          <Link href="/tunnel" className="btn btn-small">Make a crossing</Link>
         </nav>
       </div>
     </header>

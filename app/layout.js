@@ -7,9 +7,14 @@ import MotionObserver from '@/components/MotionObserver';
 const display = Manrope({ subsets: ['latin'], variable: '--font-display', display: 'swap' });
 const mono = JetBrains_Mono({ subsets: ['latin'], weight: ['400', '500'], variable: '--font-code', display: 'swap' });
 
+// Live site address, used for link previews. www is the main address (the bare domain redirects to it).
 const siteUrl =
   process.env.NEXT_PUBLIC_SITE_URL ||
-  (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : 'http://localhost:3000');
+  (process.env.VERCEL_ENV === 'production'
+    ? 'https://www.parallaxswap.com'
+    : process.env.VERCEL_URL
+      ? `https://${process.env.VERCEL_URL}`
+      : 'http://localhost:3000');
 
 export const metadata = {
   metadataBase: new URL(siteUrl),

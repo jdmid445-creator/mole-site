@@ -27,7 +27,7 @@ They should: land, get it in ~5 seconds, try Parallax, feel "this is legit, not 
 | Thing | Where | Status |
 |---|---|---|
 | Code | GitHub `jdmid445-creator/mole-site` (branch `main`) | Next.js 14, JS, auto-deploys to Vercel on push |
-| Live site | https://mole-site-mu.vercel.app | Live. Branded **Parallax** (renamed 2026-10-24). Confirmed loading on owner's phone (cellular); owner's laptop network timed out on `*.vercel.app` at 22:11, so custom domain needed anyway |
+| Live site | https://www.parallaxswap.com (bare parallaxswap.com redirects to www) | Custom domain added 2026-10-25. Old https://mole-site-mu.vercel.app still works |
 | Hosting | Vercel project `mole-site` (team YOSH) | Env vars set: `HELIUS_API_KEY`, `NEAR_INTENTS_JWT` (all envs) |
 | Swap rails | NEAR Intents 1Click API, `confidentiality: advanced` | Partner account "MOLE", Distribution Channel key |
 | Logo | Design canvas "$MOLE Logo" → artboard **"★ Night, peeking out"** | Final mascot: deep-violet creature peeking out of a dark hole, lime eyes, pink nose, soft glow, on #0C0A18 |
@@ -167,3 +167,4 @@ References from owner: blackout.exchange, vanish.trade/us, veilit.xyz, web-4.app
 - (screenshot of the statement band) "i dont really like this design for this, feel like it should be animated or something. mess around with it try somethign else, everything else looks nice" → band now uses the X banner's light bars, waving slowly (violet→lime), and the sentence lights up word by word as you scroll. Static for reduced-motion. Checked 1470×745 and 390.
 - "okay i love the back animation, but honestly i think the text shouldnt have an animation" → removed the word-by-word scroll effect; text is static, bars keep waving. Rule: keep text still; motion belongs in backgrounds.
 - "maybe have it do one animation wherr the opacity starts a little lower the gets brighter? something simple and sleek" → statement text now fades from 30% to full brightness (with a slight rise and unblur) once as it enters view, ~1.4s. No per-word effects.
+- "i already bought it" → parallaxswap.com connected in Vercel (Add Existing; apex 308-redirects to www.parallaxswap.com, which serves Production). mole-site-mu.vercel.app kept working alongside. Link previews now point at https://www.parallaxswap.com.

@@ -78,6 +78,18 @@ export default function Docs() {
           </ul>
           <p>Any wallet can also use deposit mode by entering a refund address and sending manually.</p>
 
+          <h2 id="split">Split send</h2>
+          <p>
+            On the swap page, choose <strong>Split across wallets</strong> to send one amount to 2–5 destination wallets. Each part
+            gets its own private crossing and deposit address, so the parts arrive separately from different network addresses.
+            From a Solana wallet it is still one signature: a single transaction pays every deposit address. EVM wallets ask you to
+            approve each part. Uneven shares are harder to match than equal ones; <strong>Shuffle amounts</strong> mixes them up.
+          </p>
+          <p>
+            On a phone, wallets only connect inside their own app. If none is found, the swap page offers <strong>Open in Phantom</strong>
+            (or Solflare, MetaMask, Coinbase Wallet), which reopens Parallax there.
+          </p>
+
           <h2 id="security">Security model</h2>
           <ul>
             <li><strong>Non-custodial.</strong> Your wallet signs one transfer to the network’s deposit address. Parallax has no ability to move funds.</li>

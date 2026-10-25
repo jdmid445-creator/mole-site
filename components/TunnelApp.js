@@ -45,7 +45,7 @@ function writeSaved(value) {
   try {
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(value));
   } catch {
-    // Storage can be unavailable (private mode); the Tunnel works without it.
+    // Storage can be unavailable (private mode); Parallax works without it.
   }
 }
 
@@ -161,7 +161,7 @@ export default function TunnelApp() {
       );
     }
     if (recipient.trim().toLowerCase() === refundTo.toLowerCase()) {
-      throw new Error('Send to a different wallet than the one you send from. That is the whole point of the tunnel.');
+      throw new Error('Send to a different wallet than the one you send from. That is the whole point of Parallax.');
     }
     return units;
   }
@@ -211,7 +211,7 @@ export default function TunnelApp() {
   async function onOpen() {
     setError('');
     if (!ack) {
-      setError('Tick the box to confirm you understand what the Tunnel hides and what it does not.');
+      setError('Tick the box to confirm you understand what Parallax hides and what it does not.');
       return;
     }
     setBusy('open');
@@ -411,7 +411,7 @@ export default function TunnelApp() {
           <label className="check">
             <input type="checkbox" checked={ack} onChange={(e) => setAck(e.target.checked)} />
             <span>
-              I understand the Tunnel hides the link between my wallets, not the deposit or the arrival themselves, and that
+              I understand Parallax hides the link between my wallets, not the deposit or the arrival themselves, and that
               this site never holds my funds.
             </span>
           </label>
@@ -423,7 +423,7 @@ export default function TunnelApp() {
               {busy === 'preview' ? 'Getting quote…' : 'Preview quote'}
             </button>
             <button type="button" className="btn" onClick={onOpen} disabled={Boolean(busy)}>
-              {busy === 'open' ? 'Opening…' : canOneClick ? 'Open tunnel & send' : 'Open tunnel'}
+              {busy === 'open' ? 'Opening…' : canOneClick ? 'Send privately' : 'Get deposit address'}
             </button>
           </div>
         </form>
@@ -494,7 +494,7 @@ export default function TunnelApp() {
             wallet back to your sending wallet directly; that links them.
           </p>
           <button type="button" className="btn btn-ghost" onClick={reset}>
-            {TERMINAL.has(swap.status) ? 'Start a new tunnel' : 'Start over'}
+            {TERMINAL.has(swap.status) ? 'Start a new swap' : 'Start over'}
           </button>
         </div>
       )}

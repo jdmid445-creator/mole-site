@@ -12,11 +12,11 @@ alongside it. **Product first, coin second.**
 ## Audience
 
 Solana meme traders / degens who don't want their wallets tracked.
-They should: land, get it in ~5 seconds, try the Tunnel, feel "this is legit, not another rug", then buy the coin.
+They should: land, get it in ~5 seconds, try Parallax, feel "this is legit, not another rug", then buy the coin.
 
 ## Done this week (draft — owner to confirm)
 
-1. Name locked.
+1. ~~Name locked.~~ ✅ **Parallax / $PARALLAX** (2026-10-24)
 2. Site renamed, on a clean custom domain, live.
 3. One successful real test swap (small amounts, secondary wallet → fresh wallet).
 4. Final logo + banner in the chosen name.
@@ -27,14 +27,21 @@ They should: land, get it in ~5 seconds, try the Tunnel, feel "this is legit, no
 | Thing | Where | Status |
 |---|---|---|
 | Code | GitHub `jdmid445-creator/mole-site` (branch `main`) | Next.js 14, JS, auto-deploys to Vercel on push |
-| Live site | https://mole-site-mu.vercel.app | Live. Currently branded **$TUNNEL** — owner rejected that name, rename pending |
+| Live site | https://mole-site-mu.vercel.app | Live. Branded **Parallax** (renamed 2026-10-24) |
 | Hosting | Vercel project `mole-site` (team YOSH) | Env vars set: `HELIUS_API_KEY`, `NEAR_INTENTS_JWT` (all envs) |
 | Swap rails | NEAR Intents 1Click API, `confidentiality: advanced` | Partner account "MOLE", Distribution Channel key |
 | Logo | Design canvas "$MOLE Logo" → artboard **"★ Night, peeking out"** | Final mascot: deep-violet creature peeking out of a dark hole, lime eyes, pink nose, soft glow, on #0C0A18 |
 | Domain / X / Telegram | — | None yet |
 | Token | — | Not launched. Launching on pump.fun (Solana) |
 
-## Product: the Tunnel
+## Name
+
+**Parallax** (product) · **$PARALLAX** (token, pump.fun).
+Story: watchers on one chain see something unrelated to what arrives on the other, the same thing looks different depending on where you stand.
+Conflict check 2026-10-24: only small unrelated projects use the name: Parallax (LAX) PoW chain ~$45K mcap; Parallax (PLX) dormant Arbitrum LSDfi; Parallax Network (2019 software). None in Solana/privacy. Tickers LAX and PLX taken, so use **$PARALLAX**.
+Mascot (Night creature in its hole) stays.
+
+## Product: Parallax (swap app at /tunnel)
 
 - Non-custodial front-end for NEAR Intents 1Click swaps with confidential mode on. Site never holds funds or keys.
 - Chains at launch: Solana, Ethereum, Base, Arbitrum, BNB (one-click via browser wallet), Bitcoin (deposit mode).
@@ -67,7 +74,7 @@ Fonts: Sora + JetBrains Mono. Palette: bg #0C0A18, violet #5A41D6/#7B62F0, lime 
 
 ## Open questions
 
-- **Name.** Rejected so far include: $ZERO (initially liked), $MOLE (initially "fw mole", later wanted change), $TUNNEL ("tunnel sucks"), and long lists of others.
+- ~~Name~~ decided: Parallax. History: rejected $ZERO (initially liked), $MOLE (initially "fw mole", later wanted change), $TUNNEL ("tunnel sucks"), and long lists of others.
   Last shortlist offered: Enclave, Lowkey, Backchannel, Courier, Undercurrent, Proxy; then Lowroad, Quietlane, Soto, Underlink.
 - Domain (wait for the name).
 - X / Telegram handles.
@@ -101,3 +108,4 @@ Fonts: Sora + JetBrains Mono. Palette: bg #0C0A18, violet #5A41D6/#7B62F0, lime 
   → what's working: the feeling of disappearing; short, clean, one word
 - Offered Evanesce, Vamoose, Dissolve, Unsee, Exeunt, Afterimage → "eh those arent so good keep going tho, vanish and parralax are good"
   → favorites so far: **Vanish** (taken) and **Parallax**. Shared traits: 2–3 syllables, sharp consonants (V / X), real word, sounds cool said out loud, about disappearing or perception
+- "yk what why dont we go with parralax" → **decision: Parallax.** Site renamed same day.

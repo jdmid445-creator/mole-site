@@ -12,18 +12,18 @@ export default function Home() {
       <section className="hero">
         <div className="container hero-grid">
           <div className="hero-copy">
-            <p className="eyebrow">$TUNNEL · private routes between chains</p>
-            <h1>A private tunnel between any two chains.</h1>
+            <p className="eyebrow">Parallax · private cross-chain swaps</p>
+            <h1>Leave one chain. Arrive on another. No line between them.</h1>
             <p className="lede">
               Send SOL, ETH, BTC and more into a wallet on another chain, with no public link between the wallet you
               send from and the one you receive in.
             </p>
             <div className="cta-row">
-              <Link href="/tunnel" className="btn">Open the Tunnel</Link>
+              <Link href="/tunnel" className="btn">Launch Parallax</Link>
               {ca ? (
-                <a href={pumpUrl(ca)} className="btn btn-ghost" target="_blank" rel="noopener noreferrer">Buy $TUNNEL</a>
+                <a href={pumpUrl(ca)} className="btn btn-ghost" target="_blank" rel="noopener noreferrer">Buy $PARALLAX</a>
               ) : (
-                <span className="btn btn-ghost is-disabled" aria-disabled="true">$TUNNEL launching soon</span>
+                <span className="btn btn-ghost is-disabled" aria-disabled="true">$PARALLAX launching soon</span>
               )}
             </div>
             <ul className="chain-list" aria-label="Supported chains">
@@ -40,7 +40,7 @@ export default function Home() {
 
       <section id="how" className="section">
         <div className="container">
-          <h2>How the Tunnel works</h2>
+          <h2>How Parallax works</h2>
           <ol className="steps">
             <li>
               <span className="step-num">01</span>
@@ -64,7 +64,7 @@ export default function Home() {
       <section className="section section-alt">
         <div className="container">
           <h2>Private, not invisible</h2>
-          <p className="lede narrow">We'd rather tell you exactly what the Tunnel does than overpromise.</p>
+          <p className="lede narrow">We'd rather tell you exactly what Parallax does than overpromise.</p>
           <div className="two-col">
             <div className="card">
               <h3>Hidden</h3>
@@ -84,7 +84,7 @@ export default function Home() {
             </div>
           </div>
           <p className="muted small">
-            Tips: use round amounts, don't move everything at once, and never send directly between the two wallets outside the Tunnel.
+            Tips: use round amounts, don't move everything at once, and never send directly between the two wallets outside Parallax.
             That links them publicly forever.
           </p>
         </div>
@@ -95,7 +95,7 @@ export default function Home() {
           <div>
             <h2>The token</h2>
             <p className="lede narrow">
-              $TUNNEL is the meme coin behind the Tunnel. It launches on pump.fun on Solana. The Tunnel itself is free to use and
+              $PARALLAX is the token behind Parallax. It launches on pump.fun on Solana. Parallax itself is free to use and
               charges no app fee.
             </p>
           </div>

@@ -1,5 +1,5 @@
 export const metadata = {
-  title: 'Terms & privacy limits — $TUNNEL',
+  title: 'Terms & privacy limits — Parallax',
 };
 
 export default function Terms() {
@@ -9,9 +9,9 @@ export default function Terms() {
         <h1 className="page-title">Terms &amp; privacy limits</h1>
         <p className="muted small">Plain-language summary. Not legal advice.</p>
 
-        <h2>What the Tunnel is</h2>
+        <h2>What Parallax is</h2>
         <p>
-          The Tunnel is a website that helps you create cross-chain swaps on NEAR Intents, a third-party network, with its
+          Parallax is a website that helps you create cross-chain swaps on NEAR Intents, a third-party network, with its
           confidential setting switched on. Your funds go from your wallet straight to the network's deposit address and
           arrive at the destination you choose. This site never holds, controls or can move your funds, and it never sees
           your private keys.
@@ -26,7 +26,7 @@ export default function Terms() {
         </p>
 
         <h2>Acceptable use</h2>
-        <p>Financial privacy is normal. Using the Tunnel to break the law is not allowed. Don't use it to:</p>
+        <p>Financial privacy is normal. Using Parallax to break the law is not allowed. Don't use it to:</p>
         <ul>
           <li>move the proceeds of crime or hide where funds came from;</li>
           <li>evade sanctions, or if you are a sanctioned person or acting for one;</li>
@@ -43,10 +43,10 @@ export default function Terms() {
           <li>Failed swaps are refunded to the refund address you provide, by the network, not by this site.</li>
         </ul>
 
-        <h2>The $TUNNEL token</h2>
+        <h2>The $PARALLAX token</h2>
         <p>
-          $TUNNEL is a meme coin. It has no promised value, utility, dividends or returns, and you can lose everything you put
-          in. The Tunnel is free to use; holding $TUNNEL is not required. Nothing on this site is financial advice.
+          $PARALLAX is a meme coin. It has no promised value, utility, dividends or returns, and you can lose everything you put
+          in. Parallax is free to use; holding $PARALLAX is not required. Nothing on this site is financial advice.
         </p>
 
         <h2>Data</h2>

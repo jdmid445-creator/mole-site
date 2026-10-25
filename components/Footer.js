@@ -6,7 +6,7 @@ export default function Footer() {
     <footer className="site-footer">
       <div className="container footer-row">
         <p className="muted small">
-          $TUNNEL is a meme coin with no promised value or returns. The Tunnel runs on NEAR Intents and is not affiliated with NEAR.
+          $PARALLAX is a meme coin with no promised value or returns. Parallax runs on NEAR Intents and is not affiliated with NEAR.
           Nothing here is financial advice.
         </p>
         <nav className="footer-links" aria-label="Footer">

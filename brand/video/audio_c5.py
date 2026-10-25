@@ -26,7 +26,7 @@ def sweep_lp(x, f0, f1, curve=1.0):
     return out
 
 # +2 beats before the cut and +2 on the second headline so the opening lines can be read
-LINE, CUT, BREAKS, PHONE, TYPE, QUOTE, TAP, STATUS, TRAVEL, ARRIVED, VIEWS, END = 3, 6, 8, 13, 15, 17, 18, 20, 21, 25, 28, 32
+LINE, CUT, BREAKS, PHONE, TYPE, QUOTE, TAP, STATUS, TRAVEL, ARRIVED, VIEWS, END = 3, 6, 8, 13, 15, 17, 18, 20, 21, 25, 28, 33
 DIVE, PEEK = 20.7, 29.0
 # harmony per section (A minor world): (from beat, to beat, chord)
 HARM = [(0, BREAKS, [45, 57, 60, 64, 67]), (BREAKS, PHONE, [41, 53, 57, 60, 64]), (PHONE, STATUS, [36, 48, 55, 60, 64]),

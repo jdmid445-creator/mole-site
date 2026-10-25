@@ -49,16 +49,20 @@ export default function Home() {
       <section className="hero">
         <div className="container hero-grid">
           <div className="hero-copy">
-            <h1>Seen from one chain, it left. Seen from the other, it arrived.</h1>
-            <p className="lede">
+            <h1 className="hero-title">
+              <span className="line"><span className="line-inner">Seen from one chain,</span></span>
+              <span className="line"><span className="line-inner">it left. Seen from</span></span>
+              <span className="line"><span className="line-inner">the other, it arrived.</span></span>
+            </h1>
+            <p className="lede hero-in" style={{ '--d': '560ms' }}>
               Parallax swaps your crypto across chains, from SOL to ETH, BTC and more, with no public line between the wallet
               you send from and the one you receive in.
             </p>
-            <div className="cta-row">
+            <div className="cta-row hero-in" style={{ '--d': '680ms' }}>
               <Link href="/tunnel" className="btn">Make a crossing</Link>
               <Link href="/#how" className="btn btn-ghost">See how it works</Link>
             </div>
-            <p className="hero-note">Your funds never touch us. No app fee. Runs on NEAR Intents.</p>
+            <p className="hero-note hero-in" style={{ '--d': '800ms' }}>Your funds never touch us. No app fee. Runs on NEAR Intents.</p>
           </div>
           <HeroStage />
         </div>
@@ -66,10 +70,10 @@ export default function Home() {
 
       <section id="how" className="section">
         <div className="container">
-          <h2 className="section-title">How a crossing works</h2>
-          <ol className="timeline">
+          <h2 className="section-title" data-reveal>How a crossing works</h2>
+          <ol className="timeline" data-reveal>
             {STEPS.map((s, i) => (
-              <li key={s.title}>
+              <li key={s.title} style={{ '--i': i }}>
                 <span className="timeline-num">{i + 1}</span>
                 <h3>{s.title}</h3>
                 <p>{s.body}</p>
@@ -81,12 +85,12 @@ export default function Home() {
 
       <section id="views" className="section views-section">
         <div className="container">
-          <h2 className="section-title">Two views, no line</h2>
-          <p className="lede narrow">
+          <h2 className="section-title" data-reveal>Two views, no line</h2>
+          <p className="lede narrow" data-reveal>
             That’s where the name comes from. Each chain only ever sees its own half of the trip.
           </p>
 
-          <div className="views">
+          <div className="views" data-reveal>
             <figure className="view view-from">
               <figcaption>What Solana sees</figcaption>
               <dl>
@@ -112,7 +116,7 @@ export default function Home() {
             </figure>
           </div>
 
-          <p className="fine">
+          <p className="fine" data-reveal>
             Private, not invisible: both halves are public on their own chains. Round amounts, waiting a bit between crossings,
             and never sending directly between your two wallets keep them hard to match.
           </p>
@@ -121,19 +125,19 @@ export default function Home() {
 
       <section className="section">
         <div className="container">
-          <ul className="facts-row" aria-label="At a glance">
-            <li><strong>1</strong><span>signature to send</span></li>
-            <li><strong>0</strong><span>funds ever held by Parallax</span></li>
-            <li><strong>0%</strong><span>app fee</span></li>
-            <li><strong>6</strong><span>chains: Solana, Ethereum, Base, Arbitrum, BNB Chain, Bitcoin</span></li>
+          <ul className="facts-row" aria-label="At a glance" data-reveal>
+            <li style={{ '--i': 0 }}><strong>1</strong><span>signature to send</span></li>
+            <li style={{ '--i': 1 }}><strong>0</strong><span>funds ever held by Parallax</span></li>
+            <li style={{ '--i': 2 }}><strong>0%</strong><span>app fee</span></li>
+            <li style={{ '--i': 3 }}><strong>6</strong><span>chains: Solana, Ethereum, Base, Arbitrum, BNB Chain, Bitcoin</span></li>
           </ul>
         </div>
       </section>
 
       <section id="faq" className="section">
         <div className="container faq-grid">
-          <h2 className="section-title">Questions</h2>
-          <div className="faq">
+          <h2 className="section-title" data-reveal>Questions</h2>
+          <div className="faq" data-reveal>
             {FAQ.map((item) => (
               <details key={item.q}>
                 <summary>{item.q}</summary>
@@ -145,7 +149,7 @@ export default function Home() {
       </section>
 
       <section id="token" className="section">
-        <div className="container token-grid">
+        <div className="container token-grid" data-reveal>
           <div>
             <h2 className="section-title">$PARALLAX</h2>
             <p className="lede narrow">
@@ -193,7 +197,7 @@ export default function Home() {
       </section>
 
       <section className="section closing">
-        <div className="container closing-inner">
+        <div className="container closing-inner" data-reveal>
           <h2>Ready to cross?</h2>
           <Link href="/tunnel" className="btn">Make a crossing</Link>
         </div>

@@ -2,9 +2,10 @@ import { Bricolage_Grotesque, JetBrains_Mono } from 'next/font/google';
 import './globals.css';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import MotionObserver from '@/components/MotionObserver';
 
-const display = Bricolage_Grotesque({ subsets: ['latin'], axes: ['opsz', 'wdth'], variable: '--font-sans', display: 'swap' });
-const mono = JetBrains_Mono({ subsets: ['latin'], weight: ['400', '500'], variable: '--font-mono' });
+const display = Bricolage_Grotesque({ subsets: ['latin'], axes: ['opsz', 'wdth'], variable: '--font-display', display: 'swap' });
+const mono = JetBrains_Mono({ subsets: ['latin'], weight: ['400', '500'], variable: '--font-code', display: 'swap' });
 
 export const metadata = {
   title: 'Parallax — private cross-chain swaps',
@@ -22,11 +23,21 @@ export const viewport = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className={`${display.variable} ${mono.variable}`}>
+    <html lang="en" className={`${display.variable} ${mono.variable}`} suppressHydrationWarning>
+      <head>
+        {/* Set before first paint so scroll-reveal content never flashes in and out. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              "try{if(!matchMedia('(prefers-reduced-motion: reduce)').matches&&'IntersectionObserver' in window)document.documentElement.classList.add('motion')}catch(e){}",
+          }}
+        />
+      </head>
       <body>
         <Header />
         <main>{children}</main>
         <Footer />
+        <MotionObserver />
       </body>
     </html>
   );

@@ -146,7 +146,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .swap-mole.is-ducking .mole-eye { animation: mole-squint 1.7s ease both; }
 @keyframes mole-squint { 0%, 55% { transform: scaleY(1); } 62%, 90% { transform: scaleY(0.28); } 100% { transform: scaleY(1); } }
 /* one-time hint bubble */
-.mole-hint { position: absolute; top: -34px; right: 196px; z-index: 2; padding: 7px 12px; border-radius: 14px 14px 4px 14px; background: var(--surface-2); border: 1px solid var(--line); color: var(--lilac); font-size: 0.82rem; font-weight: 600; white-space: nowrap; pointer-events: none; opacity: 0; translate: 0 6px; transition: opacity 0.35s ease, translate 0.35s ease; }
+.mole-hint { position: absolute; top: -12px; right: 176px; z-index: 2; padding: 7px 12px; border-radius: 14px 14px 4px 14px; background: var(--surface-2); border: 1px solid var(--line); color: var(--lilac); font-size: 0.82rem; font-weight: 600; white-space: nowrap; pointer-events: none; opacity: 0; translate: 0 6px; transition: opacity 0.35s ease, translate 0.35s ease; }
 .mole-hint.is-on { opacity: 1; translate: 0 0; }
 .swap-mole:hover ~ .mole-hint { opacity: 1; translate: 0 0; }
 @keyframes duck { 0% { transform: translateY(0); } 30% { transform: translateY(170px); } 62% { transform: translateY(170px); } 82% { transform: translateY(-14px); } 100% { transform: translateY(0); } }

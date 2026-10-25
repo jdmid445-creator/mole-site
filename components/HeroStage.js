@@ -14,6 +14,7 @@ export default function HeroStage() {
   const [ducking, setDucking] = useState(false);
   const [idle, setIdle] = useState(true);
   const [hint, setHint] = useState(false);
+  const [booped, setBooped] = useState(false);
   const btn = useRef(null);
 
   useEffect(() => {
@@ -45,6 +46,7 @@ export default function HeroStage() {
 
   function boop() {
     setHint(false);
+    setBooped(true);
     try { localStorage.setItem(HINT_KEY, '1'); } catch {}
     if (ducking) return;
     setDucking(true);
@@ -62,7 +64,7 @@ export default function HeroStage() {
       >
         <Mole size={170} id="mole-stage" title="Parallax creature" />
       </button>
-      <span className={`mole-hint${hint ? ' is-on' : ''}`} aria-hidden="true">psst… boop me</span>
+      {booped ? null : <span className={`mole-hint${hint ? ' is-on' : ''}`} aria-hidden="true">psst… boop me</span>}
 
       <div className="swap-card">
         <div className="swap-head">

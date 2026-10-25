@@ -3,7 +3,17 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { CHAINS, getChain, isValidAddress, addressHint } from '@/lib/chains';
 import { toUnits, fromUnits, looksRound, displayAmount } from '@/lib/units';
-import { connectSolana, connectEvm, sendSol, sendEvmNative, sendEvmToken } from '@/lib/wallets';
+import {
+  connectSolana,
+  connectEvm,
+  sendSolMany,
+  sendEvmNative,
+  sendEvmToken,
+  hasSolanaWallet,
+  hasEvmWallet,
+  isMobile,
+  walletAppLinks,
+} from '@/lib/wallets';
 import CopyButton from './CopyButton';
 import ChainIcon from './ChainIcon';
 import GhostWallet from './GhostWallet';
@@ -11,6 +21,8 @@ import { ghostKindFor } from '@/lib/ghost';
 
 const STORAGE_KEY = 'mole-tunnel-pair-v1';
 const TERMINAL = new Set(['SUCCESS', 'REFUNDED', 'FAILED']);
+const MAX_SPLIT = 5;
+const MIN_PCT = 5;
 const STATUS_TEXT = {
   PENDING_DEPOSIT: 'Waiting for your deposit',
   KNOWN_DEPOSIT_TX: 'Deposit seen, confirming',
@@ -52,6 +64,32 @@ function writeSaved(value) {
   }
 }
 
+const short = (a) => (a && a.length > 14 ? `${a.slice(0, 6)}…${a.slice(-4)}` : a);
+
+// Split percentages that add up to 100. Even = equal parts; otherwise random but never below MIN_PCT.
+function makeSplit(n, even) {
+  if (even) {
+    const base = Math.floor(100 / n);
+    return Array.from({ length: n }, (_, i) => (i === n - 1 ? 100 - base * (n - 1) : base));
+  }
+  const weights = Array.from({ length: n }, () => 0.5 + Math.random());
+  const total = weights.reduce((a, b) => a + b, 0);
+  const free = 100 - MIN_PCT * n;
+  const pcts = weights.map((w) => MIN_PCT + Math.floor((w / total) * free));
+  pcts[n - 1] += 100 - pcts.reduce((a, b) => a + b, 0);
+  return pcts;
+}
+
+// The overall state of a crossing made of one or more parts.
+function overallStatus(parts) {
+  const s = parts.map((p) => p.status);
+  if (s.every((x) => x === s[0])) return s[0];
+  if (s.some((x) => x === 'FAILED')) return 'FAILED';
+  if (s.some((x) => ['KNOWN_DEPOSIT_TX', 'PROCESSING'].includes(x))) return 'PROCESSING';
+  if (s.every((x) => TERMINAL.has(x))) return s.includes('SUCCESS') ? 'SUCCESS' : 'REFUNDED';
+  return 'PENDING_DEPOSIT';
+}
+
 export default function TunnelApp() {
   const [tokens, setTokens] = useState([]);
   const [networkChains, setNetworkChains] = useState([]);
@@ -67,13 +105,20 @@ export default function TunnelApp() {
   const [manualRefund, setManualRefund] = useState('');
   const [wallet, setWallet] = useState({ type: '', address: '' });
   const [ack, setAck] = useState(false);
-  const [ghostOpen, setGhostOpen] = useState(false);
+  const [ghostFor, setGhostFor] = useState(null); // 'single' | row index | null
 
+  const [splitOn, setSplitOn] = useState(false);
+  const [parts, setParts] = useState([
+    { address: '', pct: 50 },
+    { address: '', pct: 50 },
+  ]);
+
+  const [env, setEnv] = useState({ mobile: false, sol: true, evm: true });
   const [preview, setPreview] = useState(null);
   const [swap, setSwap] = useState(null);
   const [busy, setBusy] = useState('');
   const [error, setError] = useState('');
-  const pollRef = useRef(null);
+  const swapRef = useRef(null);
 
   const fromChain = getChain(fromChainKey);
   const toChain = getChain(toChainKey);
@@ -95,6 +140,16 @@ export default function TunnelApp() {
     walletMatches &&
     fromToken &&
     (isNative(fromToken, fromChain) || (fromChain.wallet === 'evm' && Boolean(fromToken.contractAddress)));
+  const pctTotal = parts.reduce((a, p) => a + (Number(p.pct) || 0), 0);
+
+  useEffect(() => {
+    swapRef.current = swap;
+  }, [swap]);
+
+  // Which wallets this browser has (phones only get them inside the wallet's own app).
+  useEffect(() => {
+    setEnv({ mobile: isMobile(), sol: hasSolanaWallet(), evm: hasEvmWallet() });
+  }, []);
 
   // Load supported assets once.
   useEffect(() => {
@@ -131,32 +186,85 @@ export default function TunnelApp() {
   useEffect(() => {
     setToAssetId('');
     setPreview(null);
+    setGhostFor(null);
   }, [toChainKey]);
 
-  // Poll status while a swap is in flight.
+  // Poll every part's status while any is still in flight.
+  const active = Boolean(swap && swap.parts.some((p) => !TERMINAL.has(p.status)));
   useEffect(() => {
-    if (!swap?.depositAddress || TERMINAL.has(swap.status)) return undefined;
+    if (!active) return undefined;
+    const id = swapRef.current?.id;
     const tick = async () => {
-      try {
-        const res = await fetch(`/api/status?depositAddress=${encodeURIComponent(swap.depositAddress)}`);
-        const data = await res.json();
-        if (data && !data.error) {
-          setSwap((s) => (s && s.depositAddress === swap.depositAddress ? { ...s, ...data } : s));
-        }
-      } catch {
-        // Keep polling; network blips are normal.
-      }
+      const cur = swapRef.current;
+      if (!cur || cur.id !== id) return;
+      await Promise.all(
+        cur.parts.map(async (p, i) => {
+          if (TERMINAL.has(p.status)) return;
+          try {
+            const res = await fetch(`/api/status?depositAddress=${encodeURIComponent(p.depositAddress)}`);
+            const data = await res.json();
+            if (!data || data.error) return;
+            const update = Object.fromEntries(Object.entries(data).filter(([, v]) => v !== null && v !== undefined));
+            setSwap((s) =>
+              s && s.id === id ? { ...s, parts: s.parts.map((q, j) => (j === i ? { ...q, ...update } : q)) } : s
+            );
+          } catch {
+            // Keep polling; network blips are normal.
+          }
+        })
+      );
     };
     tick();
-    pollRef.current = setInterval(tick, 6000);
-    return () => clearInterval(pollRef.current);
-  }, [swap?.depositAddress, swap?.status]);
+    const t = setInterval(tick, 6000);
+    return () => clearInterval(t);
+  }, [active, swap?.id]);
+
+  function updatePart(i, patch) {
+    setParts((list) => list.map((p, j) => (j === i ? { ...p, ...patch } : p)));
+    setPreview(null);
+  }
+
+  function setPartCount(n) {
+    setParts((list) => {
+      const pcts = makeSplit(n, true);
+      return Array.from({ length: n }, (_, i) => ({ address: list[i]?.address || '', pct: pcts[i] }));
+    });
+    setGhostFor(null);
+    setPreview(null);
+  }
+
+  function removePart(i) {
+    setParts((list) => {
+      const kept = list.filter((_, j) => j !== i);
+      const pcts = makeSplit(kept.length, true);
+      return kept.map((p, j) => ({ ...p, pct: pcts[j] }));
+    });
+    setGhostFor(null);
+    setPreview(null);
+  }
+
+  function rebalance(even) {
+    const pcts = makeSplit(parts.length, even);
+    setParts((list) => list.map((p, i) => ({ ...p, pct: pcts[i] })));
+    setPreview(null);
+  }
+
+  // Where the funds go: one wallet, or several with their share of the amount.
+  function destinations(units) {
+    const total = BigInt(units);
+    if (!splitOn) return [{ address: recipient.trim(), units: total.toString() }];
+    let given = 0n;
+    return parts.map((p, i) => {
+      const u = i === parts.length - 1 ? total - given : (total * BigInt(Math.round(Number(p.pct)))) / 100n;
+      given += u;
+      return { address: p.address.trim(), units: u.toString() };
+    });
+  }
 
   function validate() {
     if (!fromToken || !toToken) throw new Error('Pick what you send and what you receive.');
     if (fromToken.assetId === toToken.assetId) throw new Error('Pick a different asset or chain for the other side.');
     const units = toUnits(amount, fromToken.decimals);
-    if (!isValidAddress(toChainKey, recipient)) throw new Error(`Destination: enter ${addressHint(toChainKey).toLowerCase()}.`);
     if (!isValidAddress(fromChainKey, refundTo)) {
       throw new Error(
         fromChain.wallet === 'deposit'
@@ -164,14 +272,27 @@ export default function TunnelApp() {
           : 'Connect your wallet, or enter a refund address you control.'
       );
     }
-    if (recipient.trim().toLowerCase() === refundTo.toLowerCase()) {
-      throw new Error('Send to a different wallet than the one you send from. That is the whole point of Parallax.');
+    if (splitOn) {
+      if (pctTotal !== 100) throw new Error(`The split adds up to ${pctTotal}%. It needs to be exactly 100%.`);
+      if (parts.some((p) => Number(p.pct) < MIN_PCT)) throw new Error(`Each wallet needs at least ${MIN_PCT}% of the amount.`);
     }
-    return units;
+    const dests = destinations(units);
+    const seen = new Set();
+    dests.forEach((d, i) => {
+      const label = splitOn ? `Wallet ${i + 1}` : 'Destination';
+      if (!isValidAddress(toChainKey, d.address)) throw new Error(`${label}: enter ${addressHint(toChainKey).toLowerCase()}.`);
+      const key = d.address.toLowerCase();
+      if (seen.has(key)) throw new Error(`${label} is used twice. Each part should land in a different wallet.`);
+      seen.add(key);
+      if (key === refundTo.toLowerCase()) {
+        throw new Error(`${label}: send to a different wallet than the one you send from. That is the whole point of Parallax.`);
+      }
+      if (BigInt(d.units) <= 0n) throw new Error(`${label}: the amount is too small to split this way.`);
+    });
+    return { units, dests };
   }
 
-  async function requestQuote(dry) {
-    const units = validate();
+  async function quoteOne(dry, dest) {
     const res = await fetch('/api/quote', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -179,14 +300,25 @@ export default function TunnelApp() {
         dry,
         originAsset: fromToken.assetId,
         destinationAsset: toToken.assetId,
-        amount: units,
-        recipient: recipient.trim(),
+        amount: dest.units,
+        recipient: dest.address,
         refundTo,
       }),
     });
     const data = await res.json();
     if (!res.ok || data.error) throw new Error(data.error || 'Could not get a quote.');
-    return { ...data, units };
+    return { ...data, units: dest.units, recipient: dest.address };
+  }
+
+  async function requestQuotes(dry) {
+    const { units, dests } = validate();
+    const results = await Promise.allSettled(dests.map((d) => quoteOne(dry, d)));
+    const failed = results.findIndex((r) => r.status === 'rejected');
+    if (failed !== -1) {
+      const msg = results[failed].reason?.message || 'Could not get a quote.';
+      throw new Error(dests.length > 1 ? `Wallet ${failed + 1}: ${msg}` : msg);
+    }
+    return { units, quotes: results.map((r) => r.value) };
   }
 
   async function onConnect() {
@@ -203,13 +335,24 @@ export default function TunnelApp() {
     setError('');
     setBusy('preview');
     try {
-      setPreview(await requestQuote(true));
+      const { units, quotes } = await requestQuotes(true);
+      const out = quotes.reduce((a, q) => a + (Number(q.amountOutFormatted) || 0), 0);
+      const time = Math.max(...quotes.map((q) => Number(q.timeEstimate) || 0));
+      setPreview({ units, quotes, out, time, confidentiality: quotes[0]?.confidentiality });
     } catch (e) {
       setPreview(null);
       setError(e?.message || 'Could not get a quote.');
     } finally {
       setBusy('');
     }
+  }
+
+  function submitTx(txHash, depositAddress) {
+    fetch('/api/submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ txHash, depositAddress }),
+    }).catch(() => {});
   }
 
   async function onOpen() {
@@ -220,52 +363,67 @@ export default function TunnelApp() {
     }
     setBusy('open');
     try {
-      const quote = await requestQuote(false);
-      if (!quote.depositAddress) throw new Error('The network did not return a deposit address. Try again.');
-      writeSaved({ fromChainKey, toChainKey, recipient: recipient.trim() });
+      const { units, quotes } = await requestQuotes(false);
+      if (quotes.some((q) => !q.depositAddress)) throw new Error('The network did not return a deposit address. Try again.');
+      writeSaved({ fromChainKey, toChainKey, recipient: splitOn ? recipient : recipient.trim() });
 
-      const next = {
-        depositAddress: quote.depositAddress,
-        depositMemo: quote.depositMemo,
-        amountUnits: quote.units,
-        amountIn: fromUnits(quote.units, fromToken.decimals),
+      const id = `${Date.now()}`;
+      const mode = canOneClick ? 'wallet' : 'deposit';
+      setSwap({
+        id,
+        split: quotes.length > 1,
+        amountIn: fromUnits(units, fromToken.decimals),
         symbolIn: fromToken.symbol,
         symbolOut: toToken.symbol,
-        amountOutFormatted: quote.amountOutFormatted,
-        confidentiality: quote.confidentiality,
-        mode: canOneClick ? 'wallet' : 'deposit',
-        status: 'PENDING_DEPOSIT',
-        txHash: '',
-      };
-      setSwap(next);
+        confidentiality: quotes[0]?.confidentiality,
+        parts: quotes.map((q) => ({
+          depositAddress: q.depositAddress,
+          depositMemo: q.depositMemo,
+          recipient: q.recipient,
+          amountIn: fromUnits(q.units, fromToken.decimals),
+          amountOutFormatted: q.amountOutFormatted,
+          status: 'PENDING_DEPOSIT',
+          txHash: '',
+          mode,
+        })),
+      });
 
-      if (canOneClick) {
-        let txHash;
-        if (fromChain.wallet === 'solana') {
-          txHash = await sendSol({ from: wallet.address, to: quote.depositAddress, lamports: quote.units });
-        } else if (isNative(fromToken, fromChain)) {
-          txHash = await sendEvmNative({ from: wallet.address, to: quote.depositAddress, wei: quote.units, chainId: fromChain.chainId });
-        } else {
-          txHash = await sendEvmToken({
-            from: wallet.address,
-            to: quote.depositAddress,
-            token: fromToken.contractAddress,
-            amount: quote.units,
-            chainId: fromChain.chainId,
-          });
-        }
-        setSwap((s) => (s ? { ...s, txHash } : s));
-        if (txHash) {
-          fetch('/api/submit', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ txHash, depositAddress: quote.depositAddress }),
-          }).catch(() => {});
+      if (!canOneClick) return;
+
+      const setPartTx = (i, txHash) =>
+        setSwap((s) => (s && s.id === id ? { ...s, parts: s.parts.map((p, j) => (j === i ? { ...p, txHash } : p)) } : s));
+
+      if (fromChain.wallet === 'solana') {
+        // One transaction, one signature, every deposit address paid at once.
+        const txHash = await sendSolMany({
+          from: wallet.address,
+          payments: quotes.map((q) => ({ to: q.depositAddress, lamports: q.units })),
+        });
+        quotes.forEach((q, i) => {
+          setPartTx(i, txHash);
+          if (txHash) submitTx(txHash, q.depositAddress);
+        });
+      } else {
+        // EVM wallets approve one transfer at a time.
+        for (let i = 0; i < quotes.length; i += 1) {
+          const q = quotes[i];
+          const txHash = isNative(fromToken, fromChain)
+            ? await sendEvmNative({ from: wallet.address, to: q.depositAddress, wei: q.units, chainId: fromChain.chainId })
+            : await sendEvmToken({
+                from: wallet.address,
+                to: q.depositAddress,
+                token: fromToken.contractAddress,
+                amount: q.units,
+                chainId: fromChain.chainId,
+              });
+          setPartTx(i, txHash);
+          if (txHash) submitTx(txHash, q.depositAddress);
         }
       }
     } catch (e) {
       setError(e?.message || 'Something went wrong.');
-      setSwap((s) => (s && !s.txHash ? { ...s, mode: 'deposit' } : s));
+      // Anything not yet sent can still be paid by hand.
+      setSwap((s) => (s ? { ...s, parts: s.parts.map((p) => (p.txHash ? p : { ...p, mode: 'deposit' })) } : s));
     } finally {
       setBusy('');
     }
@@ -279,8 +437,18 @@ export default function TunnelApp() {
     setError('');
   }
 
-  const moving = swap && ['KNOWN_DEPOSIT_TX', 'PROCESSING'].includes(swap.status);
-  const done = swap && swap.status === 'SUCCESS';
+  function rememberBeforeLeaving() {
+    writeSaved({ fromChainKey, toChainKey, recipient: recipient.trim() });
+  }
+
+  const status = swap ? overallStatus(swap.parts) : '';
+  const moving = swap && ['KNOWN_DEPOSIT_TX', 'PROCESSING'].includes(status);
+  const done = swap && status === 'SUCCESS';
+  const ghostKind = ghostKindFor(toChainKey);
+  const walletKind = fromChain?.wallet;
+  const noInjected = (walletKind === 'solana' && !env.sol) || (walletKind === 'evm' && !env.evm);
+  const appLinks = env.mobile && noInjected ? walletAppLinks(walletKind) : [];
+  const pendingDeposits = swap ? swap.parts.filter((p) => p.mode === 'deposit' && !p.txHash && p.status === 'PENDING_DEPOSIT') : [];
 
   return (
     <div className="tunnel-app">
@@ -296,7 +464,10 @@ export default function TunnelApp() {
         <div className="portal portal-private">
           <ChainIcon chain={toChain?.key} size={34} className="portal-icon" />
           <span className="portal-chain">{toChain?.label}</span>
-          <span className="portal-asset">{toToken?.symbol || '—'}</span>
+          <span className="portal-asset">
+            {toToken?.symbol || '—'}
+            {splitOn && !swap ? ` × ${parts.length}` : swap?.split ? ` × ${swap.parts.length}` : ''}
+          </span>
         </div>
       </div>
 
@@ -340,25 +511,41 @@ export default function TunnelApp() {
               </label>
             </div>
 
-            {fromChain.wallet === 'deposit' ? (
+            {walletKind === 'deposit' ? (
               <label className="field">
                 <span>Refund address (if the swap fails, funds return here)</span>
                 <input placeholder={addressHint(fromChainKey)} value={manualRefund} onChange={(e) => setManualRefund(e.target.value)} />
               </label>
             ) : walletMatches ? (
               <p className="wallet-line">
-                Connected: <code className="mono">{wallet.address.slice(0, 6)}…{wallet.address.slice(-4)}</code>
+                Connected: <code className="mono">{short(wallet.address)}</code>
               </p>
             ) : (
-              <div className="wallet-actions">
-                <button type="button" className="btn" onClick={onConnect}>
-                  Connect {fromChain.wallet === 'solana' ? 'Solana wallet' : 'browser wallet'}
-                </button>
-                <label className="field field-inline">
-                  <span>or send manually; refund address:</span>
-                  <input placeholder={addressHint(fromChainKey)} value={manualRefund} onChange={(e) => setManualRefund(e.target.value)} />
-                </label>
-              </div>
+              <>
+                {appLinks.length ? (
+                  <div className="open-in">
+                    <p className="open-in-title">On your phone? Open Parallax in your wallet app to connect:</p>
+                    <div className="open-in-row">
+                      {appLinks.map((l) => (
+                        <a key={l.name} className="btn" href={l.href} onClick={rememberBeforeLeaving}>
+                          Open in {l.name}
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+                ) : null}
+                <div className="wallet-actions">
+                  {!appLinks.length ? (
+                    <button type="button" className="btn" onClick={onConnect}>
+                      Connect {walletKind === 'solana' ? 'Solana wallet' : 'browser wallet'}
+                    </button>
+                  ) : null}
+                  <label className="field field-inline">
+                    <span>or send manually; refund address:</span>
+                    <input placeholder={addressHint(fromChainKey)} value={manualRefund} onChange={(e) => setManualRefund(e.target.value)} />
+                  </label>
+                </div>
+              </>
             )}
             {amount && !looksRound(amount) ? (
               <p className="hint">Round amounts blend in better. Something like {Number(amount).toFixed(1)} is harder to match.</p>
@@ -387,45 +574,144 @@ export default function TunnelApp() {
                 </select>
               </label>
             </div>
-            <label className="field">
-              <span>Destination wallet (a fresh one is best)</span>
-              <input placeholder={addressHint(toChainKey)} value={recipient} onChange={(e) => { setRecipient(e.target.value); setPreview(null); }} />
-            </label>
-            {ghostKindFor(toChainKey) ? (
-              ghostOpen ? (
-                <GhostWallet
-                  key={ghostKindFor(toChainKey)}
-                  initialKind={ghostKindFor(toChainKey)}
-                  lockKind
-                  compact
-                  onUse={(addr) => { setRecipient(addr); setPreview(null); setGhostOpen(false); }}
-                />
-              ) : (
-                <button type="button" className="ghost-link" onClick={() => setGhostOpen(true)}>
-                  No fresh wallet? Create a ghost wallet here
-                </button>
-              )
-            ) : null}
+
+            <div className="split-toggle" role="group" aria-label="Destination">
+              <button type="button" className={!splitOn ? 'is-active' : ''} aria-pressed={!splitOn} onClick={() => { setSplitOn(false); setGhostFor(null); setPreview(null); }}>
+                One wallet
+              </button>
+              <button type="button" className={splitOn ? 'is-active' : ''} aria-pressed={splitOn} onClick={() => { setSplitOn(true); setGhostFor(null); setPreview(null); }}>
+                Split across wallets
+              </button>
+            </div>
+
+            {!splitOn ? (
+              <>
+                <label className="field">
+                  <span>Destination wallet (a fresh one is best)</span>
+                  <input placeholder={addressHint(toChainKey)} value={recipient} onChange={(e) => { setRecipient(e.target.value); setPreview(null); }} />
+                </label>
+                {ghostKind ? (
+                  ghostFor === 'single' ? (
+                    <GhostWallet
+                      key={`single-${ghostKind}`}
+                      initialKind={ghostKind}
+                      lockKind
+                      compact
+                      onUse={(addr) => { setRecipient(addr); setPreview(null); setGhostFor(null); }}
+                    />
+                  ) : (
+                    <button type="button" className="ghost-link" onClick={() => setGhostFor('single')}>
+                      No fresh wallet? Create a ghost wallet here
+                    </button>
+                  )
+                ) : null}
+              </>
+            ) : (
+              <div className="split">
+                <p className="split-intro">
+                  Each wallet gets its own private crossing. They arrive separately, from different network addresses.
+                  {fromChain.wallet === 'solana' ? ' Still one signature from your Solana wallet.' : fromChain.wallet === 'evm' ? ' Your wallet will ask you to approve each part.' : ''}
+                </p>
+                <ol className="split-rows">
+                  {parts.map((p, i) => (
+                    <li key={i} className="split-row">
+                      <span className="split-num">{i + 1}</span>
+                      <input
+                        className="split-addr"
+                        aria-label={`Wallet ${i + 1} address`}
+                        placeholder={addressHint(toChainKey)}
+                        value={p.address}
+                        onChange={(e) => updatePart(i, { address: e.target.value })}
+                      />
+                      <label className="split-pct">
+                        <input
+                          inputMode="numeric"
+                          aria-label={`Wallet ${i + 1} share in percent`}
+                          value={p.pct}
+                          onChange={(e) => updatePart(i, { pct: e.target.value.replace(/[^0-9]/g, '').slice(0, 3) })}
+                        />
+                        <span>%</span>
+                      </label>
+                      {ghostKind ? (
+                        <button type="button" className="split-ghost" onClick={() => setGhostFor(ghostFor === i ? null : i)} aria-label={`Create a ghost wallet for wallet ${i + 1}`}>
+                          Ghost
+                        </button>
+                      ) : null}
+                      {parts.length > 2 ? (
+                        <button type="button" className="split-remove" onClick={() => removePart(i)} aria-label={`Remove wallet ${i + 1}`}>
+                          ×
+                        </button>
+                      ) : null}
+                      {amount && fromToken ? (
+                        <span className="split-amt">
+                          {(() => {
+                            try {
+                              const d = destinations(toUnits(amount, fromToken.decimals))[i];
+                              return `${fromUnits(d.units, fromToken.decimals)} ${fromToken.symbol}`;
+                            } catch {
+                              return '';
+                            }
+                          })()}
+                        </span>
+                      ) : null}
+                    </li>
+                  ))}
+                </ol>
+                {typeof ghostFor === 'number' && ghostKind ? (
+                  <GhostWallet
+                    key={`row-${ghostFor}-${ghostKind}`}
+                    initialKind={ghostKind}
+                    lockKind
+                    compact
+                    onUse={(addr) => { updatePart(ghostFor, { address: addr }); setGhostFor(null); }}
+                  />
+                ) : null}
+                <div className="split-tools">
+                  {parts.length < MAX_SPLIT ? (
+                    <button type="button" className="btn btn-ghost btn-small" onClick={() => setPartCount(parts.length + 1)}>+ Add wallet</button>
+                  ) : null}
+                  <button type="button" className="btn btn-ghost btn-small" onClick={() => rebalance(true)}>Even split</button>
+                  <button type="button" className="btn btn-ghost btn-small" onClick={() => rebalance(false)}>Shuffle amounts</button>
+                  <span className={`split-total${pctTotal === 100 ? '' : ' is-off'}`}>Total {pctTotal}%</span>
+                </div>
+                <p className="hint">Uneven amounts are harder to match than equal ones. Shuffle mixes them up for you.</p>
+              </div>
+            )}
           </fieldset>
 
           {preview ? (
-            <div className="quote" aria-live="polite">
-              <div>
-                <span className="muted small">You send</span>
-                <strong>{fromUnits(preview.units, fromToken.decimals)} {fromToken.symbol}</strong>
+            <div className="quote-wrap" aria-live="polite">
+              <div className="quote">
+                <div>
+                  <span className="muted small">You send</span>
+                  <strong>{fromUnits(preview.units, fromToken.decimals)} {fromToken.symbol}</strong>
+                </div>
+                <div>
+                  <span className="muted small">{preview.quotes.length > 1 ? 'About, in total' : 'About'}</span>
+                  <strong>{displayAmount(String(preview.out))} {toToken.symbol}</strong>
+                </div>
+                <div>
+                  <span className="muted small">Time</span>
+                  <strong>{preview.time ? `~${preview.time}s` : '—'}</strong>
+                </div>
+                <div>
+                  <span className="muted small">Mode</span>
+                  <strong>{preview.confidentiality === 'public' ? 'Public' : 'Confidential'}</strong>
+                </div>
               </div>
-              <div>
-                <span className="muted small">About</span>
-                <strong>{displayAmount(preview.amountOutFormatted)} {toToken.symbol}</strong>
-              </div>
-              <div>
-                <span className="muted small">Time</span>
-                <strong>{preview.timeEstimate ? `~${preview.timeEstimate}s` : '—'}</strong>
-              </div>
-              <div>
-                <span className="muted small">Mode</span>
-                <strong>{preview.confidentiality === 'public' ? 'Public' : 'Confidential'}</strong>
-              </div>
+              {preview.quotes.length > 1 ? (
+                <ul className="quote-parts">
+                  {preview.quotes.map((q, i) => (
+                    <li key={i}>
+                      <span className="split-num">{i + 1}</span>
+                      <code className="mono">{short(q.recipient)}</code>
+                      <span>{fromUnits(q.units, fromToken.decimals)} {fromToken.symbol}</span>
+                      <span className="muted">→</span>
+                      <strong>~{displayAmount(q.amountOutFormatted)} {toToken.symbol}</strong>
+                    </li>
+                  ))}
+                </ul>
+              ) : null}
             </div>
           ) : null}
 
@@ -444,33 +730,53 @@ export default function TunnelApp() {
               {busy === 'preview' ? 'Getting quote…' : 'Preview quote'}
             </button>
             <button type="button" className="btn" onClick={onOpen} disabled={Boolean(busy)}>
-              {busy === 'open' ? 'Opening…' : canOneClick ? 'Send privately' : 'Get deposit address'}
+              {busy === 'open'
+                ? 'Opening…'
+                : canOneClick
+                  ? splitOn ? `Send privately to ${parts.length} wallets` : 'Send privately'
+                  : splitOn ? 'Get deposit addresses' : 'Get deposit address'}
             </button>
           </div>
         </form>
       ) : (
         <div className="swap-panel" aria-live="polite">
           <p className="status-line">
-            <span className={`status-pill status-${String(swap.status).toLowerCase()}`}>{STATUS_TEXT[swap.status] || swap.status}</span>
-            <span className="muted small">{swap.confidentiality === 'public' ? 'Public mode' : 'Confidential mode'}</span>
+            <span className={`status-pill status-${String(status).toLowerCase()}`}>{STATUS_TEXT[status] || status}</span>
+            <span className="muted small">
+              {swap.confidentiality === 'public' ? 'Public mode' : 'Confidential mode'}
+              {swap.split ? ` · split across ${swap.parts.length} wallets` : ''}
+            </span>
           </p>
 
-          {swap.mode === 'deposit' && !swap.txHash && swap.status === 'PENDING_DEPOSIT' ? (
+          {pendingDeposits.length ? (
             <div className="deposit-box">
-              <p>
-                Send exactly <strong>{swap.amountIn} {swap.symbolIn}</strong> on {fromChain.label} to this deposit address:
-              </p>
-              <p className="mono-row">
-                <code className="mono">{swap.depositAddress}</code>
-                <CopyButton value={swap.depositAddress} />
-              </p>
-              {swap.depositMemo ? (
-                <p className="mono-row">
-                  Memo/tag: <code className="mono">{swap.depositMemo}</code>
-                  <CopyButton value={swap.depositMemo} />
+              {pendingDeposits.length === 1 && !swap.split ? (
+                <p>
+                  Send exactly <strong>{pendingDeposits[0].amountIn} {swap.symbolIn}</strong> on {fromChain.label} to this deposit address:
                 </p>
-              ) : null}
-              <p className="muted small">This address is for this swap only. The page updates on its own once the deposit lands.</p>
+              ) : (
+                <p>
+                  Send each amount on {fromChain.label} to its own deposit address. Exact amounts matter: each address is for one part only.
+                </p>
+              )}
+              {pendingDeposits.map((p) => (
+                <div key={p.depositAddress} className="deposit-item">
+                  {pendingDeposits.length > 1 || swap.split ? (
+                    <p className="deposit-amt"><strong>{p.amountIn} {swap.symbolIn}</strong> to:</p>
+                  ) : null}
+                  <p className="mono-row">
+                    <code className="mono">{p.depositAddress}</code>
+                    <CopyButton value={p.depositAddress} />
+                  </p>
+                  {p.depositMemo ? (
+                    <p className="mono-row">
+                      Memo/tag: <code className="mono">{p.depositMemo}</code>
+                      <CopyButton value={p.depositMemo} />
+                    </p>
+                  ) : null}
+                </div>
+              ))}
+              <p className="muted small">These addresses are for this crossing only. The page updates on its own once deposits land.</p>
             </div>
           ) : null}
 
@@ -479,44 +785,78 @@ export default function TunnelApp() {
               <dt>Sending</dt>
               <dd>{swap.amountIn} {swap.symbolIn} on {fromChain.label}</dd>
             </div>
-            <div>
-              <dt>Arriving</dt>
-              <dd>{swap.amountOutFormatted ? `~${displayAmount(swap.amountOutFormatted)}` : '—'} {swap.symbolOut} on {toChain.label}</dd>
-            </div>
-            {swap.txHash ? (
+            {!swap.split ? (
+              <div>
+                <dt>Arriving</dt>
+                <dd>{swap.parts[0].amountOutFormatted ? `~${displayAmount(swap.parts[0].amountOutFormatted)}` : '—'} {swap.symbolOut} on {toChain.label}</dd>
+              </div>
+            ) : null}
+            {swap.parts[0].txHash && (!swap.split || swap.parts.every((p) => p.txHash === swap.parts[0].txHash)) ? (
               <div>
                 <dt>Your deposit</dt>
                 <dd>
-                  <a href={`${fromChain.explorer}${swap.txHash}`} target="_blank" rel="noopener noreferrer">View transaction</a>
+                  <a href={`${fromChain.explorer}${swap.parts[0].txHash}`} target="_blank" rel="noopener noreferrer">View transaction</a>
                 </dd>
               </div>
             ) : null}
-            {swap.destinationTx ? (
+            {!swap.split && swap.parts[0].destinationTx ? (
               <div>
                 <dt>Arrival</dt>
                 <dd>
-                  <a href={`${toChain.explorer}${swap.destinationTx}`} target="_blank" rel="noopener noreferrer">View transaction</a>
+                  <a href={`${toChain.explorer}${swap.parts[0].destinationTx}`} target="_blank" rel="noopener noreferrer">View transaction</a>
                 </dd>
               </div>
             ) : null}
           </dl>
 
+          {swap.split ? (
+            <ol className="split-status">
+              {swap.parts.map((p, i) => (
+                <li key={p.depositAddress}>
+                  <span className="split-num">{i + 1}</span>
+                  <span className="split-status-main">
+                    <code className="mono">{short(p.recipient)}</code>
+                    <span className="muted small">
+                      {p.amountIn} {swap.symbolIn} → ~{displayAmount(p.amountOutFormatted)} {swap.symbolOut}
+                    </span>
+                  </span>
+                  <span className={`status-pill status-${String(p.status).toLowerCase()}`}>{STATUS_TEXT[p.status] || p.status}</span>
+                  <span className="split-links">
+                    {p.txHash && swap.parts.some((q) => q.txHash !== p.txHash) ? (
+                      <a href={`${fromChain.explorer}${p.txHash}`} target="_blank" rel="noopener noreferrer">Deposit</a>
+                    ) : null}
+                    {p.destinationTx ? (
+                      <a href={`${toChain.explorer}${p.destinationTx}`} target="_blank" rel="noopener noreferrer">Arrival</a>
+                    ) : null}
+                    <a href={`/track?d=${encodeURIComponent(p.depositAddress)}`}>Track</a>
+                  </span>
+                </li>
+              ))}
+            </ol>
+          ) : null}
+
           {error ? <p className="notice notice-error" role="alert">{error}</p> : null}
 
-          {swap.status === 'INCOMPLETE_DEPOSIT' ? (
-            <p className="notice">The deposit was smaller than quoted. It will be refunded to your refund address.</p>
+          {swap.parts.some((p) => p.status === 'INCOMPLETE_DEPOSIT') ? (
+            <p className="notice">A deposit was smaller than quoted. That part will be refunded to your refund address.</p>
           ) : null}
-          {swap.status === 'FAILED' ? (
-            <p className="notice notice-error">The swap failed. Funds that reached the network are refunded to your refund address.</p>
+          {swap.parts.some((p) => p.status === 'FAILED') ? (
+            <p className="notice notice-error">A swap failed. Funds that reached the network are refunded to your refund address.</p>
           ) : null}
 
           <p className="muted small">
-            Keep this page open until it says Arrived, or{' '}
-            <a href={`/track?d=${encodeURIComponent(swap.depositAddress)}`}>track it later</a> with the deposit address. Don't send from the destination
-            wallet back to your sending wallet directly; that links them.
+            Keep this page open until it says Arrived
+            {!swap.split ? (
+              <>
+                , or <a href={`/track?d=${encodeURIComponent(swap.parts[0].depositAddress)}`}>track it later</a> with the deposit address
+              </>
+            ) : (
+              ', or track each part later with its link above'
+            )}
+            . Don't send from a destination wallet back to your sending wallet directly; that links them.
           </p>
           <button type="button" className="btn btn-ghost" onClick={reset}>
-            {TERMINAL.has(swap.status) ? 'Start a new swap' : 'Start over'}
+            {TERMINAL.has(status) ? 'Start a new swap' : 'Start over'}
           </button>
         </div>
       )}

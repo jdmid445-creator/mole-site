@@ -67,6 +67,18 @@ References from owner: blackout.exchange, vanish.trade/us, veilit.xyz, web-4.app
 - Copy: hero "Seen from one chain, it left. Seen from the other, it arrived." Primary action everywhere is "Make a crossing".
 - Real numbers only: 1 signature, 0 funds held, 0% app fee, 6 chains, ~24s from our test quote.
 
+## Pages and features (as of 2026-10-24)
+
+- `/` home: parallax hero, live network status, chain band, steps timeline, "Two views, no line", "Keeping it clean" + Built on (NEAR Intents, Helius, Solana, as text, not logos), stats, FAQ, token, closing CTA.
+- `/tunnel` swap app (titled "Make a crossing"), live status, link to track a crossing.
+- `/track` check any crossing by deposit address (`?d=` prefills).
+- `/docs` full explainer. `/terms`. `/unavailable` (geo-block page).
+- Share card: `/opengraph-image` + `/twitter-image` (creature + headline).
+- `/api/network-status`: live from NEAR (2026-10-24: 88 assets on our 6 chains, 37 chains on the network).
+- Geo-blocking middleware on the swap flow: CU, IR, KP, SY + Crimea/Sevastopol/Donetsk/Luhansk. **Not legal advice; list should be reviewed.**
+- Claude can now screenshot the live site itself (owner allowed `mole-site-mu.vercel.app` in network egress). Script: Playwright, desktop 1440 and phone 390.
+- **Rule: never show logos or "backed by" claims for firms that haven't actually backed or partnered with us.**
+
 ## Decisions and why
 
 - **No mixer / no custody.** Holding and forwarding user funds = unlicensed money transmission risk (Tornado Cash, Samourai cases). Use NEAR's network instead.
@@ -127,3 +139,5 @@ References from owner: blackout.exchange, vanish.trade/us, veilit.xyz, web-4.app
 - "okay it works on my phone its all good, im gonna buy the domain after but lets make this tech a little better, im gonna input some websites i like and their designs, make my website similar ideas to theirs" → next: study owner's reference sites closely (fonts, spacing, motion, tone, structure) and redesign to match. Domain purchase comes after.
 - "just change up the website make it super nice and well go from there on things i want to change" → shipped design v2 (see Design section). Vercel build passed. Not yet visually checked by Claude (no browser available in session); asked owner for phone screenshots.
 - "okay first off this looks like shit make the fonts way better and there should be no silver on the boxes. also make some animations…" (screenshot of /tunnel) → fixed font bug, custom selects/checkbox, legend wrapping, gradient card, full animation pass. Vercel build passed. Still not visually checked by Claude (no browser connected).
+- "what can we add that will make it look more legitimate? more professional like maybe how vanish has this?" (Vanish backers + integrity framework screenshots) → explained we can't show backers we don't have; built honest equivalents.
+- "add some stuff you think will look good. ill give you the x and shit later" → shipped share card, live status, chain band, Keeping it clean, geo-blocking, Track, Docs. Verified with screenshots on desktop + phone. Pending from owner: X/Telegram links, domain, decision on open-sourcing repo.

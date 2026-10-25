@@ -103,6 +103,7 @@ References from owner: blackout.exchange, vanish.trade/us, veilit.xyz, web-4.app
 - Writes short and casual — infer from context.
 - **No native/default browser styling on controls** ("there should be no silver on the boxes"). Every select, checkbox and input gets custom dark styling.
 - **Fonts must be clearly premium and actually load** ("make the fonts way better"). Root cause found: a :root `--font-sans` fallback overrode next/font's variable, so the system font showed. Never redeclare next/font CSS variables in :root.
+- **Banners/marketing art: no creature ("logo guy")** — sleek and professional, like a funded product.
 - **Wants rich, polished animation** like the reference sites ("make some animations… make it animated and look amazing"). This overrides the default "one motion moment" restraint. Always keep reduced-motion support.
 
 ## Open questions
@@ -155,3 +156,6 @@ References from owner: blackout.exchange, vanish.trade/us, veilit.xyz, web-4.app
 - "make me a back banner" (X profile @parallaxswap) → 1500×500 X header in site style, kept clear of avatar overlap and mobile crop. Saved in brand/.
 - "how about a bio, and lets link my twitter on the website now somewhere" → X icon button in header (laptop + phone) and "X (@parallaxswap)" in footer; default in lib/site.js. Bio options given in chat.
 - "make the twitter background better, i dont like it" → 3 new X header directions (A Depth: floating coins + creature; B Bold: big wordmark + SOL/Base coins; C Big creature + "No line between your wallets."). Files in brand/. Waiting on owner pick.
+- "should we add a tab to the site to make a new ghost wallet for any crypto not connected to their own??" → /ghost page + "Ghost wallet" in header/footer + "Create a ghost wallet here" under the swap destination. Solana (private key) and EVM (12-word phrase, one address for ETH/Base/Arbitrum/BNB). Made in the browser, never sent anywhere. Checked: no network requests carry keys; Solana key matches address; EVM phrase gives the same address in MetaMask's default path. Bitcoin later.
+- "also put the try to trace it game at the bottom, it doesnt need to be that high up" → moved to just above the closing "Ready to cross?".
+- "try again for the twitter backgrounds btw, those ones r bad, i dont want our logo guy in it i want it to be sleek and professional" → rule: no creature in banners/marketing art; sleek, professional.

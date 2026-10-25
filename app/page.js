@@ -174,18 +174,6 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="trace" className="section trace-section">
-        <div className="container">
-          <h2 className="section-title" data-reveal>Try to trace it</h2>
-          <p className="lede narrow" data-reveal>
-            You’re the one watching the chains. Match each deposit to the arrival it became, then switch habits and try again.
-          </p>
-          <div data-reveal>
-            <TraceGame />
-          </div>
-        </div>
-      </section>
-
       <section id="clean" className="section">
         <div className="container">
           <h2 className="section-title" data-reveal>Keeping it clean</h2>
@@ -280,6 +268,18 @@ export default function Home() {
               </div>
             ) : null}
           </dl>
+        </div>
+      </section>
+
+      <section id="trace" className="section trace-section">
+        <div className="container">
+          <h2 className="section-title" data-reveal>Try to trace it</h2>
+          <p className="lede narrow" data-reveal>
+            You’re the one watching the chains. Match each deposit to the arrival it became, then switch habits and try again.
+          </p>
+          <div data-reveal>
+            <TraceGame />
+          </div>
         </div>
       </section>
 

@@ -1,7 +1,7 @@
 import TunnelApp from '@/components/TunnelApp';
 
 export const metadata = {
-  title: 'The Tunnel — $MOLE',
+  title: 'The Tunnel — $TUNNEL',
   description: 'Move value privately between chains. Non-custodial, powered by NEAR Intents confidential swaps.',
 };
 

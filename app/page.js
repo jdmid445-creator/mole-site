@@ -12,7 +12,7 @@ export default function Home() {
       <section className="hero">
         <div className="container hero-grid">
           <div className="hero-copy">
-            <p className="eyebrow">$MOLE · tunnels between chains</p>
+            <p className="eyebrow">$TUNNEL · private routes between chains</p>
             <h1>A private tunnel between any two chains.</h1>
             <p className="lede">
               Send SOL, ETH, BTC and more into a wallet on another chain, with no public link between the wallet you
@@ -21,9 +21,9 @@ export default function Home() {
             <div className="cta-row">
               <Link href="/tunnel" className="btn">Open the Tunnel</Link>
               {ca ? (
-                <a href={pumpUrl(ca)} className="btn btn-ghost" target="_blank" rel="noopener noreferrer">Buy $MOLE</a>
+                <a href={pumpUrl(ca)} className="btn btn-ghost" target="_blank" rel="noopener noreferrer">Buy $TUNNEL</a>
               ) : (
-                <span className="btn btn-ghost is-disabled" aria-disabled="true">$MOLE launching soon</span>
+                <span className="btn btn-ghost is-disabled" aria-disabled="true">$TUNNEL launching soon</span>
               )}
             </div>
             <ul className="chain-list" aria-label="Supported chains">
@@ -95,7 +95,7 @@ export default function Home() {
           <div>
             <h2>The token</h2>
             <p className="lede narrow">
-              $MOLE is the meme behind the Tunnel. It launches on pump.fun on Solana. The Tunnel itself is free to use and
+              $TUNNEL is the meme coin behind the Tunnel. It launches on pump.fun on Solana. The Tunnel itself is free to use and
               charges no app fee.
             </p>
           </div>

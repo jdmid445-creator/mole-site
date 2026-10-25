@@ -5,9 +5,9 @@ export default function Header() {
   return (
     <header className="site-header">
       <div className="container header-row">
-        <Link href="/" className="brand" aria-label="$MOLE home">
-          <Mole size={36} id="mole-header" title="$MOLE logo" />
-          <span className="brand-word">$MOLE</span>
+        <Link href="/" className="brand" aria-label="$TUNNEL home">
+          <Mole size={36} id="mole-header" title="$TUNNEL logo" />
+          <span className="brand-word">$TUNNEL</span>
         </Link>
         <nav className="nav" aria-label="Main">
           <Link href="/#how">How it works</Link>

@@ -1,5 +1,5 @@
-// The $MOLE mascot: night palette, peeking out of its hole.
-export default function Mole({ size = 360, eyes = '#C8FF2E', id = 'mole', title = '$MOLE mascot peeking out of its hole' }) {
+// The $TUNNEL mascot: night palette, peeking out of its tunnel.
+export default function Mole({ size = 360, eyes = '#C8FF2E', id = 'mole', title = 'The $TUNNEL creature peeking out of its tunnel' }) {
   return (
     <svg role="img" aria-label={title} width={size} height={size} viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
       <defs>

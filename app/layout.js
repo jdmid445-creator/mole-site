@@ -7,11 +7,11 @@ const sora = Sora({ subsets: ['latin'], weight: ['400', '600', '700'], variable:
 const mono = JetBrains_Mono({ subsets: ['latin'], weight: ['400', '500'], variable: '--font-mono' });
 
 export const metadata = {
-  title: '$MOLE — a private tunnel between any two chains',
+  title: '$TUNNEL — a private tunnel between any two chains',
   description: 'Move value between chains without a public link between your wallets. Powered by NEAR Intents confidential swaps.',
   icons: { icon: '/icon.svg' },
   openGraph: {
-    title: '$MOLE',
+    title: '$TUNNEL',
     description: 'A private tunnel between any two chains.',
   },
 };

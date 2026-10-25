@@ -1,5 +1,5 @@
 export const metadata = {
-  title: 'Terms & privacy limits — $MOLE',
+  title: 'Terms & privacy limits — $TUNNEL',
 };
 
 export default function Terms() {
@@ -43,10 +43,10 @@ export default function Terms() {
           <li>Failed swaps are refunded to the refund address you provide, by the network, not by this site.</li>
         </ul>
 
-        <h2>The $MOLE token</h2>
+        <h2>The $TUNNEL token</h2>
         <p>
-          $MOLE is a meme coin. It has no promised value, utility, dividends or returns, and you can lose everything you put
-          in. The Tunnel is free to use; holding $MOLE is not required. Nothing on this site is financial advice.
+          $TUNNEL is a meme coin. It has no promised value, utility, dividends or returns, and you can lose everything you put
+          in. The Tunnel is free to use; holding $TUNNEL is not required. Nothing on this site is financial advice.
         </p>
 
         <h2>Data</h2>

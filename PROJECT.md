@@ -90,3 +90,4 @@ Fonts: Sora + JetBrains Mono. Palette: bg #0C0A18, violet #5A41D6/#7B62F0, lime 
 - "no coin in it"
 - "think like a company"
 - "don't give names with coin in it, we are a product first, coin second"
+- "nah i dont like any of those, try again make them higher quality" → rejected Bolthole, Sett, Nether, Hideout, Molehill, Undernet, Grotto, Trapdoor (plain descriptive nouns read as low quality)

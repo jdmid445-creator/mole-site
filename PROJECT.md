@@ -216,3 +216,4 @@ References from owner: blackout.exchange, vanish.trade/us, veilit.xyz, web-4.app
 - Stats row: divider between "Assets to swap" and "App fee" was missing on desktop (phone 2x2 rule overrode it); fixed.
 - Hero creature made "alive" so people know to click: eyes follow the pointer (glance around when idle / on phones), gentle bob, occasional wiggle, one-time "psst… boop me" bubble (also on hover), happy squint after the boop. X button now evenly spaced (18px) between $PARALLAX and Launch app.
 - Token section label "Contract" → "CA" (owner).
+- "if i drag my cursor over him rapidly back and forth its like hes getting pet… squints" → petting: 3+ quick direction changes over him = squinted eyes, pink blush cheeks, happy sway (ends ~0.75 s after you stop). "looking around way too much" → idle glances now 2 per 18 s (was 3 per 7 s), wiggle every 20 s (was 9), slower bob, softer eye-follow.

@@ -15,6 +15,30 @@ export default function HeroStage() {
   const [idle, setIdle] = useState(true);
   const [hint, setHint] = useState(false);
   const [booped, setBooped] = useState(false);
+  const [petting, setPetting] = useState(false);
+  const stroke = useRef({ x: null, dir: 0, turns: [], t: 0 });
+
+  // Petting: quick back-and-forth strokes over him (3+ direction changes within ~0.9 s).
+  function onPet(e) {
+    if (e.pointerType !== 'mouse' && e.pointerType !== 'pen') return;
+    const st = stroke.current, now = performance.now();
+    if (st.x !== null) {
+      const dx = e.clientX - st.x;
+      if (Math.abs(dx) > 3) {
+        const dir = Math.sign(dx);
+        if (st.dir && dir !== st.dir) st.turns.push(now);
+        st.dir = dir;
+      }
+    }
+    st.x = e.clientX;
+    st.turns = st.turns.filter((t) => now - t < 900);
+    if (st.turns.length >= 3) {
+      if (!petting) { setPetting(true); setHint(false); setBooped(true); try { localStorage.setItem(HINT_KEY, '1'); } catch {} }
+      clearTimeout(st.t);
+      st.t = setTimeout(() => { setPetting(false); st.turns = []; }, 750);
+    }
+  }
+  function onLeave() { stroke.current.x = null; stroke.current.dir = 0; }
   const btn = useRef(null);
 
   useEffect(() => {
@@ -58,8 +82,10 @@ export default function HeroStage() {
       <button
         ref={btn}
         type="button"
-        className={`swap-mole${ducking ? ' is-ducking' : ''}${idle ? ' is-idle' : ''}`}
+        className={`swap-mole${ducking ? ' is-ducking' : ''}${idle ? ' is-idle' : ''}${petting ? ' is-petting' : ''}`}
         onClick={boop}
+        onPointerMove={onPet}
+        onPointerLeave={onLeave}
         aria-label="Boop the Parallax creature"
       >
         <Mole size={170} id="mole-stage" title="Parallax creature" />

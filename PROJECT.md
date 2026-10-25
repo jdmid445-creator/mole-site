@@ -93,3 +93,5 @@ Fonts: Sora + JetBrains Mono. Palette: bg #0C0A18, violet #5A41D6/#7B62F0, lime 
 - "nah i dont like any of those, try again make them higher quality" → rejected Bolthole, Sett, Nether, Hideout, Molehill, Undernet, Grotto, Trapdoor (plain descriptive nouns read as low quality)
 - "base it off some pumpfun coins that have ran" → offered Vein, Prowl, Guise, zkMole, Delve, Dive
 - "remember think like a company. this is a product" → rule: name must sound like a funded startup/product first; meme formulas only as inspiration, never the main driver
+- Offered Liminal, Aperture, Parallax, Interstice, Lattice, Meridian → "parallax isnt bad keep trying tho these are getting closer youre onthe right track"
+  → what's working: one smart, abstract concept word (physics/optics/perception) with a real story tied to "watchers can't connect the two sides"

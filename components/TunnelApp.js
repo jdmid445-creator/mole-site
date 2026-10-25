@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { CHAINS, getChain, isValidAddress, addressHint } from '@/lib/chains';
-import { toUnits, fromUnits, looksRound, displayAmount } from '@/lib/units';
+import { toUnits, fromUnits, looksRound, suggestRound, displayAmount } from '@/lib/units';
 import {
   connectSolana,
   connectEvm,
@@ -579,7 +579,7 @@ export default function TunnelApp() {
               />
             ) : null}
             {amount && !looksRound(amount) ? (
-              <p className="hint">Round amounts blend in better. Something like {Number(amount).toFixed(1)} is harder to match.</p>
+              <p className="tip">Tip: round amounts blend in. Something like {suggestRound(amount)} is harder to match than {amount}.</p>
             ) : null}
           </fieldset>
 

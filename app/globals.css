@@ -347,7 +347,8 @@ html.motion .features[data-reveal].is-in li { opacity: 1; }
 .field-inline { flex: 1 1 260px; }
 .wallet-actions { display: flex; flex-wrap: wrap; gap: 12px; align-items: end; }
 .wallet-line { margin: 0; color: var(--muted); }
-.hint { margin: 0; font-size: 0.85rem; color: var(--pink); }
+.hint { margin: 0; font-size: 0.85rem; color: var(--muted); }
+.tip { margin: 0; font-size: 0.85rem; color: var(--lilac); }
 .quote { animation: rise-in 0.45s cubic-bezier(.2,.8,.2,1); display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); background: var(--bg); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px; }
 .quote div { display: grid; gap: 2px; min-width: 0; }
 .quote strong { overflow-wrap: anywhere; }

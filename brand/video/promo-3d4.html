@@ -410,7 +410,7 @@ window.render = function (t, wallT) {
 
   // ---------- Scene 4 (13.25 - 15) ----------
   const e4 = easeOut(prog(t, 13.25, 13.75));
-  mole('m4', { o: e4, up: backOut(prog(t, 13.35, 13.85)), blink: blinkAt(t, 14.35), happy: prog(t, 14.55, 14.75) * 0.6 });
+  mole('m4', { o: e4, up: backOut(prog(t, 13.35, 13.85)), blink: blinkAt(t, 14.1), happy: 0.6 * easeOut(prog(t, 14.3, 14.45)) * (1 - easeInOut(prog(t, 14.65, 14.9))) });
   const e5 = easeOut(prog(t, 13.5, 14.05)); show($('end'), e5, 22 * (1 - e5));
 
 

@@ -107,7 +107,9 @@ export default function TunnelApp() {
   const [recipient, setRecipient] = useState('');
   const [manualRefund, setManualRefund] = useState('');
   const [wallet, setWallet] = useState({ type: '', address: '', name: '' });
-  const [picker, setPicker] = useState(null); // { kind, wallets, busyId }
+  const [picker, setPicker] = useState(null); // { kind, wallets, busyId, thenSwap }
+  const [payMode, setPayMode] = useState('wallet'); // 'wallet' = approve in your wallet, 'manual' = send it yourself
+  const [previewNote, setPreviewNote] = useState('');
   const [ack, setAck] = useState(false);
   const [ghostFor, setGhostFor] = useState(null); // 'single' | row index | null
 
@@ -138,12 +140,8 @@ export default function TunnelApp() {
   const fromToken = fromTokens.find((t) => t.assetId === fromAssetId) || fromTokens[0] || null;
   const toToken = toTokens.find((t) => t.assetId === toAssetId) || toTokens[0] || null;
 
-  const walletMatches = wallet.address && wallet.type === fromChain?.wallet;
-  const refundTo = walletMatches ? wallet.address : manualRefund.trim();
-  const canOneClick =
-    walletMatches &&
-    fromToken &&
-    (isNative(fromToken, fromChain) || (fromChain.wallet === 'evm' && Boolean(fromToken.contractAddress)));
+  const walletMatches = Boolean(wallet.address && wallet.type === fromChain?.wallet);
+  const useWallet = fromChain?.wallet !== 'deposit' && payMode === 'wallet';
   const pctTotal = parts.reduce((a, p) => a + (Number(p.pct) || 0), 0);
 
   useEffect(() => {
@@ -266,16 +264,27 @@ export default function TunnelApp() {
     });
   }
 
-  function validate() {
+  // Placeholder refund address used only for price previews before a wallet is chosen. Nothing is ever sent to it.
+  // (Public BIP test-vector addresses for the deposit-only chains.)
+  const PREVIEW_REFUND = {
+    solana: '11111111111111111111111111111111',
+    evm: '0x000000000000000000000000000000000000dEaD',
+    btc: 'bc1qcr8te4kr609gcawutmrza0j4xv80jy8z306fyu',
+    doge: 'DBus3bamQjgJULBJtYXpEzDWQRwF5iwxgC',
+    ltc: 'ltc1qjmxnz78nmc8nq77wuxh25n2es7rzm5c2rkk4wh',
+    xrp: 'rHsMGQEkVNJmpGWs8XUBoTBiAAbwxZN5v3',
+    tron: 'TUEZSdKsoDHQMeZwihtdoBiN46zxhGWYdH',
+  };
+
+  function validate(refund, { preview = false } = {}) {
     if (!fromToken || !toToken) throw new Error('Pick what you send and what you receive.');
     if (fromToken.assetId === toToken.assetId) throw new Error('Pick a different asset or chain for the other side.');
     const units = toUnits(amount, fromToken.decimals);
-    if (!isValidAddress(fromChainKey, refundTo)) {
-      throw new Error(
-        fromChain.wallet === 'deposit'
-          ? `Refund address: enter ${addressHint(fromChainKey).toLowerCase()} you control.`
-          : 'Connect your wallet, or enter a refund address you control.'
-      );
+    let refundAddr = (refund || '').trim();
+    if (!isValidAddress(fromChainKey, refundAddr)) {
+      const placeholder = PREVIEW_REFUND[fromChainKey] || PREVIEW_REFUND[fromChain.wallet];
+      if (preview && placeholder) refundAddr = placeholder;
+      else throw new Error(`Refund address: enter ${addressHint(fromChainKey).toLowerCase()} you control.`);
     }
     if (splitOn) {
       if (pctTotal !== 100) throw new Error(`The split adds up to ${pctTotal}%. It needs to be exactly 100%.`);
@@ -289,15 +298,15 @@ export default function TunnelApp() {
       const key = d.address.toLowerCase();
       if (seen.has(key)) throw new Error(`${label} is used twice. Each part should land in a different wallet.`);
       seen.add(key);
-      if (key === refundTo.toLowerCase()) {
+      if (key === refundAddr.toLowerCase()) {
         throw new Error(`${label}: send to a different wallet than the one you send from. That is the whole point of Parallax.`);
       }
       if (BigInt(d.units) <= 0n) throw new Error(`${label}: the amount is too small to split this way.`);
     });
-    return { units, dests };
+    return { units, dests, refundAddr };
   }
 
-  async function quoteOne(dry, dest) {
+  async function quoteOne(dry, dest, refundAddr) {
     const res = await fetch('/api/quote', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -307,7 +316,7 @@ export default function TunnelApp() {
         destinationAsset: toToken.assetId,
         amount: dest.units,
         recipient: dest.address,
-        refundTo,
+        refundTo: refundAddr,
       }),
     });
     const data = await res.json();
@@ -315,9 +324,9 @@ export default function TunnelApp() {
     return { ...data, units: dest.units, recipient: dest.address };
   }
 
-  async function requestQuotes(dry) {
-    const { units, dests } = validate();
-    const results = await Promise.allSettled(dests.map((d) => quoteOne(dry, d)));
+  async function requestQuotes(dry, refund) {
+    const { units, dests, refundAddr } = validate(refund, { preview: dry });
+    const results = await Promise.allSettled(dests.map((d) => quoteOne(dry, d, refundAddr)));
     const failed = results.findIndex((r) => r.status === 'rejected');
     if (failed !== -1) {
       const msg = results[failed].reason?.message || 'Could not get a quote.';
@@ -326,6 +335,44 @@ export default function TunnelApp() {
     return { units, quotes: results.map((r) => r.value) };
   }
 
+  // Live price: re-quote (dry run, nothing is created) shortly after the person stops typing.
+  const quoteSeq = useRef(0);
+  useEffect(() => {
+    if (swap || !amount || !Number(amount) || !fromToken || !toToken) {
+      setPreview(null);
+      setPreviewNote('');
+      return undefined;
+    }
+    let ready = true;
+    try {
+      validate(useWallet ? (walletMatches ? wallet.address : '') : manualRefund, { preview: true });
+    } catch (e) {
+      ready = false;
+      setPreview(null);
+      setPreviewNote('');
+    }
+    if (!ready) return undefined;
+    const seq = ++quoteSeq.current;
+    setPreviewNote('loading');
+    const t = setTimeout(async () => {
+      try {
+        const { units, quotes } = await requestQuotes(true, useWallet ? (walletMatches ? wallet.address : '') : manualRefund);
+        if (seq !== quoteSeq.current) return;
+        const out = quotes.reduce((a, q) => a + (Number(q.amountOutFormatted) || 0), 0);
+        const time = Math.max(...quotes.map((q) => Number(q.timeEstimate) || 0));
+        setPreview({ units, quotes, out, time, confidentiality: quotes[0]?.confidentiality });
+        setPreviewNote('');
+      } catch (e) {
+        if (seq !== quoteSeq.current) return;
+        setPreview(null);
+        setPreviewNote(e?.message || 'Could not get a price.');
+      }
+    }, 650);
+    return () => clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [amount, fromToken?.assetId, toToken?.assetId, recipient, parts, splitOn, payMode, manualRefund, wallet.address, swap]);
+
+  // Returns the connected address, or '' if the person still has to choose (picker shown) or has no wallet.
   async function connectWith(kind, w) {
     setError('');
     setPicker((pk) => (pk ? { ...pk, busyId: w.id } : pk));
@@ -333,38 +380,34 @@ export default function TunnelApp() {
       const address = kind === 'solana' ? await connectSolana(w.id) : await connectEvm(w.id);
       setWallet({ type: kind, address, name: w.name });
       setPicker(null);
+      return address;
     } catch (e) {
       setError(e?.message || 'Could not connect wallet.');
       setPicker((pk) => (pk ? { ...pk, busyId: '' } : pk));
+      return '';
     }
   }
 
-  // Connect: if exactly one wallet is installed, go straight to it; otherwise let the person choose.
-  async function onConnect() {
+  async function chooseWallet({ thenSwap = false } = {}) {
     setError('');
     const kind = fromChain.wallet;
     const wallets = kind === 'solana' ? detectSolanaWallets() : await detectEvmWallets();
-    if (wallets.length === 1 && !(wallet.address && wallet.type === kind)) {
-      await connectWith(kind, wallets[0]);
-      return;
+    if (wallets.length === 1 && !(walletMatches && !thenSwap)) {
+      return connectWith(kind, wallets[0]);
     }
-    setPicker({ kind, wallets, busyId: '' });
+    if (!wallets.length && appLinks.length) {
+      setError('Open Parallax in your wallet app (buttons above) to swap from your phone.');
+      return '';
+    }
+    setPicker({ kind, wallets, busyId: '', thenSwap });
+    return '';
   }
 
-  async function onPreview() {
-    setError('');
-    setBusy('preview');
-    try {
-      const { units, quotes } = await requestQuotes(true);
-      const out = quotes.reduce((a, q) => a + (Number(q.amountOutFormatted) || 0), 0);
-      const time = Math.max(...quotes.map((q) => Number(q.timeEstimate) || 0));
-      setPreview({ units, quotes, out, time, confidentiality: quotes[0]?.confidentiality });
-    } catch (e) {
-      setPreview(null);
-      setError(e?.message || 'Could not get a quote.');
-    } finally {
-      setBusy('');
-    }
+  async function onPickWallet(id) {
+    const pk = picker;
+    const w = pk.wallets.find((x) => x.id === id);
+    const address = await connectWith(pk.kind, w);
+    if (address && pk.thenSwap) await runSwap(address);
   }
 
   function submitTx(txHash, depositAddress) {
@@ -375,20 +418,41 @@ export default function TunnelApp() {
     }).catch(() => {});
   }
 
-  async function onOpen() {
+  // The one button. With a wallet: opens it to approve, then the swap runs. Without: hands out deposit addresses.
+  async function onSwap() {
     setError('');
     if (!ack) {
       setError('Tick the box to confirm you understand what Parallax hides and what it does not.');
       return;
     }
-    setBusy('open');
+    if (!useWallet) {
+      await runSwap('');
+      return;
+    }
     try {
-      const { units, quotes } = await requestQuotes(false);
+      validate('', { preview: true });
+    } catch (e) {
+      setError(e?.message || 'Check the form.');
+      return;
+    }
+    const address = walletMatches ? wallet.address : await chooseWallet({ thenSwap: true });
+    if (address) await runSwap(address);
+  }
+
+  async function runSwap(senderAddress) {
+    setBusy('open');
+    const sender = senderAddress || '';
+    const autoSend =
+      Boolean(sender) &&
+      fromToken &&
+      (isNative(fromToken, fromChain) || (fromChain.wallet === 'evm' && Boolean(fromToken.contractAddress)));
+    try {
+      const { units, quotes } = await requestQuotes(false, sender || manualRefund);
       if (quotes.some((q) => !q.depositAddress)) throw new Error('The network did not return a deposit address. Try again.');
-      writeSaved({ fromChainKey, toChainKey, recipient: splitOn ? recipient : recipient.trim() });
+      writeSaved({ fromChainKey, toChainKey, recipient: recipient.trim() });
 
       const id = `${Date.now()}`;
-      const mode = canOneClick ? 'wallet' : 'deposit';
+      const mode = autoSend ? 'wallet' : 'deposit';
       setSwap({
         id,
         split: quotes.length > 1,
@@ -408,7 +472,7 @@ export default function TunnelApp() {
         })),
       });
 
-      if (!canOneClick) return;
+      if (!autoSend) return;
 
       const setPartTx = (i, txHash) =>
         setSwap((s) => (s && s.id === id ? { ...s, parts: s.parts.map((p, j) => (j === i ? { ...p, txHash } : p)) } : s));
@@ -416,7 +480,7 @@ export default function TunnelApp() {
       if (fromChain.wallet === 'solana') {
         // One transaction, one signature, every deposit address paid at once.
         const txHash = await sendSolMany({
-          from: wallet.address,
+          from: sender,
           payments: quotes.map((q) => ({ to: q.depositAddress, lamports: q.units })),
         });
         quotes.forEach((q, i) => {
@@ -428,9 +492,9 @@ export default function TunnelApp() {
         for (let i = 0; i < quotes.length; i += 1) {
           const q = quotes[i];
           const txHash = isNative(fromToken, fromChain)
-            ? await sendEvmNative({ from: wallet.address, to: q.depositAddress, wei: q.units, chainId: fromChain.chainId })
+            ? await sendEvmNative({ from: sender, to: q.depositAddress, wei: q.units, chainId: fromChain.chainId })
             : await sendEvmToken({
-                from: wallet.address,
+                from: sender,
                 to: q.depositAddress,
                 token: fromToken.contractAddress,
                 amount: q.units,
@@ -441,7 +505,8 @@ export default function TunnelApp() {
         }
       }
     } catch (e) {
-      setError(e?.message || 'Something went wrong.');
+      const msg = e?.message || 'Something went wrong.';
+      setError(/reject|denied|cancel/i.test(msg) ? 'You cancelled in your wallet. You can send it yourself below, or start over.' : msg);
       // Anything not yet sent can still be paid by hand.
       setSwap((s) => (s ? { ...s, parts: s.parts.map((p) => (p.txHash ? p : { ...p, mode: 'deposit' })) } : s));
     } finally {
@@ -532,20 +597,34 @@ export default function TunnelApp() {
             </div>
 
             {walletKind === 'deposit' ? (
-              <label className="field">
-                <span>Refund address (if the swap fails, funds return here)</span>
-                <input placeholder={addressHint(fromChainKey)} value={manualRefund} onChange={(e) => setManualRefund(e.target.value)} />
-              </label>
-            ) : walletMatches ? (
-              <p className="wallet-line">
-                Connected{wallet.name ? ` with ${wallet.name}` : ''}: <code className="mono">{short(wallet.address)}</code>
-                <button type="button" className="wallet-switch" onClick={onConnect}>Switch</button>
-              </p>
+              <>
+                <p className="pay-note">You'll get an address to send your {fromChain.native} to, from any wallet or exchange.</p>
+                <label className="field">
+                  <span>Refund address: if anything fails, your coins come back here</span>
+                  <input placeholder={addressHint(fromChainKey)} value={manualRefund} onChange={(e) => setManualRefund(e.target.value)} />
+                </label>
+              </>
+            ) : payMode === 'manual' ? (
+              <>
+                <p className="pay-note">You'll get an address to send to, from any wallet or exchange. No connecting needed.</p>
+                <label className="field">
+                  <span>Refund address: if anything fails, your coins come back here</span>
+                  <input placeholder={addressHint(fromChainKey)} value={manualRefund} onChange={(e) => setManualRefund(e.target.value)} />
+                </label>
+                <button type="button" className="text-link" onClick={() => { setPayMode('wallet'); setError(''); }}>
+                  Use my {fromChain.label} wallet instead
+                </button>
+              </>
             ) : (
               <>
-                {appLinks.length ? (
+                {walletMatches ? (
+                  <p className="wallet-line">
+                    Paying with {wallet.name || 'your wallet'}: <code className="mono">{short(wallet.address)}</code>
+                    <button type="button" className="wallet-switch" onClick={() => chooseWallet()}>Change</button>
+                  </p>
+                ) : appLinks.length ? (
                   <div className="open-in">
-                    <p className="open-in-title">On your phone? Open Parallax in your wallet app to connect:</p>
+                    <p className="open-in-title">On your phone? Open Parallax in your wallet app to swap:</p>
                     <div className="open-in-row">
                       {appLinks.map((l) => (
                         <a key={l.name} className="btn" href={l.href} onClick={rememberBeforeLeaving}>
@@ -554,18 +633,12 @@ export default function TunnelApp() {
                       ))}
                     </div>
                   </div>
-                ) : null}
-                <div className="wallet-actions">
-                  {!appLinks.length ? (
-                    <button type="button" className="btn" onClick={onConnect} disabled={Boolean(picker?.busyId)}>
-                      Connect {fromChain.label} wallet
-                    </button>
-                  ) : null}
-                  <label className="field field-inline">
-                    <span>or send manually; refund address:</span>
-                    <input placeholder={addressHint(fromChainKey)} value={manualRefund} onChange={(e) => setManualRefund(e.target.value)} />
-                  </label>
-                </div>
+                ) : (
+                  <p className="pay-note">Your wallet pops up when you swap. Approve once and it's done.</p>
+                )}
+                <button type="button" className="text-link" onClick={() => { setPayMode('manual'); setPicker(null); setError(''); }}>
+                  No wallet here? Pay from any wallet or exchange instead
+                </button>
               </>
             )}
             {picker && picker.kind === walletKind ? (
@@ -574,7 +647,7 @@ export default function TunnelApp() {
                 chainLabel={fromChain.label}
                 wallets={picker.wallets}
                 busyId={picker.busyId}
-                onPick={(id) => connectWith(picker.kind, picker.wallets.find((w) => w.id === id))}
+                onPick={onPickWallet}
                 onClose={() => setPicker(null)}
               />
             ) : null}
@@ -710,8 +783,13 @@ export default function TunnelApp() {
             )}
           </fieldset>
 
+          {!preview && previewNote ? (
+            <p className={previewNote === 'loading' ? 'quote-note' : 'quote-note is-error'} aria-live="polite">
+              {previewNote === 'loading' ? 'Getting the best price…' : previewNote}
+            </p>
+          ) : null}
           {preview ? (
-            <div className="quote-wrap" aria-live="polite">
+            <div className={`quote-wrap${previewNote === 'loading' ? ' is-refreshing' : ''}`} aria-live="polite">
               <div className="quote">
                 <div>
                   <span className="muted small">You send</span>
@@ -756,18 +834,13 @@ export default function TunnelApp() {
 
           {error ? <p className="notice notice-error" role="alert">{error}</p> : null}
 
-          <div className="cta-row">
-            <button type="button" className="btn btn-ghost" onClick={onPreview} disabled={Boolean(busy)}>
-              {busy === 'preview' ? 'Getting quote…' : 'Preview quote'}
-            </button>
-            <button type="button" className="btn" onClick={onOpen} disabled={Boolean(busy)}>
-              {busy === 'open'
-                ? 'Opening…'
-                : canOneClick
-                  ? splitOn ? `Send privately to ${parts.length} wallets` : 'Send privately'
-                  : splitOn ? 'Get deposit addresses' : 'Get deposit address'}
-            </button>
-          </div>
+          <button type="button" className="btn btn-swap" onClick={onSwap} disabled={Boolean(busy) || Boolean(picker?.busyId)}>
+            {busy === 'open'
+              ? (useWallet ? 'Check your wallet…' : 'Getting your address…')
+              : useWallet
+                ? splitOn ? `Swap privately to ${parts.length} wallets` : 'Swap privately'
+                : splitOn ? 'Get deposit addresses' : 'Get deposit address'}
+          </button>
         </form>
       ) : (
         <div className="swap-panel" aria-live="polite">

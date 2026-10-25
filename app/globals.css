@@ -527,6 +527,15 @@ html.motion .clean-grid[data-reveal].is-in li { opacity: 1; transform: none; }
 .split-status-main { display: grid; gap: 2px; min-width: 0; }
 .split-links { grid-column: 2 / -1; display: flex; gap: 14px; font-size: 0.88rem; }
 
+/* One-button swap */
+.pay-note { margin: 0; font-size: 0.92rem; color: var(--muted); }
+.text-link { appearance: none; justify-self: start; background: none; border: 0; padding: 4px 0; min-height: 40px; color: var(--lilac); font: inherit; font-size: 0.9rem; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; text-align: left; }
+.text-link:hover { color: var(--text); }
+.btn-swap { width: 100%; min-height: 56px; font-size: 1.05rem; }
+.quote-note { margin: 0; padding: 14px 16px; border: 1px dashed var(--line); border-radius: var(--radius); color: var(--muted); font-size: 0.92rem; }
+.quote-note.is-error { color: var(--pink); border-style: solid; }
+.quote-wrap.is-refreshing { opacity: 0.6; transition: opacity 0.2s ease; }
+
 /* Wallet picker */
 .wpick { display: grid; gap: 10px; padding: 16px; border: 1px solid var(--line); border-radius: 18px; background: #0a0815; animation: rise-in 0.3s cubic-bezier(.2,.8,.2,1); }
 .wpick-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }

@@ -13,6 +13,7 @@ export default function Header() {
         <nav className="nav" aria-label="Main">
           <Link href="/#how">How it works</Link>
           <Link href="/docs">Docs</Link>
+          <Link href="/ghost">Ghost wallet</Link>
           <Link href="/track">Track</Link>
           <Link href="/#token">$PARALLAX</Link>
           {SITE.xUrl ? (

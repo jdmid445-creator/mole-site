@@ -6,6 +6,8 @@ import { toUnits, fromUnits, looksRound, displayAmount } from '@/lib/units';
 import { connectSolana, connectEvm, sendSol, sendEvmNative, sendEvmToken } from '@/lib/wallets';
 import CopyButton from './CopyButton';
 import ChainIcon from './ChainIcon';
+import GhostWallet from './GhostWallet';
+import { ghostKindFor } from '@/lib/ghost';
 
 const STORAGE_KEY = 'mole-tunnel-pair-v1';
 const TERMINAL = new Set(['SUCCESS', 'REFUNDED', 'FAILED']);
@@ -65,6 +67,7 @@ export default function TunnelApp() {
   const [manualRefund, setManualRefund] = useState('');
   const [wallet, setWallet] = useState({ type: '', address: '' });
   const [ack, setAck] = useState(false);
+  const [ghostOpen, setGhostOpen] = useState(false);
 
   const [preview, setPreview] = useState(null);
   const [swap, setSwap] = useState(null);
@@ -388,6 +391,21 @@ export default function TunnelApp() {
               <span>Destination wallet (a fresh one is best)</span>
               <input placeholder={addressHint(toChainKey)} value={recipient} onChange={(e) => { setRecipient(e.target.value); setPreview(null); }} />
             </label>
+            {ghostKindFor(toChainKey) ? (
+              ghostOpen ? (
+                <GhostWallet
+                  key={ghostKindFor(toChainKey)}
+                  initialKind={ghostKindFor(toChainKey)}
+                  lockKind
+                  compact
+                  onUse={(addr) => { setRecipient(addr); setPreview(null); setGhostOpen(false); }}
+                />
+              ) : (
+                <button type="button" className="ghost-link" onClick={() => setGhostOpen(true)}>
+                  No fresh wallet? Create a ghost wallet here
+                </button>
+              )
+            ) : null}
           </fieldset>
 
           {preview ? (

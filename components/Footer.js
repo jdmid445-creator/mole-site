@@ -11,6 +11,7 @@ export default function Footer() {
         </p>
         <nav className="footer-links" aria-label="Footer">
           <Link href="/docs">Docs</Link>
+          <Link href="/ghost">Ghost wallet</Link>
           <Link href="/track">Track a crossing</Link>
           <Link href="/terms">Terms &amp; privacy limits</Link>
           {SITE.xUrl ? <a href={SITE.xUrl} target="_blank" rel="noopener noreferrer">X (@parallaxswap)</a> : null}

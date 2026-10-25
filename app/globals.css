@@ -443,6 +443,25 @@ html.motion .clean-grid[data-reveal].is-in li { opacity: 1; transform: none; }
 .trace-truth { color: var(--text); font-weight: 600; }
 .trace-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
 
+/* Ghost wallet */
+.ghost-wrap { max-width: 760px; margin: 28px auto 0; }
+.ghost { display: grid; gap: 18px; padding: 24px; border-radius: 24px; background: var(--surface); border: 1px solid var(--line); }
+.ghost-compact { padding: 18px; border-radius: 16px; background: rgba(12, 10, 24, 0.5); }
+.ghost-kinds { justify-self: center; }
+.ghost-kinds button { display: inline-flex; align-items: center; gap: 8px; }
+.ghost-start { display: grid; gap: 14px; justify-items: start; }
+.ghost-start p { margin: 0; }
+.ghost-card { display: grid; gap: 16px; animation: rise-in 0.4s cubic-bezier(.2,.8,.2,1); }
+.ghost-row { display: grid; gap: 6px; }
+.ghost-label { font-size: 0.85rem; color: var(--muted); }
+.ghost-secret { color: var(--lime); }
+.ghost-warning { border-color: rgba(255, 143, 184, 0.5); color: #ffd6e6; }
+.ghost-link { appearance: none; background: none; border: 0; padding: 4px 0; min-height: 44px; color: var(--lilac); font: inherit; font-size: 0.92rem; cursor: pointer; text-align: left; text-decoration: underline; text-underline-offset: 3px; }
+.ghost-notes { max-width: 760px; margin: 40px auto 0; }
+.ghost-notes h2 { font-size: 1.35rem; }
+.ghost-notes li { color: var(--muted); margin-bottom: 8px; }
+@media (max-width: 860px) { .nav a[href="/ghost"] { display: none; } }
+
 /* ---------- Motion ---------- */
 @keyframes rise-in { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
 @keyframes line-up { from { transform: translateY(105%); } to { transform: none; } }

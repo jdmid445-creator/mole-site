@@ -17,15 +17,15 @@ export const metadata = {
   description: 'Move value between chains without a public link between your wallets. Powered by NEAR Intents confidential swaps.',
   icons: { icon: '/icon.svg' },
   openGraph: {
-    title: 'Parallax',
-    description: 'Seen from one chain, it left. Seen from the other, it arrived. Private cross-chain swaps.',
+    title: 'Parallax — Private cross-chain swaps',
+    description: 'Swap across 13 chains with no public link between your wallets. Non-custodial. Zero fees.',
     siteName: 'Parallax',
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Parallax',
-    description: 'Private cross-chain swaps. No line between your wallets.',
+    title: 'Parallax — Private cross-chain swaps',
+    description: 'Swap across 13 chains with no public link between your wallets. Non-custodial. Zero fees.',
   },
 };
 

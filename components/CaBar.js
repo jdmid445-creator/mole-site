@@ -23,7 +23,7 @@ export default function CaBar() {
             </span>
           </>
         ) : (
-          <span className="ca-bar-soon">Posted here at launch. Ignore any address you see before then.</span>
+          <span className="ca-bar-soon">Posted here at launch.<span className="ca-soon-more"> Ignore any address you see before then.</span></span>
         )}
       </div>
     </div>

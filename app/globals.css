@@ -652,6 +652,8 @@ html.motion .st-copy.is-lit { opacity: 1; transform: none; filter: none; }
 @media (max-width: 640px) {
   .ca-full { display: none; }
   .ca-short { display: inline; }
-  .ca-bar-row { justify-content: flex-start; }
-  .ca-bar-soon { font-size: 0.8rem; }
+  .ca-bar-row { justify-content: center; flex-wrap: nowrap; gap: 8px; }
+  .ca-bar-links, .ca-soon-more { display: none; }
+  .ca-bar-label { white-space: nowrap; }
+  .ca-bar-soon { white-space: nowrap; }
 }

@@ -27,7 +27,7 @@ export default function Statement() {
         ))}
       </div>
       <div className="st-veil" aria-hidden="true" />
-      <div className="st-copy">
+      <div className="st-copy" data-reveal>
         <p className="kicker">Your wallets. Your business.</p>
         <p className="statement-text">{TEXT}</p>
       </div>

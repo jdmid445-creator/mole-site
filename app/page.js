@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import HeroStage from '@/components/HeroStage';
 import NetworkStatus from '@/components/NetworkStatus';
+import TraceGame from '@/components/TraceGame';
 import CopyButton from '@/components/CopyButton';
 import { SITE, pumpUrl, dexUrl } from '@/lib/site';
 
@@ -169,6 +170,18 @@ export default function Home() {
             Private, not invisible: both halves are public on their own chains. Round amounts, waiting a bit between crossings,
             and never sending directly between your two wallets keep them hard to match.
           </p>
+        </div>
+      </section>
+
+      <section id="trace" className="section trace-section">
+        <div className="container">
+          <h2 className="section-title" data-reveal>Try to trace it</h2>
+          <p className="lede narrow" data-reveal>
+            You’re the one watching the chains. Match each deposit to the arrival it became, then switch habits and try again.
+          </p>
+          <div data-reveal>
+            <TraceGame />
+          </div>
         </div>
       </section>
 

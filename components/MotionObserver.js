@@ -28,7 +28,7 @@ export default function MotionObserver() {
           }
         });
       },
-      { rootMargin: '0px 0px -12% 0px', threshold: 0.12 }
+      { rootMargin: '0px 0px -2% 0px', threshold: 0.04 }
     );
     items.forEach((el) => io.observe(el));
     return () => io.disconnect();

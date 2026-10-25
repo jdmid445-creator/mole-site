@@ -1,0 +1,326 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Parallax promo vertical</title>
+<style>
+@font-face { font-family: 'Manrope'; font-weight: 200 800; src: url(https://mole-site-mu.vercel.app/_next/static/media/4c9affa5bc8f420e-s.p.woff2) format('woff2'); }
+:root {
+  --bg: #0c0a18; --surface: #17132e; --surface2: #1d1838; --line: #2b2452; --text: #f2f0eb; --muted: #aaa3cb;
+  --lilac: #cfc6ff; --violet: #7b62f0; --violetDeep: #5a41d6; --lime: #c8ff2e; --pink: #ff8fb8;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 1080px; height: 1920px; overflow: hidden; background: var(--bg); }
+body { font-family: 'Manrope', system-ui, sans-serif; color: var(--text); -webkit-font-smoothing: antialiased; }
+.stage { position: relative; width: 1080px; height: 1920px; overflow: hidden;
+  background: radial-gradient(70% 40% at 50% 45%, rgba(123, 98, 240, 0.22), transparent 70%), var(--bg); }
+.abs { position: absolute; }
+.cx { left: 0; right: 0; text-align: center; }
+.bars { position: absolute; left: 0; right: 0; bottom: 0; height: 700px; display: flex; align-items: flex-end; justify-content: center; gap: 9px; padding: 0 30px;
+  -webkit-mask-image: linear-gradient(to top, rgba(0,0,0,0.95), transparent); }
+.bars span { flex: 1; max-width: 3px; border-radius: 3px; transform-origin: bottom; }
+.bars.top { top: 0; bottom: auto; height: 380px; align-items: flex-start; -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,0.6), transparent); }
+.bars.top span { transform-origin: top; }
+
+.head { font-size: 84px; font-weight: 600; letter-spacing: -0.045em; line-height: 1.04; }
+.head em { font-style: normal; color: var(--lilac); }
+.sub { font-size: 34px; color: var(--muted); font-weight: 500; letter-spacing: -0.01em; line-height: 1.3; }
+.kick { font-size: 24px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--lilac); }
+
+.mole { position: absolute; }
+.mole svg { display: block; width: 100%; height: auto; overflow: visible; }
+
+/* scene 1 */
+.wallet { width: 560px; padding: 30px 34px; border-radius: 30px; background: var(--surface); border: 1px solid var(--line); display: grid; gap: 10px; }
+.wallet .lbl { font-size: 20px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+.wallet .addr { font-size: 40px; font-weight: 600; letter-spacing: -0.02em; display: flex; align-items: center; gap: 16px; }
+.wallet .addr img { width: 44px; height: 44px; }
+.vline { width: 0; border-left: 5px dashed var(--pink); }
+.plabel { font-size: 24px; font-weight: 700; color: var(--pink); letter-spacing: 0.12em; text-transform: uppercase; }
+
+/* phone (built at 400x780, scaled up) */
+.phoneWrap { width: 560px; height: 1092px; }
+.phone { width: 400px; height: 780px; border-radius: 64px; padding: 12px; transform: scale(1.4); transform-origin: top left;
+  background: linear-gradient(145deg, #3a3550, #15121f 40%, #2a2640 70%, #0d0b14);
+  box-shadow: 0 60px 120px -30px rgba(0,0,0,0.85), 0 0 0 1px rgba(255,255,255,0.08) inset, 0 0 90px rgba(123,98,240,0.25); }
+.screen { position: relative; width: 100%; height: 100%; border-radius: 52px; overflow: hidden; background: #0c0a18; }
+.island { position: absolute; top: 14px; left: 50%; width: 118px; height: 34px; margin-left: -59px; border-radius: 20px; background: #000; z-index: 5; }
+.sbar { position: absolute; top: 20px; left: 34px; right: 30px; display: flex; justify-content: space-between; font-size: 16px; font-weight: 700; z-index: 4; }
+.app, .status { position: absolute; inset: 64px 18px 18px; display: grid; align-content: start; gap: 12px; }
+.status { gap: 18px; }
+.appbar { display: flex; align-items: center; gap: 8px; padding: 4px 4px 8px; font-weight: 700; font-size: 19px; letter-spacing: -0.02em; }
+.appbar img { width: 30px; height: 30px; }
+.title { font-size: 26px; font-weight: 600; letter-spacing: -0.03em; padding: 0 4px 2px; }
+.box { border-radius: 18px; background: var(--surface); border: 1px solid var(--line); padding: 14px 16px; display: grid; gap: 10px; }
+.box .cap { font-size: 12px; font-weight: 700; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; }
+.row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.tok { display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px 6px 6px; border-radius: 999px; background: var(--surface2); border: 1px solid var(--line); font-weight: 700; font-size: 16px; }
+.tok img { width: 24px; height: 24px; }
+.tok small { font-weight: 500; color: var(--muted); font-size: 12px; margin-left: 2px; }
+.amt { font-size: 34px; font-weight: 700; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; min-height: 42px; }
+.caret { display: inline-block; width: 2px; height: 30px; background: var(--lilac); margin-left: 2px; vertical-align: -4px; }
+.addr-sm { font-size: 15px; color: var(--lilac); font-weight: 600; padding: 10px 12px; border-radius: 12px; background: #0a0815; border: 1px solid var(--line); }
+.quote { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; padding: 12px 14px; border-radius: 16px; background: #0a0815; border: 1px solid var(--line); }
+.quote div { display: grid; gap: 2px; }
+.quote span { font-size: 11px; color: var(--muted); font-weight: 600; }
+.quote b { font-size: 15px; }
+.btn { position: relative; height: 56px; border-radius: 999px; background: var(--lime); color: #0c0a18; display: grid; place-items: center; font-size: 18px; font-weight: 700; }
+.tap { position: absolute; left: 158px; width: 60px; height: 60px; border-radius: 50%; background: rgba(255,255,255,0.55); }
+.ripple { position: absolute; left: 158px; width: 60px; height: 60px; border-radius: 50%; border: 3px solid rgba(255,255,255,0.7); }
+.portals { position: relative; height: 120px; margin-top: 18px; }
+.portal { position: absolute; top: 0; width: 104px; height: 104px; border-radius: 50%; display: grid; place-items: center; align-content: center; gap: 2px; font-weight: 700; font-size: 15px; }
+.portal img { width: 30px; height: 30px; }
+.portal small { font-size: 11px; font-weight: 600; opacity: 0.8; }
+.pA { left: 6px; background: radial-gradient(circle at 35% 30%, #fff, #d9d3ff); color: #0c0a18; }
+.pB { right: 6px; background: #0c0a18; border: 2px solid var(--violet); box-shadow: 0 0 30px rgba(123,98,240,0.45); }
+.track { position: absolute; top: 50px; left: 116px; right: 116px; height: 4px; border-radius: 4px; background: rgba(123,98,240,0.25); }
+.trackfill { position: absolute; top: 50px; left: 116px; height: 4px; border-radius: 4px; background: linear-gradient(90deg, var(--violet), var(--lilac)); }
+.dot { position: absolute; top: 44px; width: 16px; height: 16px; border-radius: 50%; background: var(--lime); box-shadow: 0 0 18px var(--lime); margin-left: -8px; }
+.spill { justify-self: start; font-size: 15px; font-weight: 700; padding: 8px 14px; border-radius: 999px; }
+.facts { display: grid; gap: 10px; padding: 16px; border-radius: 18px; background: var(--surface); border: 1px solid var(--line); }
+.facts .row span { color: var(--muted); font-size: 14px; }
+.facts .row b { font-size: 15px; }
+.arrived { display: grid; justify-items: center; gap: 6px; padding: 18px 10px; border-radius: 18px; border: 1px solid rgba(200,255,46,0.35); background: rgba(200,255,46,0.06); }
+.arrived .big { font-size: 38px; font-weight: 700; letter-spacing: -0.03em; color: var(--lime); }
+.arrived .small { font-size: 14px; color: var(--muted); font-weight: 600; }
+.stepcap { display: inline-flex; align-items: center; gap: 16px; padding: 14px 28px 14px 16px; border-radius: 999px; background: rgba(23,19,46,0.85); border: 1px solid var(--line); font-size: 32px; font-weight: 600; letter-spacing: -0.02em; }
+.stepcap i { font-style: normal; display: grid; place-items: center; width: 50px; height: 50px; border-radius: 50%; border: 2px solid var(--lime); color: var(--lime); font-size: 24px; font-weight: 700; }
+
+/* scene 3 */
+.view { width: 760px; padding: 34px 40px; border-radius: 32px; background: var(--surface); border: 1px solid var(--line); display: grid; gap: 18px; }
+.view .vh { display: flex; align-items: center; gap: 16px; font-size: 36px; font-weight: 700; letter-spacing: -0.02em; }
+.view .vh img { width: 46px; height: 46px; }
+.view .vr { display: flex; justify-content: space-between; padding-top: 16px; border-top: 1px solid rgba(207,198,255,0.1); font-size: 28px; }
+.view .vr span { color: var(--muted); }
+
+/* end card */
+.url { display: inline-flex; padding: 20px 40px; border-radius: 999px; border: 1px solid var(--line); background: rgba(23,19,46,0.85); font-size: 38px; font-weight: 600; color: var(--lilac); }
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="bars top" id="barsTop"></div>
+  <div class="bars" id="bars"></div>
+
+  <!-- Scene 1: the public trail, the creature tunnels through it -->
+  <div class="abs cx" id="h1" style="top:250px"><p class="head">Every swap<br>leaves a trail.</p></div>
+  <div class="abs cx" id="h2" style="top:250px"><p class="head">Parallax<br><em>breaks it.</em></p></div>
+  <div class="abs cx" id="s1" style="top:450px"><p class="sub">Anyone can follow a public swap<br>from wallet to wallet.</p></div>
+  <div class="abs wallet" id="wA" style="left:260px; top:640px"><span class="lbl">Sent from</span><span class="addr"><img src="sol.svg" alt="">7xKX…gAsU</span></div>
+  <div class="abs vline" id="lnTop" style="left:538px; top:800px; height:240px"></div>
+  <div class="abs vline" id="lnBot" style="left:538px; top:1040px; height:240px"></div>
+  <div class="abs plabel" id="plbl" style="left:580px; top:900px">public link</div>
+  <div class="mole" id="m1" style="left:390px; top:870px; width:300px"></div>
+  <div class="abs wallet" id="wB" style="left:260px; top:1290px"><span class="lbl">Arrived in</span><span class="addr"><img src="base.svg" alt="">0x9d…f07a</span></div>
+
+  <!-- Scene 2: phone swap, creature rides along -->
+  <div class="abs cx" id="h3" style="top:170px"><p class="head" style="font-size:76px">Private<br>cross-chain swaps.</p></div>
+  <div class="abs cx" id="cap" style="top:400px"><span class="stepcap"><i id="capN">1</i><span id="capT">Pick both ends</span></span></div>
+  <div class="mole" id="m2" style="left:640px; top:384px; width:240px"></div>
+  <div class="abs phoneWrap" id="phone" style="left:260px; top:560px">
+    <div class="phone"><div class="screen">
+      <div class="island"></div>
+      <div class="sbar"><span>9:41</span><span>●●● ▮</span></div>
+      <div class="app" id="formView">
+        <div class="appbar"><img src="mole.svg" alt="">Parallax</div>
+        <p class="title">Make a crossing</p>
+        <div class="box"><span class="cap">From your wallet</span>
+          <div class="row"><span class="amt" id="amt"></span><span class="tok"><img src="sol.svg" alt="">SOL<small>Solana</small></span></div></div>
+        <div class="box"><span class="cap">To your private wallet</span>
+          <div class="row"><span class="amt" id="amtOut" style="font-size:28px">—</span><span class="tok"><img src="base.svg" alt="">ETH<small>Base</small></span></div>
+          <span class="addr-sm">0x9d…f07a</span></div>
+        <div class="quote" id="quote"><div><span>About</span><b>0.002157 ETH</b></div><div><span>Time</span><b>~25 sec</b></div><div><span>Mode</span><b>Confidential</b></div></div>
+        <div class="btn" id="btn"><span id="btnTxt">Swap privately</span></div>
+      </div>
+      <div class="status" id="statusView">
+        <div class="appbar"><img src="mole.svg" alt="">Parallax</div>
+        <div class="portals">
+          <div class="portal pA"><img src="sol.svg" alt=""><small>Solana</small>SOL</div>
+          <div class="track"></div><div class="trackfill" id="fill"></div><div class="dot" id="dot"></div>
+          <div class="portal pB"><img src="base.svg" alt=""><small>Base</small>ETH</div>
+        </div>
+        <span class="spill" id="spill">Deposit seen</span>
+        <div class="facts">
+          <div class="row"><span>Sending</span><b>0.05 SOL on Solana</b></div>
+          <div class="row"><span>Arriving</span><b>~0.002157 ETH on Base</b></div>
+          <div class="row"><span>Mode</span><b>Confidential</b></div>
+        </div>
+        <div class="arrived" id="arrived"><span class="big">+0.002157 ETH</span><span class="small">Arrived on Base · 0x9d…f07a</span></div>
+      </div>
+      <div class="tap" id="tap"></div><div class="ripple" id="ripple"></div>
+    </div></div>
+  </div>
+
+  <!-- Scene 3: two views, creature in the gap -->
+  <div class="abs cx" id="h4" style="top:250px"><p class="head" style="font-size:78px">Two chains.<br><em>No line between them.</em></p></div>
+  <div class="abs view" id="vA" style="left:160px; top:520px">
+    <span class="vh"><img src="sol.svg" alt="">What Solana sees</span>
+    <div class="vr"><span>From</span><b>Your wallet</b></div>
+    <div class="vr"><span>To</span><b>A swap network</b></div>
+    <div class="vr"><span>Amount</span><b>0.05 SOL</b></div>
+  </div>
+  <div class="mole" id="m3" style="left:420px; top:900px; width:240px"></div>
+  <div class="abs cx plabel" id="nolink" style="top:1150px; color:var(--lilac)">no public link</div>
+  <div class="abs view" id="vB" style="left:160px; top:1230px">
+    <span class="vh"><img src="base.svg" alt="">What Base sees</span>
+    <div class="vr"><span>From</span><b>A network address</b></div>
+    <div class="vr"><span>To</span><b>0x9d…f07a</b></div>
+    <div class="vr"><span>Amount</span><b>0.002157 ETH</b></div>
+  </div>
+
+  <!-- Scene 4: end card -->
+  <div class="mole" id="m4" style="left:290px; top:470px; width:500px"></div>
+  <div class="abs cx" id="end" style="top:1010px">
+    <p style="font-size:170px; font-weight:800; letter-spacing:-0.055em; line-height:1">Parallax</p>
+    <p class="sub" style="margin-top:30px; font-size:42px">Private cross-chain swaps</p>
+    <div style="margin-top:52px"><span class="url">parallaxswap.com</span></div>
+  </div>
+</div>
+
+<script>
+const $ = (id) => document.getElementById(id);
+const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+const prog = (t, a, b) => clamp((t - a) / (b - a));
+const easeOut = (x) => 1 - Math.pow(1 - x, 3);
+const easeInOut = (x) => (x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2);
+const backOut = (x) => { const c = 1.9; return 1 + (c + 1) * Math.pow(x - 1, 3) + c * Math.pow(x - 1, 2); };
+const env = (t, a, b, d = 0.35) => Math.min(easeOut(prog(t, a, a + d)), 1 - easeInOut(prog(t, b - d, b)));
+function show(el, o, dy = 0, scale = 1) {
+  el.style.opacity = o.toFixed(3);
+  el.style.transform = `translateY(${dy.toFixed(1)}px) scale(${scale.toFixed(4)})`;
+  el.style.visibility = o < 0.002 ? 'hidden' : 'visible';
+}
+
+// The mascot, same artwork as the site, with parts we can move.
+function moleSVG(id) {
+  return `<svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="${id}-b" cx="38%" cy="28%" r="78%"><stop offset="0%" stop-color="#9A86FF"/><stop offset="55%" stop-color="#5A41D6"/><stop offset="100%" stop-color="#2A1C7A"/></radialGradient>
+    <radialGradient id="${id}-g" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#7B62F0" stop-opacity="0.5"/><stop offset="100%" stop-color="#7B62F0" stop-opacity="0"/></radialGradient>
+    <clipPath id="${id}-c"><rect x="0" y="-200" width="400" height="500"/></clipPath>
+  </defs>
+  <circle id="${id}-glow" cx="200" cy="230" r="185" fill="url(#${id}-g)"/>
+  <ellipse id="${id}-hole" cx="200" cy="300" rx="158" ry="36" fill="#030208" stroke="#3A2A8C" stroke-width="2" stroke-opacity="0.3"/>
+  <g clip-path="url(#${id}-c)"><g id="${id}-body">
+    <path d="M200 100 C286 100 330 166 330 250 C330 320 280 352 200 352 C120 352 70 320 70 250 C70 166 114 100 200 100 Z" fill="url(#${id}-b)"/>
+    <path d="M200 176 C248 176 278 208 278 244 C278 278 244 298 200 298 C156 298 122 278 122 244 C122 208 152 176 200 176 Z" fill="#07050F"/>
+    <g id="${id}-eyes"><ellipse id="${id}-e1" cx="174" cy="236" rx="10" ry="16" fill="#C8FF2E"/><ellipse id="${id}-e2" cx="226" cy="236" rx="10" ry="16" fill="#C8FF2E"/></g>
+    <ellipse cx="200" cy="274" rx="15" ry="10" fill="#FF8FB8"/>
+  </g></g>
+  <g id="${id}-paws"><ellipse cx="118" cy="300" rx="34" ry="18" fill="#6B52E4"/><ellipse cx="282" cy="300" rx="34" ry="18" fill="#6B52E4"/></g>
+</svg>`;
+}
+const moles = {};
+['m1', 'm2', 'm3', 'm4'].forEach((id) => { $(id).innerHTML = moleSVG(id); moles[id] = id; });
+// up: 0 = hidden in the hole, 1 = fully out. look: eyes offset in px. blink: 0..1 closed. happy: squints.
+function mole(id, { o = 1, up = 1, lookX = 0, lookY = 0, blink = 0, happy = 0, hole = 1, scale = 1, dy = 0 }) {
+  const el = $(id);
+  show(el, o, dy, scale);
+  const bodyY = (1 - up) * 230;
+  $(`${id}-body`).setAttribute('transform', `translate(0 ${bodyY.toFixed(1)})`);
+  // body hidden below the hole line: clip by moving clip rect bottom fixed at 300
+  $(`${id}-paws`).style.opacity = clamp((up - 0.55) / 0.3).toFixed(3);
+  $(`${id}-eyes`).setAttribute('transform', `translate(${lookX.toFixed(1)} ${lookY.toFixed(1)})`);
+  const ry = Math.max(1.5, 16 * (1 - blink) * (1 - 0.7 * happy));
+  $(`${id}-e1`).setAttribute('ry', ry.toFixed(2)); $(`${id}-e2`).setAttribute('ry', ry.toFixed(2));
+  $(`${id}-hole`).style.opacity = hole; $(`${id}-glow`).style.opacity = (0.4 + 0.6 * up).toFixed(3);
+}
+// The body must vanish into the hole: clip everything below the hole's centre line.
+['m1', 'm2', 'm3', 'm4'].forEach((id) => document.querySelector(`#${id}-c rect`).setAttribute('height', '500') || document.querySelector(`#${id}-c rect`).setAttribute('y', '-200'));
+['m1', 'm2', 'm3', 'm4'].forEach((id) => { const r = document.querySelector(`#${id}-c rect`); r.setAttribute('y', '-200'); r.setAttribute('height', '500'); });
+const blinkAt = (t, at) => { const x = prog(t, at, at + 0.18); return x > 0 && x < 1 ? Math.sin(x * Math.PI) : 0; };
+
+// ambient bars
+function makeBars(el, n, hMax) {
+  const out = [];
+  for (let i = 0; i < n; i++) {
+    const s = document.createElement('span'); const u = i / (n - 1); const e = Math.sin(u * Math.PI);
+    const lerp = (a, b, k) => Math.round(a + (b - a) * k);
+    let c; if (u < 0.6) { const k = u / 0.6; c = `rgb(${lerp(90,207,k)},${lerp(65,198,k)},${lerp(214,255,k)})`; } else { const k = (u - 0.6) / 0.4; c = `rgb(${lerp(207,200,k)},${lerp(198,255,k)},${lerp(255,46,k)})`; }
+    s.style.background = `linear-gradient(${el.classList.contains('top') ? 'to bottom' : 'to top'}, ${c}, transparent)`;
+    s.style.height = `${hMax * (0.3 + 0.7 * e)}px`; s.style.opacity = (0.25 + 0.55 * e).toFixed(2);
+    el.appendChild(s); out.push(s);
+  }
+  return out;
+}
+const bars = makeBars($('bars'), 96, 560), barsTop = makeBars($('barsTop'), 96, 260);
+
+window.render = function (t) {
+  const dim = 1 - 0.55 * env(t, 4.0, 11.0, 0.6);
+  bars.forEach((s, i) => { const k = 0.4 + 0.6 * (0.5 + 0.5 * Math.sin((t / 5) * Math.PI * 2 + i * 0.13)); s.style.transform = `scaleY(${k.toFixed(3)})`; });
+  barsTop.forEach((s, i) => { const k = 0.4 + 0.6 * (0.5 + 0.5 * Math.sin((t / 5) * Math.PI * 2 + i * 0.13 + 2)); s.style.transform = `scaleY(${k.toFixed(3)})`; });
+  $('bars').style.opacity = (0.9 * dim * clamp(t / 0.6)).toFixed(3);
+  $('barsTop').style.opacity = (0.5 * dim * clamp(t / 0.6)).toFixed(3);
+
+  // ---------- Scene 1 (0 - 4.1) ----------
+  show($('h1'), env(t, 0.1, 2.95, 0.3), 20 * (1 - easeOut(prog(t, 0.1, 0.6))));
+  show($('s1'), env(t, 0.35, 2.95, 0.3), 16 * (1 - easeOut(prog(t, 0.35, 0.85))));
+  const wO = env(t, 0.3, 4.1, 0.4);
+  show($('wA'), wO, -30 * (1 - easeOut(prog(t, 0.3, 0.85))));
+  show($('wB'), wO, 30 * (1 - easeOut(prog(t, 0.45, 1.0))));
+  const draw = easeInOut(prog(t, 0.8, 1.6));
+  // creature bursts up through the middle of the line at 2.1, cutting it; halves retract
+  const cut = easeOut(prog(t, 2.15, 2.75));
+  const lnO = clamp(draw * 4) * (1 - prog(t, 3.4, 3.9));
+  $('lnTop').style.transformOrigin = 'top'; $('lnBot').style.transformOrigin = 'bottom';
+  $('lnTop').style.transform = `scaleY(${(clamp(draw * 2) * (1 - 0.75 * cut)).toFixed(3)})`;
+  $('lnBot').style.transform = `scaleY(${(clamp(draw * 2 - 1) * (1 - 0.75 * cut)).toFixed(3)})`;
+  $('lnTop').style.opacity = lnO; $('lnBot').style.opacity = lnO;
+  show($('plbl'), env(t, 1.3, 2.2, 0.25));
+  const pop1 = backOut(prog(t, 1.95, 2.45));
+  const m1Out = prog(t, 3.6, 4.0);
+  mole('m1', { o: env(t, 1.75, 4.05, 0.25), up: clamp(pop1) * (1 - easeInOut(m1Out)), lookX: -10 * prog(t, 2.6, 2.8) + 20 * prog(t, 2.9, 3.1) - 10 * prog(t, 3.2, 3.35), blink: blinkAt(t, 3.0), happy: prog(t, 2.8, 3.0) * (1 - prog(t, 3.5, 3.6)) });
+  show($('h2'), env(t, 3.0, 4.1, 0.3), 16 * (1 - easeOut(prog(t, 3.0, 3.4))));
+
+  // ---------- Scene 2 (4.1 - 10.9) ----------
+  show($('h3'), env(t, 4.2, 10.9, 0.4), 18 * (1 - easeOut(prog(t, 4.2, 4.7))));
+  const ph = easeOut(prog(t, 4.05, 4.9)), phOut = easeInOut(prog(t, 10.6, 11.05));
+  show($('phone'), clamp(ph * 1.4) * (1 - phOut), 520 * (1 - ph) + 80 * phOut);
+  show($('cap'), env(t, 4.6, 10.9, 0.3));
+  const step = t < 6.3 ? 1 : t < 7.5 ? 2 : 3;
+  $('capN').textContent = step; $('capT').textContent = ['Pick both ends', 'Approve once', 'It arrives elsewhere'][step - 1];
+  const capPulse = Math.max(prog(t, 6.3, 6.5) * (1 - prog(t, 6.5, 6.8)), prog(t, 7.5, 7.7) * (1 - prog(t, 7.7, 8.0)));
+  $('cap').style.transform = `scale(${(1 + 0.06 * capPulse).toFixed(3)})`;
+  // creature riding on the phone's top edge: peeks, watches the tap, ducks while crossing, pops up when it arrives
+  const m2up = backOut(prog(t, 5.0, 5.5)) * (1 - easeInOut(prog(t, 7.7, 8.0))) + backOut(prog(t, 9.8, 10.25)) * (t > 9.8 ? 1 : 0);
+  mole('m2', { o: clamp(ph * 1.4) * (1 - phOut), dy: 520 * (1 - ph) + 80 * phOut, up: clamp(m2up, 0, 1.08),
+    lookX: -14 * prog(t, 5.5, 5.8), lookY: 10 * prog(t, 5.6, 5.9) - 10 * prog(t, 9.8, 10), blink: blinkAt(t, 6.9), happy: prog(t, 10.0, 10.2) });
+
+  const typed = '0.05'.slice(0, Math.floor(prog(t, 5.0, 5.6) * 4 + 0.0001));
+  const caret = t > 4.9 && t < 6.0 && Math.floor(t * 2.4) % 2 === 0;
+  $('amt').innerHTML = (typed || '<span style="color:#5d5680">0.0</span>') + (caret ? '<span class="caret"></span>' : '');
+  $('amtOut').textContent = t > 5.9 ? '0.002157' : '—'; $('amtOut').style.color = t > 5.9 ? 'var(--text)' : 'var(--muted)';
+  const qO = easeOut(prog(t, 5.9, 6.25)); show($('quote'), qO, 8 * (1 - qO));
+  const btn = $('btn'); const sb = btn.offsetTop + 64 + btn.offsetHeight / 2 - 30;
+  $('tap').style.top = `${sb}px`; $('ripple').style.top = `${sb}px`;
+  const tapIn = prog(t, 6.35, 6.5), tapOut = prog(t, 6.55, 6.85);
+  $('tap').style.opacity = (Math.min(tapIn, 1 - tapOut) * 0.9).toFixed(3); $('tap').style.transform = `scale(${(0.6 + 0.4 * tapIn).toFixed(3)})`;
+  const r = prog(t, 6.5, 7.1); $('ripple').style.opacity = (r > 0 && r < 1 ? 1 - r : 0).toFixed(3); $('ripple').style.transform = `scale(${(1 + 2.4 * r).toFixed(3)})`;
+  btn.style.transform = `scale(${(1 - 0.04 * Math.sin(Math.PI * prog(t, 6.45, 6.7))).toFixed(4)})`;
+  $('btnTxt').textContent = t > 6.6 ? 'Check your wallet…' : 'Swap privately';
+  const sw = easeInOut(prog(t, 7.3, 7.65));
+  show($('formView'), 1 - sw, -20 * sw); show($('statusView'), sw, 20 * (1 - sw));
+  const trackW = 108, travel = easeInOut(prog(t, 7.9, 9.7));
+  $('fill').style.width = `${(trackW * travel).toFixed(1)}px`; $('dot').style.left = `${(116 + trackW * travel).toFixed(1)}px`; $('dot').style.opacity = t < 9.8 ? 1 : 0;
+  const sp = $('spill');
+  if (t < 8.2) { sp.textContent = 'Deposit seen, confirming'; sp.style.background = 'var(--violetDeep)'; sp.style.color = 'var(--text)'; }
+  else if (t < 9.8) { sp.textContent = 'In the tunnel'; sp.style.background = 'var(--violetDeep)'; sp.style.color = 'var(--text)'; }
+  else { sp.textContent = 'Arrived ✓'; sp.style.background = 'var(--lime)'; sp.style.color = '#0c0a18'; }
+  const ar = easeOut(prog(t, 9.85, 10.3)); show($('arrived'), ar, 14 * (1 - ar), 0.96 + 0.04 * ar);
+
+  // ---------- Scene 3 (11.0 - 13.2) ----------
+  show($('h4'), env(t, 11.05, 13.2, 0.35), 18 * (1 - easeOut(prog(t, 11.05, 11.5))));
+  show($('vA'), env(t, 11.2, 13.2, 0.35), -26 * (1 - easeOut(prog(t, 11.2, 11.7))));
+  show($('vB'), env(t, 11.35, 13.2, 0.35), 26 * (1 - easeOut(prog(t, 11.35, 11.85))));
+  mole('m3', { o: env(t, 11.5, 13.2, 0.3), up: backOut(prog(t, 11.6, 12.05)), lookY: -12 * prog(t, 12.1, 12.3) + 24 * prog(t, 12.45, 12.65) - 12 * prog(t, 12.8, 12.95), blink: blinkAt(t, 12.95) });
+  show($('nolink'), env(t, 11.8, 13.2, 0.3));
+
+  // ---------- Scene 4 (13.25 - 15) ----------
+  const e4 = easeOut(prog(t, 13.25, 13.75));
+  mole('m4', { o: e4, up: backOut(prog(t, 13.35, 13.85)), blink: blinkAt(t, 14.35), happy: prog(t, 14.55, 14.75) * 0.6 });
+  const e5 = easeOut(prog(t, 13.5, 14.05)); show($('end'), e5, 22 * (1 - e5));
+};
+document.fonts.ready.then(() => { window.__ready = true; window.render(0); });
+</script>
+</body>
+</html>

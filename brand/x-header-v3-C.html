@@ -1,0 +1,21 @@
+<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="base.css"><style>
+.bars { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; gap:10px; }
+.bar { width:3px; border-radius:3px; }
+.copy { position:absolute; left:0; right:0; top:178px; text-align:center; }
+h1 { font-size:88px; font-weight:800; letter-spacing:-.055em; line-height:1; text-shadow:0 0 40px #0c0a18, 0 0 80px #0c0a18; }
+.sub { margin-top:22px; font-size:22px; color:#cfc6ff; font-weight:600; text-shadow:0 0 30px #0c0a18; }
+.veil { position:absolute; inset:0; background: radial-gradient(34% 46% at 50% 50%, rgba(12,10,24,.92), rgba(12,10,24,.55) 60%, transparent 100%); }
+</style></head><body><div class="b">
+<div class="bars" id="bars"></div><div class="veil"></div>
+<div class="copy"><h1>Parallax</h1><p class="sub">Private cross-chain swaps &nbsp;·&nbsp; Non-custodial &nbsp;·&nbsp; Zero fees</p></div>
+</div>
+<script>
+const el=document.getElementById('bars'); const n=110;
+const lerp=(a,b,t)=>a+(b-a)*t;
+for(let i=0;i<n;i++){const t=i/(n-1); const d=document.createElement('div'); d.className='bar';
+ const wave=Math.sin(t*Math.PI*2.2+0.6)*0.5+0.5; const env=Math.sin(t*Math.PI);
+ const h=60+ (wave*0.6+0.4)*env*330; const off=Math.sin(t*Math.PI*3.1)*40;
+ // violet -> lilac -> lime across
+ let c; if(t<.6){const u=t/.6; c=`rgba(${lerp(90,207,u)|0},${lerp(65,198,u)|0},${lerp(214,255,u)|0},${.25+.55*env})`;} else {const u=(t-.6)/.4; c=`rgba(${lerp(207,200,u)|0},${lerp(198,255,u)|0},${lerp(255,46,u)|0},${.45+.5*env})`;}
+ d.style.height=h+'px'; d.style.transform=`translateY(${off}px)`; d.style.background=`linear-gradient(${c}, transparent)`; el.appendChild(d);}
+</script></body></html>

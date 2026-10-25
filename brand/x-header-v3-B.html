@@ -1,0 +1,25 @@
+<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="base.css"><style>
+.b { background: radial-gradient(40% 70% at 78% 50%, rgba(123,98,240,.20), transparent 70%), #0c0a18; }
+.copy { position:absolute; left:120px; top:118px; width:600px; }
+.k { font-size:20px; font-weight:700; color:#cfc6ff; letter-spacing:.14em; text-transform:uppercase; margin-bottom:22px; }
+h1 { font-size:64px; font-weight:800; letter-spacing:-.045em; line-height:1.02; }
+h1 span { color:#aaa3cb; }
+.sub { margin-top:22px; font-size:21px; color:#aaa3cb; }
+.lane { position:absolute; left:760px; right:-20px; height:1px; }
+.l1 { top:170px; background:linear-gradient(90deg, transparent, rgba(255,143,184,.85) 12%, rgba(255,143,184,.85) 50%, transparent 62%); }
+.l2 { top:330px; background:linear-gradient(90deg, transparent 38%, rgba(200,255,46,.85) 50%, rgba(200,255,46,.85) 88%, transparent); }
+.node { position:absolute; display:flex; align-items:center; gap:12px; transform:translateY(-50%); }
+.node img { width:40px; height:40px; border-radius:50%; box-shadow:0 0 0 6px #0c0a18, 0 0 0 7px #2b2452; }
+.node b { display:block; font-size:19px; font-weight:700; letter-spacing:-.01em; }
+.node i { display:block; font-style:normal; font-size:15px; color:#aaa3cb; margin-top:2px; }
+.n1 { left:880px; top:170px; } .n2 { left:1150px; top:330px; }
+.gap { position:absolute; left:1065px; top:200px; height:100px; border-left:1.5px dashed rgba(207,198,255,.25); }
+.gl { position:absolute; left:1080px; top:238px; font-size:14px; letter-spacing:.12em; text-transform:uppercase; color:#cfc6ff; opacity:.75; font-weight:700; }
+</style></head><body><div class="b">
+<div class="noise"></div>
+<div class="copy"><div class="k">Parallax</div><h1>Swap across chains.<br><span>Leave no line.</span></h1><p class="sub">Private cross-chain swaps. Non-custodial. Zero fees.</p></div>
+<div class="lane l1"></div><div class="lane l2"></div>
+<div class="node n1"><img src="sol.svg"><div><b>Solana</b><i>0.1 SOL out</i></div></div>
+<div class="gap"></div><div class="gl">No public link</div>
+<div class="node n2"><img src="eth.svg" style="background:#1d1838;padding:6px"><div><b>Ethereum</b><i>0.0043 ETH in</i></div></div>
+</div></body></html>

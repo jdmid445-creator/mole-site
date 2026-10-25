@@ -1,0 +1,5 @@
+@font-face { font-family: 'Manrope'; font-weight: 200 800; src: url(https://mole-site-mu.vercel.app/_next/static/media/4c9affa5bc8f420e-s.p.woff2) format('woff2'); }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 1500px; height: 500px; background: #0c0a18; overflow: hidden; }
+.b { position: relative; width: 1500px; height: 500px; overflow: hidden; font-family: 'Manrope', sans-serif; color: #f2f0eb; background: #0c0a18; }
+.noise { position:absolute; inset:0; opacity:.5; background-image: radial-gradient(rgba(207,198,255,.09) 1px, transparent 1.2px); background-size: 22px 22px; -webkit-mask-image: radial-gradient(70% 90% at 50% 50%, #000, transparent 85%); }

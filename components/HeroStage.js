@@ -49,23 +49,41 @@ export default function HeroStage() {
 
     const fine = window.matchMedia('(pointer: fine)').matches;
     const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (!fine || still) return () => { clearTimeout(show); clearTimeout(hide); };
-    let idleT, raf = 0, last = null;
+    if (still) return () => { clearTimeout(show); clearTimeout(hide); };
+
+    // One place moves the eyes (CSS vars, eased by a transition), so following the cursor and
+    // glancing around on his own can never fight or snap.
+    let idleT, raf = 0, last = null, idleNow = true, glanceT = 0, step = 0;
+    const look = (x, y) => { const el = btn.current; if (!el) return; el.style.setProperty('--lx', `${x}px`); el.style.setProperty('--ly', `${y}px`); };
+    const GLANCES = [[-12, 3], [12, 2]]; // left, then right; each held ~1.3 s, ~8 s apart
+    function glance() {
+      if (!idleNow) return;
+      const [x, y] = GLANCES[step++ % GLANCES.length];
+      look(x, y);
+      glanceT = setTimeout(() => { look(0, 0); if (idleNow) glanceT = setTimeout(glance, 7000 + Math.random() * 3000); }, 1300);
+    }
+    function goIdle() { idleNow = true; setIdle(true); look(0, 0); clearTimeout(glanceT); glanceT = setTimeout(glance, 5000); }
     function apply() {
       raf = 0; const el = btn.current; if (!el || !last) return;
       const r = el.getBoundingClientRect();
       const dx = last.x - (r.left + r.width / 2), dy = last.y - (r.top + r.height * 0.6);
       const d = Math.hypot(dx, dy) || 1, k = Math.min(1, d / 260);
-      el.style.setProperty('--lx', `${(dx / d) * 14 * k}px`);
-      el.style.setProperty('--ly', `${(dy / d) * 9 * k}px`);
+      look((dx / d) * 14 * k, (dy / d) * 9 * k);
     }
     function onMove(e) {
-      last = { x: e.clientX, y: e.clientY }; setIdle(false);
+      if (e.pointerType !== 'mouse' && e.pointerType !== 'pen') return;
+      last = { x: e.clientX, y: e.clientY };
+      if (idleNow) { idleNow = false; setIdle(false); clearTimeout(glanceT); }
       if (!raf) raf = requestAnimationFrame(apply);
-      clearTimeout(idleT); idleT = setTimeout(() => setIdle(true), 2500);
+      clearTimeout(idleT); idleT = setTimeout(goIdle, 2500);
     }
-    window.addEventListener('pointermove', onMove, { passive: true });
-    return () => { window.removeEventListener('pointermove', onMove); clearTimeout(idleT); clearTimeout(show); clearTimeout(hide); if (raf) cancelAnimationFrame(raf); };
+    function onOut(e) { if (!e.relatedTarget) { clearTimeout(idleT); goIdle(); } } // cursor left the window
+    goIdle();
+    if (fine) { window.addEventListener('pointermove', onMove, { passive: true }); document.addEventListener('mouseout', onOut); }
+    return () => {
+      window.removeEventListener('pointermove', onMove); document.removeEventListener('mouseout', onOut);
+      clearTimeout(idleT); clearTimeout(glanceT); clearTimeout(show); clearTimeout(hide); if (raf) cancelAnimationFrame(raf);
+    };
   }, []);
 
   function boop() {

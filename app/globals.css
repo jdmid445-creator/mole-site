@@ -175,7 +175,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .stats li { display: grid; justify-items: center; text-align: center; gap: 8px; padding: 30px 16px; border-left: 1px solid var(--line); border-top: 1px solid var(--line); }
 .stats li:nth-child(-n+2) { border-top: 0; }
 .stats li:nth-child(odd) { border-left: 0; }
-@media (min-width: 860px) { .stats li { border-top: 0; border-left: 1px solid var(--line); } .stats li:first-child { border-left: 0; } }
+@media (min-width: 860px) { .stats li:nth-child(n) { border-top: 0; border-left: 1px solid var(--line); } .stats li:nth-child(1) { border-left: 0; } }
 .stats strong { font-size: clamp(1.8rem, 2.8vw, 2.3rem); line-height: 1; font-weight: 500; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
 .stats span { color: var(--muted); font-size: 0.75rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; }
 

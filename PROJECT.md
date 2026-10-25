@@ -215,3 +215,4 @@ References from owner: blackout.exchange, vanish.trade/us, veilit.xyz, web-4.app
 - "logo and name in the top left are too far over… same with the stuff up top on the right" → header edge padding tightened to clamp(14px,1.25vw,24px) (was up to 48px), logo nudged to its visual edge, X button same height as Launch app (40px) and grouped closer to it; CA bar uses the same edge.
 - Stats row: divider between "Assets to swap" and "App fee" was missing on desktop (phone 2x2 rule overrode it); fixed.
 - Hero creature made "alive" so people know to click: eyes follow the pointer (glance around when idle / on phones), gentle bob, occasional wiggle, one-time "psst… boop me" bubble (also on hover), happy squint after the boop. X button now evenly spaced (18px) between $PARALLAX and Launch app.
+- Token section label "Contract" → "CA" (owner).

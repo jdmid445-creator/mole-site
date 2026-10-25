@@ -222,7 +222,7 @@ export default function Home() {
           </div>
           <dl className="facts">
             <div>
-              <dt>Contract</dt>
+              <dt>CA</dt>
               <dd>
                 {ca ? (
                   <span className="mono-row">

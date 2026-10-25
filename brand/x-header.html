@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<style>
+@font-face { font-family: 'Manrope'; font-weight: 200 800; src: url(https://mole-site-mu.vercel.app/_next/static/media/4c9affa5bc8f420e-s.p.woff2) format('woff2'); }
+* { box-sizing: border-box; margin: 0; }
+html, body { width: 1500px; height: 500px; background: #0c0a18; overflow: hidden; }
+.b {
+  position: relative; width: 1500px; height: 500px; overflow: hidden; font-family: 'Manrope', sans-serif; color: #f2f0eb;
+  background:
+    radial-gradient(42% 75% at 76% 50%, rgba(123, 98, 240, 0.34), transparent 70%),
+    radial-gradient(30% 60% at 34% 30%, rgba(255, 143, 184, 0.07), transparent 70%),
+    radial-gradient(30% 60% at 98% 100%, rgba(200, 255, 46, 0.06), transparent 70%),
+    #0c0a18;
+}
+.grid {
+  position: absolute; left: -10%; right: -10%; bottom: -12%; height: 70%;
+  background-image: linear-gradient(rgba(123, 98, 240, 0.30) 1px, transparent 1px), linear-gradient(90deg, rgba(123, 98, 240, 0.30) 1px, transparent 1px);
+  background-size: 60px 60px; transform: perspective(600px) rotateX(64deg); transform-origin: bottom center;
+  -webkit-mask-image: linear-gradient(to top, rgba(0,0,0,0.9), transparent 80%);
+}
+.copy { position: absolute; left: 470px; top: 110px; width: 600px; }
+.kicker { font-size: 26px; font-weight: 700; color: #cfc6ff; letter-spacing: -0.02em; margin-bottom: 18px; }
+h1 { font-size: 58px; line-height: 1.02; font-weight: 800; letter-spacing: -0.045em; }
+.sub { margin-top: 20px; font-size: 22px; color: #aaa3cb; letter-spacing: -0.01em; }
+.stage { position: absolute; left: 1050px; top: 72px; width: 400px; height: 340px; perspective: 1100px; }
+.plane {
+  position: absolute; left: 50%; width: 350px; height: 132px; border-radius: 24px; border: 1px solid #2b2452;
+  padding: 18px 20px; display: flex; flex-direction: column; justify-content: space-between;
+}
+.back { top: 0; background: linear-gradient(160deg, rgba(29,24,56,0.97), rgba(17,14,34,0.95)); transform: translateX(-50%) rotateX(40deg) rotateZ(-7deg); }
+.front { bottom: 0; background: linear-gradient(160deg, rgba(43,36,82,0.95), rgba(23,19,46,0.95)); border-color: rgba(207,198,255,0.24); transform: translateX(-50%) rotateX(40deg) rotateZ(-7deg); }
+.name { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 24px; letter-spacing: -0.02em; }
+.back .name { color: #aaa3cb; }
+.name img { width: 28px; height: 28px; }
+.ev { display: flex; align-items: center; gap: 9px; font-size: 15px; color: #cfc6ff; }
+.dot { width: 9px; height: 9px; border-radius: 50%; }
+.out { background: #ff8fb8; }
+.in { background: #c8ff2e; box-shadow: 0 0 10px rgba(200,255,46,0.8); }
+.gap { position: absolute; left: 50%; top: 144px; height: 52px; border-left: 2px dashed rgba(255,143,184,0.55); }
+.gap-label { position: absolute; left: calc(50% + 14px); top: 158px; font-size: 15px; color: #ff8fb8; }
+</style>
+</head>
+<body>
+<div class="b">
+  <div class="grid"></div>
+  <div class="copy">
+    <div class="kicker">Parallax</div>
+    <h1>Seen from one chain,<br>it left. Seen from<br>the other, it arrived.</h1>
+    <p class="sub">Private cross-chain swaps. Non-custodial.</p>
+  </div>
+  <div class="stage">
+    <div class="plane back">
+      <span class="name"><img src="https://mole-site-mu.vercel.app/chains/sol.svg" alt=""> Solana</span>
+      <span class="ev"><span class="dot out"></span>0.1 SOL left your wallet</span>
+    </div>
+    <span class="gap"></span>
+    <span class="gap-label">no public link</span>
+    <div class="plane front">
+      <span class="name"><img src="https://mole-site-mu.vercel.app/chains/base.svg" alt=""> Base</span>
+      <span class="ev"><span class="dot in"></span>0.0043 ETH arrived somewhere</span>
+    </div>
+  </div>
+</div>
+</body>
+</html>

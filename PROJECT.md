@@ -31,7 +31,8 @@ They should: land, get it in ~5 seconds, try Parallax, feel "this is legit, not 
 | Hosting | Vercel project `mole-site` (team YOSH) | Env vars set: `HELIUS_API_KEY`, `NEAR_INTENTS_JWT` (all envs) |
 | Swap rails | NEAR Intents 1Click API, `confidentiality: advanced` | Partner account "MOLE", Distribution Channel key |
 | Logo | Design canvas "$MOLE Logo" → artboard **"★ Night, peeking out"** | Final mascot: deep-violet creature peeking out of a dark hole, lime eyes, pink nose, soft glow, on #0C0A18 |
-| Domain / X / Telegram | — | None yet |
+| X | https://x.com/parallaxswap (display name Parallax, PFP = Night creature) | Header banner: brand/parallax-x-header.png (source brand/x-header.html) |
+| Domain / Telegram | — | None yet. Aim to match handle: parallaxswap |
 | Token | — | Not launched. Launching on pump.fun (Solana) |
 
 ## Name
@@ -151,3 +152,4 @@ References from owner: blackout.exchange, vanish.trade/us, veilit.xyz, web-4.app
 - "oh i was zoomed out before. this is normal screen. fix it now" + "also change the font" + "use photos of currency too" → hero fits window height at 1470×745, font → Manrope, real coin logos added. Checked at 1470×745, 1512×860, 2000×1010, 390 and 360 phones.
 - "shouldnt parallax on the top left be more on the left, and the icons up right more to the right?" → header now full-width. While checking found + fixed: phones were 20px too wide at load (pre-reveal slide-in), creature overlapping Base label on phones, hint placement.
 - "what should my X name be?" → suggested handles (see reply).
+- "make me a back banner" (X profile @parallaxswap) → 1500×500 X header in site style, kept clear of avatar overlap and mobile crop. Saved in brand/.

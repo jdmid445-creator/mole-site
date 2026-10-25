@@ -95,3 +95,7 @@ Fonts: Sora + JetBrains Mono. Palette: bg #0C0A18, violet #5A41D6/#7B62F0, lime 
 - "remember think like a company. this is a product" → rule: name must sound like a funded startup/product first; meme formulas only as inspiration, never the main driver
 - Offered Liminal, Aperture, Parallax, Interstice, Lattice, Meridian → "parallax isnt bad keep trying tho these are getting closer youre onthe right track"
   → what's working: one smart, abstract concept word (physics/optics/perception) with a real story tied to "watchers can't connect the two sides"
+- Offered Refract, Blindspot, Oblique, Occlude, Decohere, Tangent, Lensing, Vanishing Point → "getting closer keep going"
+- Offered Neutrino, Axion, Antumbra, Nadir, Transit, Entropy, Darkmatter → "i lowkey like vanish"
+  → CONFLICT found: **Vanish** (vanish.trade) is an existing Solana privacy trading layer, $1M pre-seed led by Colosseum with Solana Ventures (Aug 2025). Same niche → confusion/knockoff look. Recommended a variant with the same feeling instead.
+  → what's working: the feeling of disappearing; short, clean, one word

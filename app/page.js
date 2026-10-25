@@ -2,6 +2,7 @@ import Link from 'next/link';
 import HeroStage from '@/components/HeroStage';
 import NetworkStatus from '@/components/NetworkStatus';
 import TraceGame from '@/components/TraceGame';
+import Statement from '@/components/Statement';
 import ChainIcon from '@/components/ChainIcon';
 import CopyButton from '@/components/CopyButton';
 import { SITE, pumpUrl, dexUrl } from '@/lib/site';
@@ -154,13 +155,7 @@ export default function Home() {
 
       <section className="section section-flush">
         <div className="container">
-          <div className="statement" data-reveal>
-            <p className="kicker">Your wallets. Your business.</p>
-            <p className="statement-text">
-              Every public swap draws a line between your wallets. Anyone can follow it. Parallax swaps across chains without
-              leaving that line behind.
-            </p>
-          </div>
+          <Statement />
         </div>
       </section>
 

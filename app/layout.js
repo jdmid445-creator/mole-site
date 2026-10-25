@@ -7,13 +7,25 @@ import MotionObserver from '@/components/MotionObserver';
 const display = Bricolage_Grotesque({ subsets: ['latin'], axes: ['opsz', 'wdth'], variable: '--font-display', display: 'swap' });
 const mono = JetBrains_Mono({ subsets: ['latin'], weight: ['400', '500'], variable: '--font-code', display: 'swap' });
 
+const siteUrl =
+  process.env.NEXT_PUBLIC_SITE_URL ||
+  (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : 'http://localhost:3000');
+
 export const metadata = {
+  metadataBase: new URL(siteUrl),
   title: 'Parallax — private cross-chain swaps',
   description: 'Move value between chains without a public link between your wallets. Powered by NEAR Intents confidential swaps.',
   icons: { icon: '/icon.svg' },
   openGraph: {
     title: 'Parallax',
-    description: 'Leave one chain. Arrive on another. No line between them.',
+    description: 'Seen from one chain, it left. Seen from the other, it arrived. Private cross-chain swaps.',
+    siteName: 'Parallax',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Parallax',
+    description: 'Private cross-chain swaps. No line between your wallets.',
   },
 };
 

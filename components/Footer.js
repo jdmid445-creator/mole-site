@@ -10,6 +10,8 @@ export default function Footer() {
           Nothing here is financial advice.
         </p>
         <nav className="footer-links" aria-label="Footer">
+          <Link href="/docs">Docs</Link>
+          <Link href="/track">Track a crossing</Link>
           <Link href="/terms">Terms &amp; privacy limits</Link>
           {SITE.xUrl ? <a href={SITE.xUrl} target="_blank" rel="noopener noreferrer">X</a> : null}
           {SITE.telegramUrl ? <a href={SITE.telegramUrl} target="_blank" rel="noopener noreferrer">Telegram</a> : null}

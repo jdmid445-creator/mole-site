@@ -490,7 +490,8 @@ export default function TunnelApp() {
           ) : null}
 
           <p className="muted small">
-            Keep this page open until it says Arrived, or save the deposit address to check later. Don't send from the destination
+            Keep this page open until it says Arrived, or{' '}
+            <a href={`/track?d=${encodeURIComponent(swap.depositAddress)}`}>track it later</a> with the deposit address. Don't send from the destination
             wallet back to your sending wallet directly; that links them.
           </p>
           <button type="button" className="btn btn-ghost" onClick={reset}>

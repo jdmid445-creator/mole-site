@@ -1,4 +1,5 @@
 import TunnelApp from '@/components/TunnelApp';
+import NetworkStatus from '@/components/NetworkStatus';
 
 export const metadata = {
   title: 'Swap — Parallax',
@@ -14,6 +15,9 @@ export default function TunnelPage() {
           Pick both ends, send once, arrive elsewhere. Your funds go straight into NEAR Intents' confidential network.
           This site never holds them.
         </p>
+        <div className="hero-in tunnel-status" style={{ '--d': '260ms' }}>
+          <NetworkStatus />
+        </div>
         <div className="hero-in" style={{ '--d': '320ms' }}>
           <TunnelApp />
         </div>

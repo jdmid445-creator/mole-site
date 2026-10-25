@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import HeroStage from '@/components/HeroStage';
+import NetworkStatus from '@/components/NetworkStatus';
 import CopyButton from '@/components/CopyButton';
 import { SITE, pumpUrl, dexUrl } from '@/lib/site';
 
@@ -8,6 +9,38 @@ const STEPS = [
   { title: 'Approve one transfer', body: 'One signature in your wallet. It goes straight to the swap network, never to us.' },
   { title: 'It crosses privately', body: 'NEAR Intents runs the swap in confidential mode. Our test route quoted about 24 seconds.' },
   { title: 'It arrives elsewhere', body: 'Your other wallet receives it from a network address. If anything fails, it’s refunded.' },
+];
+
+const CHAIN_ROW = [
+  { name: 'Solana', color: 'linear-gradient(135deg, #9945ff, #14f195)' },
+  { name: 'Ethereum', color: '#8c8dfc' },
+  { name: 'Base', color: '#0052ff' },
+  { name: 'Arbitrum', color: '#28a0f0' },
+  { name: 'BNB Chain', color: '#f3ba2f' },
+  { name: 'Bitcoin', color: '#f7931a' },
+];
+
+const CLEAN = [
+  {
+    title: 'Screened at the door',
+    body: 'Every deposit enters NEAR Intents’ network, which screens assets as they come in.',
+    icon: 'M12 3l7 3v5c0 4.5-3 8.3-7 10-4-1.7-7-5.5-7-10V6l7-3z M9 12l2 2 4-4',
+  },
+  {
+    title: 'Never custodial',
+    body: 'Your wallet signs, the network delivers. Parallax never holds funds or private keys.',
+    icon: 'M15 7a3 3 0 11-6 0 3 3 0 016 0z M12 10v11 M12 15h4 M12 18h3',
+  },
+  {
+    title: 'Closed where sanctioned',
+    body: 'Swaps are blocked from comprehensively sanctioned countries and regions.',
+    icon: 'M12 21a9 9 0 100-18 9 9 0 000 18z M3 12h18 M12 3c2.5 2.6 3.8 5.6 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3z M5 5l14 14',
+  },
+  {
+    title: 'No accounts, no logs',
+    body: 'No sign-ups and no stored swap history. Your last route is remembered only in your own browser.',
+    icon: 'M3 3l18 18 M10.6 6.1A9.8 9.8 0 0112 6c5 0 9 6 9 6a17 17 0 01-2.6 3.3 M6.3 7.6C4.1 9.2 3 12 3 12s4 6 9 6c1.3 0 2.5-.3 3.6-.8 M9.9 9.9a3 3 0 004.2 4.2',
+  },
 ];
 
 const FAQ = [
@@ -63,8 +96,24 @@ export default function Home() {
               <Link href="/#how" className="btn btn-ghost">See how it works</Link>
             </div>
             <p className="hero-note hero-in" style={{ '--d': '800ms' }}>Your funds never touch us. No app fee. Runs on NEAR Intents.</p>
+            <div className="hero-in" style={{ '--d': '920ms' }}>
+              <NetworkStatus />
+            </div>
           </div>
           <HeroStage />
+        </div>
+      </section>
+
+      <section className="chain-band" aria-label="Supported chains">
+        <div className="container">
+          <ul className="chain-row" data-reveal>
+            {CHAIN_ROW.map((c, i) => (
+              <li key={c.name} style={{ '--i': i }}>
+                <span className="chain-dot" style={{ background: c.color }} aria-hidden="true" />
+                {c.name}
+              </li>
+            ))}
+          </ul>
         </div>
       </section>
 
@@ -120,6 +169,30 @@ export default function Home() {
             Private, not invisible: both halves are public on their own chains. Round amounts, waiting a bit between crossings,
             and never sending directly between your two wallets keep them hard to match.
           </p>
+        </div>
+      </section>
+
+      <section id="clean" className="section">
+        <div className="container">
+          <h2 className="section-title" data-reveal>Keeping it clean</h2>
+          <p className="lede narrow" data-reveal>Privacy for normal people, not cover for bad actors.</p>
+          <ul className="clean-grid" data-reveal>
+            {CLEAN.map((c, i) => (
+              <li key={c.title} style={{ '--i': i }}>
+                <svg className="clean-icon" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d={c.icon} />
+                </svg>
+                <h3>{c.title}</h3>
+                <p>{c.body}</p>
+              </li>
+            ))}
+          </ul>
+          <div className="built-on" data-reveal>
+            <span className="built-on-label">Built on</span>
+            <span className="built-on-name">NEAR Intents</span>
+            <span className="built-on-name">Helius</span>
+            <span className="built-on-name">Solana</span>
+          </div>
         </div>
       </section>
 

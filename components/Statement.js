@@ -1,9 +1,27 @@
+'use client';
+
+import { useEffect, useRef, useState } from 'react';
+
 const TEXT =
   'Every public swap draws a line between your wallets. Anyone can follow it. Parallax swaps across chains without leaving that line behind.';
 const BARS = 72;
 
 // Brand "light bars" (same as the X banner), moving in a slow wave behind static copy.
 export default function Statement() {
+  const ref = useRef(null);
+  const [lit, setLit] = useState(false);
+
+  // Brighten the text once, when most of the band is on screen.
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || !('IntersectionObserver' in window)) { setLit(true); return undefined; }
+    const io = new IntersectionObserver(([e]) => {
+      if (e.isIntersecting) { setLit(true); io.disconnect(); }
+    }, { threshold: 0.55 });
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
   const bars = Array.from({ length: BARS }, (_, i) => {
     const t = i / (BARS - 1);
     const env = Math.sin(t * Math.PI); // taller in the middle
@@ -20,14 +38,14 @@ export default function Statement() {
   });
 
   return (
-    <div className="statement">
+    <div className="statement" ref={ref}>
       <div className="st-bars" aria-hidden="true">
         {bars.map((b, i) => (
           <span key={i} style={{ '--i': i, '--h': `${b.h}%`, '--c': b.c, '--o': b.o }} />
         ))}
       </div>
       <div className="st-veil" aria-hidden="true" />
-      <div className="st-copy" data-reveal>
+      <div className={`st-copy${lit ? ' is-lit' : ''}`}>
         <p className="kicker">Your wallets. Your business.</p>
         <p className="statement-text">{TEXT}</p>
       </div>

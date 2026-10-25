@@ -27,7 +27,7 @@ They should: land, get it in ~5 seconds, try Parallax, feel "this is legit, not 
 | Thing | Where | Status |
 |---|---|---|
 | Code | GitHub `jdmid445-creator/mole-site` (branch `main`) | Next.js 14, JS, auto-deploys to Vercel on push |
-| Live site | https://mole-site-mu.vercel.app | Live. Branded **Parallax** (renamed 2026-10-24) |
+| Live site | https://mole-site-mu.vercel.app | Live. Branded **Parallax** (renamed 2026-10-24). Confirmed loading on owner's phone (cellular); owner's laptop network timed out on `*.vercel.app` at 22:11, so custom domain needed anyway |
 | Hosting | Vercel project `mole-site` (team YOSH) | Env vars set: `HELIUS_API_KEY`, `NEAR_INTENTS_JWT` (all envs) |
 | Swap rails | NEAR Intents 1Click API, `confidentiality: advanced` | Partner account "MOLE", Distribution Channel key |
 | Logo | Design canvas "$MOLE Logo" → artboard **"★ Night, peeking out"** | Final mascot: deep-violet creature peeking out of a dark hole, lime eyes, pink nose, soft glow, on #0C0A18 |
@@ -109,3 +109,4 @@ Fonts: Sora + JetBrains Mono. Palette: bg #0C0A18, violet #5A41D6/#7B62F0, lime 
 - Offered Evanesce, Vamoose, Dissolve, Unsee, Exeunt, Afterimage → "eh those arent so good keep going tho, vanish and parralax are good"
   → favorites so far: **Vanish** (taken) and **Parallax**. Shared traits: 2–3 syllables, sharp consonants (V / X), real word, sounds cool said out loud, about disappearing or perception
 - "yk what why dont we go with parralax" → **decision: Parallax.** Site renamed same day.
+- "okay it works on my phone its all good, im gonna buy the domain after but lets make this tech a little better, im gonna input some websites i like and their designs, make my website similar ideas to theirs" → next: study owner's reference sites closely (fonts, spacing, motion, tone, structure) and redesign to match. Domain purchase comes after.

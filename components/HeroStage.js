@@ -1,79 +1,73 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
+import Link from 'next/link';
 import Mole from './Mole';
 import ChainIcon from './ChainIcon';
 
-// The parallax hero: two chain "planes" at different depths with the creature between them.
-// Layers drift with the pointer; nothing moves for people who prefer reduced motion.
+// Hero visual: a clean preview of the swap box, with the creature peeking over the top.
+// The creature still ducks when clicked.
 export default function HeroStage() {
-  const ref = useRef(null);
   const [ducking, setDucking] = useState(false);
-  const [boops, setBoops] = useState(0);
 
   function boop() {
     if (ducking) return;
     setDucking(true);
-    setBoops((n) => n + 1);
     setTimeout(() => setDucking(false), 1100);
   }
 
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return undefined;
-    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const finePointer = window.matchMedia('(pointer: fine)').matches;
-    if (reduce || !finePointer) return undefined;
-
-    let frame = 0;
-    const onMove = (e) => {
-      const r = el.getBoundingClientRect();
-      const x = (e.clientX - (r.left + r.width / 2)) / r.width;
-      const y = (e.clientY - (r.top + r.height / 2)) / r.height;
-      cancelAnimationFrame(frame);
-      frame = requestAnimationFrame(() => {
-        el.style.setProperty('--mx', Math.max(-1, Math.min(1, x)).toFixed(3));
-        el.style.setProperty('--my', Math.max(-1, Math.min(1, y)).toFixed(3));
-      });
-    };
-    const onLeave = () => {
-      el.style.setProperty('--mx', '0');
-      el.style.setProperty('--my', '0');
-    };
-    window.addEventListener('pointermove', onMove);
-    document.addEventListener('pointerleave', onLeave);
-    return () => {
-      cancelAnimationFrame(frame);
-      window.removeEventListener('pointermove', onMove);
-      document.removeEventListener('pointerleave', onLeave);
-    };
-  }, []);
-
   return (
-    <div className="stage" ref={ref}>
-      <div className="plane plane-back" aria-hidden="true">
-        <span className="plane-name"><ChainIcon chain="sol" size={30} /> Solana</span>
-        <span className="plane-event">
-          <span className="dot dot-out" /> 0.1 SOL left your wallet
-        </span>
-      </div>
+    <div className="hero-swap hero-in" style={{ '--d': '260ms' }}>
       <button
         type="button"
-        className={`stage-mole${ducking ? ' is-ducking' : ''}`}
+        className={`swap-mole${ducking ? ' is-ducking' : ''}`}
         onClick={boop}
         aria-label="Boop the Parallax creature"
       >
-        <Mole size={300} id="mole-stage" title="Parallax creature" />
-        <span className="boop-hint" aria-live="polite">
-          {boops === 0 ? 'click me' : ducking ? 'gone.' : `${boops} boop${boops === 1 ? '' : 's'}`}
-        </span>
+        <Mole size={170} id="mole-stage" title="Parallax creature" />
       </button>
-      <div className="plane plane-front" aria-hidden="true">
-        <span className="plane-name"><ChainIcon chain="base" size={30} /> Base</span>
-        <span className="plane-event">
-          <span className="dot dot-in" /> 0.0043 ETH arrived somewhere
-        </span>
+
+      <div className="swap-card">
+        <div className="swap-head">
+          <span>Crossing</span>
+          <span className="swap-pill"><span className="dot dot-in" /> Confidential</span>
+        </div>
+
+        <div className="swap-field">
+          <span className="swap-label">You send</span>
+          <div className="swap-row">
+            <strong>0.1</strong>
+            <span className="swap-token">
+              <ChainIcon chain="sol" size={26} />
+              <span>SOL<small>Solana</small></span>
+            </span>
+          </div>
+        </div>
+
+        <div className="swap-arrow" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="18" height="18"><path d="M12 5v14M6 13l6 6 6-6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
+        </div>
+
+        <div className="swap-field">
+          <span className="swap-label">You receive</span>
+          <div className="swap-row">
+            <strong>≈ 0.0042</strong>
+            <span className="swap-token">
+              <ChainIcon chain="base" size={26} />
+              <span>ETH<small>Base</small></span>
+            </span>
+          </div>
+        </div>
+
+        <dl className="swap-meta">
+          <div><dt>Arrives in</dt><dd>A fresh wallet</dd></div>
+          <div><dt>App fee</dt><dd>0%</dd></div>
+          <div><dt>Time</dt><dd>~25 sec</dd></div>
+        </dl>
+
+        <Link href="/tunnel" className="btn swap-cta">Start a crossing</Link>
       </div>
+      <p className="swap-caption">Example quote. Live prices on the swap page.</p>
     </div>
   );
 }

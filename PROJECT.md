@@ -154,3 +154,4 @@ References from owner: blackout.exchange, vanish.trade/us, veilit.xyz, web-4.app
 - "what should my X name be?" → suggested handles (see reply).
 - "make me a back banner" (X profile @parallaxswap) → 1500×500 X header in site style, kept clear of avatar overlap and mobile crop. Saved in brand/.
 - "how about a bio, and lets link my twitter on the website now somewhere" → X icon button in header (laptop + phone) and "X (@parallaxswap)" in footer; default in lib/site.js. Bio options given in chat.
+- "make the twitter background better, i dont like it" → 3 new X header directions (A Depth: floating coins + creature; B Bold: big wordmark + SOL/Base coins; C Big creature + "No line between your wallets."). Files in brand/. Waiting on owner pick.

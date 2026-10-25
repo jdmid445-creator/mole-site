@@ -500,7 +500,7 @@ export default function TunnelApp() {
       {!swap ? (
         <form className="tunnel-form" onSubmit={(e) => e.preventDefault()}>
           <fieldset className="side">
-            <legend>Send from</legend>
+            <legend>From your wallet</legend>
             <div className="field-row">
               <label className="field">
                 <span>Chain</span>
@@ -558,7 +558,7 @@ export default function TunnelApp() {
                 <div className="wallet-actions">
                   {!appLinks.length ? (
                     <button type="button" className="btn" onClick={onConnect} disabled={Boolean(picker?.busyId)}>
-                      Connect {walletKind === 'solana' ? 'Solana wallet' : 'browser wallet'}
+                      Connect {fromChain.label} wallet
                     </button>
                   ) : null}
                   <label className="field field-inline">
@@ -571,6 +571,7 @@ export default function TunnelApp() {
             {picker && picker.kind === walletKind ? (
               <WalletPicker
                 kind={picker.kind}
+                chainLabel={fromChain.label}
                 wallets={picker.wallets}
                 busyId={picker.busyId}
                 onPick={(id) => connectWith(picker.kind, picker.wallets.find((w) => w.id === id))}
@@ -583,7 +584,7 @@ export default function TunnelApp() {
           </fieldset>
 
           <fieldset className="side">
-            <legend>Arrive at</legend>
+            <legend>To your private wallet</legend>
             <div className="field-row">
               <label className="field">
                 <span>Chain</span>

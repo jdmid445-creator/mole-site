@@ -3,8 +3,8 @@
 import { INSTALL } from '@/lib/wallets';
 
 // Lists the wallets this browser actually has. If there are none, shows where to get one.
-export default function WalletPicker({ kind, wallets, onPick, onClose, busyId }) {
-  const label = kind === 'solana' ? 'Solana' : 'browser';
+export default function WalletPicker({ kind, chainLabel, wallets, onPick, onClose, busyId }) {
+  const label = chainLabel || (kind === 'solana' ? 'Solana' : 'browser');
   // Hide install links for wallets already here ("Rabby Wallet" counts as Rabby, "Coinbase Wallet" as Coinbase).
   const names = wallets.map((w) => w.name.toLowerCase());
   const suggestions = INSTALL[kind].filter((w) => {

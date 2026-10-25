@@ -526,6 +526,24 @@ html.motion .clean-grid[data-reveal].is-in li { opacity: 1; transform: none; }
 .split-status-main { display: grid; gap: 2px; min-width: 0; }
 .split-links { grid-column: 2 / -1; display: flex; gap: 14px; font-size: 0.88rem; }
 
+/* Wallet picker */
+.wpick { display: grid; gap: 10px; padding: 16px; border: 1px solid var(--line); border-radius: 18px; background: #0a0815; animation: rise-in 0.3s cubic-bezier(.2,.8,.2,1); }
+.wpick-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.wpick-close { appearance: none; width: 36px; height: 36px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface-2); color: var(--muted); font-size: 1.2rem; cursor: pointer; }
+.wpick-close:hover { color: var(--text); border-color: var(--lilac); }
+.wpick-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.wpick-item { appearance: none; width: 100%; display: flex; align-items: center; gap: 12px; min-height: 52px; padding: 8px 14px; border-radius: 14px; border: 1px solid var(--line-soft); background: var(--surface); color: var(--text); font: inherit; font-weight: 600; text-align: left; cursor: pointer; transition: border-color 0.2s ease, background 0.2s ease; }
+.wpick-item:hover { border-color: var(--lilac); background: var(--surface-2); text-decoration: none; }
+.wpick-item:disabled { opacity: 0.7; cursor: progress; }
+.wpick-item img { width: 28px; height: 28px; border-radius: 8px; flex: none; }
+.wpick-item span { flex: 1; }
+.wpick-item em { font-style: normal; font-size: 0.8rem; font-weight: 600; color: var(--lime); }
+a.wpick-item em { color: var(--muted); }
+.wpick-sub { margin: 6px 0 0; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+.wpick-note { margin: 0; }
+.wallet-switch { appearance: none; margin-left: 10px; padding: 4px 12px; min-height: 32px; border-radius: 999px; border: 1px solid var(--line); background: none; color: var(--lilac); font: inherit; font-size: 0.85rem; cursor: pointer; }
+.wallet-switch:hover { border-color: var(--lilac); color: var(--text); }
+
 /* Open in wallet app (phones) */
 .open-in { display: grid; gap: 10px; padding: 14px 16px; border: 1px solid var(--line); border-radius: var(--radius); background: #0a0815; }
 .open-in-title { margin: 0; font-size: 0.92rem; color: var(--lilac); }

@@ -1,0 +1,3 @@
+Wallet logos in this folder are from Web3 Icons (@web3icons/core), MIT License.
+https://github.com/0xa3k5/web3icons
+Copyright (c) 0xa3k5. Logos are trademarks of their respective owners and are used here only to identify supported wallets.

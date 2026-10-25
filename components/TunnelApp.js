@@ -11,12 +11,15 @@ import {
   sendEvmToken,
   hasSolanaWallet,
   hasEvmWallet,
+  detectSolanaWallets,
+  detectEvmWallets,
   isMobile,
   walletAppLinks,
 } from '@/lib/wallets';
 import CopyButton from './CopyButton';
 import ChainIcon from './ChainIcon';
 import GhostWallet from './GhostWallet';
+import WalletPicker from './WalletPicker';
 import { ghostKindFor } from '@/lib/ghost';
 
 const STORAGE_KEY = 'mole-tunnel-pair-v1';
@@ -103,7 +106,8 @@ export default function TunnelApp() {
   const [amount, setAmount] = useState('');
   const [recipient, setRecipient] = useState('');
   const [manualRefund, setManualRefund] = useState('');
-  const [wallet, setWallet] = useState({ type: '', address: '' });
+  const [wallet, setWallet] = useState({ type: '', address: '', name: '' });
+  const [picker, setPicker] = useState(null); // { kind, wallets, busyId }
   const [ack, setAck] = useState(false);
   const [ghostFor, setGhostFor] = useState(null); // 'single' | row index | null
 
@@ -181,6 +185,7 @@ export default function TunnelApp() {
   useEffect(() => {
     setFromAssetId('');
     setPreview(null);
+    setPicker(null);
   }, [fromChainKey]);
 
   useEffect(() => {
@@ -321,14 +326,29 @@ export default function TunnelApp() {
     return { units, quotes: results.map((r) => r.value) };
   }
 
-  async function onConnect() {
+  async function connectWith(kind, w) {
     setError('');
+    setPicker((pk) => (pk ? { ...pk, busyId: w.id } : pk));
     try {
-      if (fromChain.wallet === 'solana') setWallet({ type: 'solana', address: await connectSolana() });
-      else if (fromChain.wallet === 'evm') setWallet({ type: 'evm', address: await connectEvm() });
+      const address = kind === 'solana' ? await connectSolana(w.id) : await connectEvm(w.id);
+      setWallet({ type: kind, address, name: w.name });
+      setPicker(null);
     } catch (e) {
       setError(e?.message || 'Could not connect wallet.');
+      setPicker((pk) => (pk ? { ...pk, busyId: '' } : pk));
     }
+  }
+
+  // Connect: if exactly one wallet is installed, go straight to it; otherwise let the person choose.
+  async function onConnect() {
+    setError('');
+    const kind = fromChain.wallet;
+    const wallets = kind === 'solana' ? detectSolanaWallets() : await detectEvmWallets();
+    if (wallets.length === 1 && !(wallet.address && wallet.type === kind)) {
+      await connectWith(kind, wallets[0]);
+      return;
+    }
+    setPicker({ kind, wallets, busyId: '' });
   }
 
   async function onPreview() {
@@ -518,7 +538,8 @@ export default function TunnelApp() {
               </label>
             ) : walletMatches ? (
               <p className="wallet-line">
-                Connected: <code className="mono">{short(wallet.address)}</code>
+                Connected{wallet.name ? ` with ${wallet.name}` : ''}: <code className="mono">{short(wallet.address)}</code>
+                <button type="button" className="wallet-switch" onClick={onConnect}>Switch</button>
               </p>
             ) : (
               <>
@@ -536,7 +557,7 @@ export default function TunnelApp() {
                 ) : null}
                 <div className="wallet-actions">
                   {!appLinks.length ? (
-                    <button type="button" className="btn" onClick={onConnect}>
+                    <button type="button" className="btn" onClick={onConnect} disabled={Boolean(picker?.busyId)}>
                       Connect {walletKind === 'solana' ? 'Solana wallet' : 'browser wallet'}
                     </button>
                   ) : null}
@@ -547,6 +568,15 @@ export default function TunnelApp() {
                 </div>
               </>
             )}
+            {picker && picker.kind === walletKind ? (
+              <WalletPicker
+                kind={picker.kind}
+                wallets={picker.wallets}
+                busyId={picker.busyId}
+                onPick={(id) => connectWith(picker.kind, picker.wallets.find((w) => w.id === id))}
+                onClose={() => setPicker(null)}
+              />
+            ) : null}
             {amount && !looksRound(amount) ? (
               <p className="hint">Round amounts blend in better. Something like {Number(amount).toFixed(1)} is harder to match.</p>
             ) : null}

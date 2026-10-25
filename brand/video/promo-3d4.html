@@ -16,10 +16,10 @@ body { font-family: 'Manrope', system-ui, sans-serif; color: var(--text); -webki
   background: radial-gradient(45% 60% at 50% 48%, rgba(123, 98, 240, 0.22), transparent 70%), var(--bg); }
 .abs { position: absolute; }
 .cx { left: 0; right: 0; text-align: center; }
-.bars { position: absolute; left: 0; right: 0; bottom: 0; height: 520px; display: flex; align-items: flex-end; justify-content: center; gap: 9px; padding: 0 30px;
-  -webkit-mask-image: linear-gradient(to top, rgba(0,0,0,0.95), transparent); }
+.bars { position: absolute; left: 0; right: 0; bottom: 0; height: 520px; display: flex; align-items: flex-end; justify-content: center; gap: 6px; padding: 0 30px;
+  -webkit-mask-image: linear-gradient(to top, rgba(0,0,0,0.95), transparent), linear-gradient(to right, transparent, #000 22%, #000 78%, transparent); -webkit-mask-composite: source-in; mask-composite: intersect; }
 .bars span { flex: 1; max-width: 3px; border-radius: 3px; transform-origin: bottom; }
-.bars.top { top: 0; bottom: auto; height: 260px; align-items: flex-start; -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,0.6), transparent); }
+.bars.top { top: 0; bottom: auto; height: 260px; align-items: flex-start; -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,0.6), transparent), linear-gradient(to right, transparent, #000 22%, #000 78%, transparent); -webkit-mask-composite: source-in; mask-composite: intersect; }
 .bars.top span { transform-origin: top; }
 
 .head { font-size: 84px; font-weight: 600; letter-spacing: -0.045em; line-height: 1.04; }
@@ -325,12 +325,12 @@ function makeBars(el, n, hMax) {
     const lerp = (a, b, k) => Math.round(a + (b - a) * k);
     let c; if (u < 0.6) { const k = u / 0.6; c = `rgb(${lerp(90,207,k)},${lerp(65,198,k)},${lerp(214,255,k)})`; } else { const k = (u - 0.6) / 0.4; c = `rgb(${lerp(207,200,k)},${lerp(198,255,k)},${lerp(255,46,k)})`; }
     s.style.background = `linear-gradient(${el.classList.contains('top') ? 'to bottom' : 'to top'}, ${c}, transparent)`;
-    s.style.height = `${hMax * (0.3 + 0.7 * e)}px`; s.style.opacity = (0.25 + 0.55 * e).toFixed(2);
+    const ee = Math.pow(e, 1.4); s.style.height = `${hMax * (0.08 + 0.92 * ee)}px`; s.style.opacity = (0.75 * ee).toFixed(3);
     el.appendChild(s); out.push(s);
   }
   return out;
 }
-const bars = makeBars($('bars'), 96, 560), barsTop = makeBars($('barsTop'), 96, 260);
+const bars = makeBars($('bars'), 150, 560), barsTop = makeBars($('barsTop'), 150, 260);
 
 window.render = function (t, wallT) {
   const tb = wallT ?? t; // background keeps moving even while the story pauses

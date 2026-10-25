@@ -53,7 +53,7 @@ Mascot (Night creature in its hole) stays.
 
 Next.js 14 (App Router, plain JS), @solana/web3.js, injected EVM wallets (no WalletConnect yet), server API routes
 proxy NEAR (`/api/tokens`, `/api/quote`, `/api/status`, `/api/submit`, `/api/solana/blockhash`, `/api/health`).
-Fonts: Sora + JetBrains Mono. Palette: bg #0C0A18, violet #5A41D6/#7B62F0, lime #C8FF2E, pink #FF8FB8.
+Fonts: **Manrope** (was Sora, then Bricolage Grotesque) + JetBrains Mono for addresses. Palette: bg #0C0A18, violet #5A41D6/#7B62F0, lime #C8FF2E, pink #FF8FB8.
 
 ## Design (v2, 2026-10-24)
 
@@ -63,7 +63,7 @@ References from owner: blackout.exchange, vanish.trade/us, veilit.xyz, web-4.app
 - Deliberately skipped: scrolling ticker, ALL-CAPS labels, arrows on buttons, identical card grids.
 - Signature element: **parallax hero**, two tilted chain planes (Solana behind, Base in front) drifting with the pointer at different depths, creature between. Static on touch devices and with reduced motion.
 - Story section "Two views, no line": what Solana sees vs what Base sees.
-- Type: Bricolage Grotesque (opsz + wdth axes) for everything; JetBrains Mono only for addresses.
+- Type: **Manrope** for everything (owner: "also change the font"); JetBrains Mono only for addresses.
 - Copy: hero "Seen from one chain, it left. Seen from the other, it arrived." Primary action everywhere is "Make a crossing".
 - Real numbers only: 1 signature, 0 funds held, 0% app fee, 6 chains, ~24s from our test quote.
 
@@ -77,9 +77,10 @@ References from owner: blackout.exchange, vanish.trade/us, veilit.xyz, web-4.app
 - `/api/network-status`: live from NEAR (2026-10-24: 88 assets on our 6 chains, 37 chains on the network).
 - Geo-blocking middleware on the swap flow: CU, IR, KP, SY + Crimea/Sevastopol/Donetsk/Luhansk. **Not legal advice; list should be reviewed.**
 - Claude can now screenshot the live site itself (owner allowed `mole-site-mu.vercel.app` in network egress). Script: Playwright, desktop 1440 and phone 390.
+- Coin/chain logos: official network icons from Web3 Icons (MIT) in /public/chains (sol, eth, base, arb, bsc, btc) + LICENSE.txt. Used in chain row, hero panels, swap circles, trace game.
 - **Rule: never show logos or "backed by" claims for firms that haven't actually backed or partnered with us.**
 - Interactive: hero creature eyes follow the cursor; clicking it ducks it into the hole (boop counter). "Try to trace it" game on home (careless vs careful habits; demo data, rate from real quote).
-- Layout (updated): fluid root font size (16px base; 17.5px ≥1600, 19px ≥1900, 21px ≥2300) so the whole site scales up on wide screens; container 80rem, 88rem ≥1600. Owner's Chrome window is ~2000px wide; always check at 2000px. Earlier note: container 1280px; hero fills first screen on desktop with a drifting perspective grid; headline capped so it stays 3 lines (checked at 1990, 1440, 390 widths).
+- Layout (updated): fluid root font size (16px base; 17.5px ≥1600, 19px ≥1900, 21px ≥2300) so the whole site scales up on wide screens; container 80rem, 88rem ≥1600. CORRECTION: owner was zoomed out. Real Chrome viewport at normal zoom ≈ **1470×745** (MacBook Air, short screen). Always check at 1470×745 first, then 2000 and 390. Hero sizes from window height so it fits in one screen. Earlier note: container 1280px; hero fills first screen on desktop with a drifting perspective grid; headline capped so it stays 3 lines (checked at 1990, 1440, 390 widths).
 
 ## Decisions and why
 
@@ -145,3 +146,4 @@ References from owner: blackout.exchange, vanish.trade/us, veilit.xyz, web-4.app
 - "add some stuff you think will look good. ill give you the x and shit later" → shipped share card, live status, chain band, Keeping it clean, geo-blocking, Track, Docs. Verified with screenshots on desktop + phone. Pending from owner: X/Telegram links, domain, decision on open-sourcing repo.
 - "fix this, see how on chrome it doesnt look filled out. lets also add something that has some type of like interactoin that the user can play with" → widened layout + full-screen hero + earlier scroll reveals; added creature boop + "Try to trace it" game. Played the game in a real browser (careless 5/5, careful 1/5); checked 3 screen sizes.
 - "it still looks like this on google chrome" (2000px-wide window, content looked like a narrow column with dead space) → made the site scale up on wide screens, removed the forced full-height hero, full-width background glow. Checked at 2000, 1470 and 2560 widths.
+- "oh i was zoomed out before. this is normal screen. fix it now" + "also change the font" + "use photos of currency too" → hero fits window height at 1470×745, font → Manrope, real coin logos added. Checked at 1470×745, 1512×860, 2000×1010, 390 and 360 phones.

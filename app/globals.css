@@ -38,7 +38,8 @@ h1, h2, h3 { margin: 0 0 0.5em; font-weight: 700; letter-spacing: -0.025em; }
 h1 { font-size: clamp(2.5rem, 6.2vw, 4.75rem); line-height: 0.98; font-variation-settings: "wdth" 80; }
 h2 { font-size: clamp(1.9rem, 3.6vw, 2.9rem); line-height: 1.04; }
 h3 { font-size: 1.15rem; line-height: 1.25; letter-spacing: -0.01em; }
-p { margin: 0 0 1em; }
+p { margin: 0 0 1em; text-wrap: pretty; }
+h1, h2, h3 { text-wrap: balance; }
 code, .mono { font-family: var(--font-code), ui-monospace, monospace; }
 button, input, select, textarea { font: inherit; color: inherit; }
 
@@ -118,6 +119,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 }
 .plane-name { font-weight: 700; font-size: 1.5rem; letter-spacing: -0.02em; color: var(--text); }
 .plane-back .plane-name { color: var(--muted); }
+.plane-back { justify-content: flex-start; gap: 10px; }
 .plane-event { display: inline-flex; align-items: center; gap: 10px; font-size: 0.95rem; color: var(--lilac); }
 .dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; flex: none; }
 .dot-out { background: var(--pink); }
@@ -141,7 +143,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .timeline { list-style: none; margin: 40px 0 0; padding: 0; display: grid; gap: 28px; grid-template-columns: 1fr; position: relative; }
 @media (min-width: 860px) {
   .timeline { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 32px; }
-  .timeline::before { content: ""; position: absolute; top: 19px; left: 20px; right: 20px; height: 1px; background: linear-gradient(90deg, var(--violet), var(--line) 60%, var(--lime)); }
+  .timeline::before { content: ""; position: absolute; top: 19px; left: 20px; right: calc((100% - 96px) / 4 - 20px); height: 1px; background: linear-gradient(90deg, var(--violet), var(--line) 60%, var(--lime)); }
 }
 .timeline li { position: relative; }
 .timeline-num {
@@ -210,6 +212,9 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .prose h2 { font-size: 1.3rem; margin-top: 2em; }
 .prose p, .prose li { color: var(--muted); }
 .page-title { font-size: clamp(2.2rem, 4.5vw, 3.4rem); }
+.tunnel-section .container { max-width: 824px; }
+.tunnel-section .page-title, .tunnel-section .lede { text-align: center; margin-left: auto; margin-right: auto; }
+.tunnel-section .tunnel-app { margin-left: auto; margin-right: auto; }
 
 /* Tunnel app */
 .tunnel-app {

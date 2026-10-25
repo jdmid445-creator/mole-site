@@ -113,7 +113,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
   pointer-events: none;
 }
 .hero-grid { position: relative; display: grid; grid-template-columns: 1fr; gap: 12px; align-items: center; }
-@media (min-width: 960px) { .hero-grid { grid-template-columns: 1.05fr 0.95fr; gap: 24px; } .hero { padding: 6rem 0 5rem; } }
+@media (min-width: 960px) { .hero-grid { grid-template-columns: 1.05fr 0.95fr; gap: 24px; } .hero { padding: 4.5rem 0 4.5rem; } }
 .hero-title { margin: 0; }
 .hero-title .line { display: block; overflow: hidden; padding-bottom: 0.06em; white-space: nowrap; }
 @media (max-width: 420px) { .hero-title .line { white-space: normal; } }

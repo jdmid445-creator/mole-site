@@ -5,8 +5,12 @@ import { INSTALL } from '@/lib/wallets';
 // Lists the wallets this browser actually has. If there are none, shows where to get one.
 export default function WalletPicker({ kind, wallets, onPick, onClose, busyId }) {
   const label = kind === 'solana' ? 'Solana' : 'browser';
-  const installed = new Set(wallets.map((w) => w.name.toLowerCase()));
-  const suggestions = INSTALL[kind].filter((w) => !installed.has(w.name.toLowerCase()));
+  // Hide install links for wallets already here ("Rabby Wallet" counts as Rabby, "Coinbase Wallet" as Coinbase).
+  const names = wallets.map((w) => w.name.toLowerCase());
+  const suggestions = INSTALL[kind].filter((w) => {
+    const key = w.name.split(' ')[0].toLowerCase();
+    return !names.some((n) => n.includes(key));
+  });
 
   return (
     <div className="wpick" role="dialog" aria-label={`Choose a ${label} wallet`}>

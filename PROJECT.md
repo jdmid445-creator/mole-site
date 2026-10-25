@@ -99,3 +99,5 @@ Fonts: Sora + JetBrains Mono. Palette: bg #0C0A18, violet #5A41D6/#7B62F0, lime 
 - Offered Neutrino, Axion, Antumbra, Nadir, Transit, Entropy, Darkmatter → "i lowkey like vanish"
   → CONFLICT found: **Vanish** (vanish.trade) is an existing Solana privacy trading layer, $1M pre-seed led by Colosseum with Solana Ventures (Aug 2025). Same niche → confusion/knockoff look. Recommended a variant with the same feeling instead.
   → what's working: the feeling of disappearing; short, clean, one word
+- Offered Evanesce, Vamoose, Dissolve, Unsee, Exeunt, Afterimage → "eh those arent so good keep going tho, vanish and parralax are good"
+  → favorites so far: **Vanish** (taken) and **Parallax**. Shared traits: 2–3 syllables, sharp consonants (V / X), real word, sounds cool said out loud, about disappearing or perception

@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
+import ChainIcon from './ChainIcon';
 
 // "Try to trace it": match deposits on Solana to arrivals on Base.
 // Careless habits (odd amounts, instant timing) are easy to trace; careful habits are guesswork.
@@ -132,7 +133,7 @@ export default function TraceGame() {
 
       <div className="trace-board">
         <div className="trace-col">
-          <p className="trace-col-title">Leaving Solana</p>
+          <p className="trace-col-title"><ChainIcon chain="sol" size={22} /> Leaving Solana</p>
           <ul>
             {scenario.deposits.map((d, i) => (
               <li key={d.from}>
@@ -153,7 +154,7 @@ export default function TraceGame() {
         </div>
 
         <div className="trace-col">
-          <p className="trace-col-title">Arriving on Base</p>
+          <p className="trace-col-title"><ChainIcon chain="base" size={22} /> Arriving on Base</p>
           <ul>
             {arrivals.map((a, i) => {
               const guess = guesses[i];

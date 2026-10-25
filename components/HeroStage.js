@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import Mole from './Mole';
+import ChainIcon from './ChainIcon';
 
 // The parallax hero: two chain "planes" at different depths with the creature between them.
 // Layers drift with the pointer; nothing moves for people who prefer reduced motion.
@@ -51,7 +52,7 @@ export default function HeroStage() {
   return (
     <div className="stage" ref={ref}>
       <div className="plane plane-back" aria-hidden="true">
-        <span className="plane-name">Solana</span>
+        <span className="plane-name"><ChainIcon chain="sol" size={30} /> Solana</span>
         <span className="plane-event">
           <span className="dot dot-out" /> 0.1 SOL left your wallet
         </span>
@@ -68,7 +69,7 @@ export default function HeroStage() {
         </span>
       </button>
       <div className="plane plane-front" aria-hidden="true">
-        <span className="plane-name">Base</span>
+        <span className="plane-name"><ChainIcon chain="base" size={30} /> Base</span>
         <span className="plane-event">
           <span className="dot dot-in" /> 0.0043 ETH arrived somewhere
         </span>

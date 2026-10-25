@@ -5,6 +5,7 @@ import { CHAINS, getChain, isValidAddress, addressHint } from '@/lib/chains';
 import { toUnits, fromUnits, looksRound, displayAmount } from '@/lib/units';
 import { connectSolana, connectEvm, sendSol, sendEvmNative, sendEvmToken } from '@/lib/wallets';
 import CopyButton from './CopyButton';
+import ChainIcon from './ChainIcon';
 
 const STORAGE_KEY = 'mole-tunnel-pair-v1';
 const TERMINAL = new Set(['SUCCESS', 'REFUNDED', 'FAILED']);
@@ -282,6 +283,7 @@ export default function TunnelApp() {
     <div className="tunnel-app">
       <div className={`tunnel-visual${moving ? ' is-moving' : ''}${done ? ' is-done' : ''}`} aria-hidden="true">
         <div className="portal portal-public">
+          <ChainIcon chain={fromChain?.key} size={34} className="portal-icon" />
           <span className="portal-chain">{fromChain?.label}</span>
           <span className="portal-asset">{fromToken?.symbol || '—'}</span>
         </div>
@@ -289,6 +291,7 @@ export default function TunnelApp() {
           <span className="tunnel-dot" />
         </div>
         <div className="portal portal-private">
+          <ChainIcon chain={toChain?.key} size={34} className="portal-icon" />
           <span className="portal-chain">{toChain?.label}</span>
           <span className="portal-asset">{toToken?.symbol || '—'}</span>
         </div>

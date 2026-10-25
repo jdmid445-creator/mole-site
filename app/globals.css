@@ -145,7 +145,8 @@ button, input, select, textarea { font: inherit; color: inherit; }
   border-color: rgba(207, 198, 255, 0.22);
   transform: translateX(-50%) translate3d(calc(var(--mx) * 30px), calc(var(--my) * 18px), 0) rotateX(40deg) rotateZ(-7deg);
 }
-.plane-name { font-weight: 700; font-size: 1.5rem; letter-spacing: -0.02em; color: var(--text); }
+.plane-name { display: inline-flex; align-items: center; gap: 10px; font-weight: 700; font-size: 1.5rem; letter-spacing: -0.02em; color: var(--text); }
+.plane-name .chain-icon { width: 1.9rem; height: 1.9rem; }
 .plane-back .plane-name { color: var(--muted); }
 .plane-back { justify-content: flex-start; gap: 10px; }
 .plane-event { display: inline-flex; align-items: center; gap: 10px; font-size: 0.95rem; color: var(--lilac); }
@@ -267,7 +268,8 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .portal { width: 104px; height: 104px; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; transition: background 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease; }
 .portal-public { background: radial-gradient(circle at 35% 30%, #ffffff, #e6e1f7 60%, #c9c0f2); color: #0c0a18; box-shadow: 0 0 0 6px rgba(242, 240, 235, 0.06), 0 18px 40px -12px rgba(207, 198, 255, 0.45); }
 .portal-private { border: 2px solid var(--violet); color: var(--text); background: radial-gradient(circle at 50% 40%, rgba(123, 98, 240, 0.28), rgba(12, 10, 24, 0.9) 70%); animation: portal-breathe 3.6s ease-in-out infinite; }
-.portal-chain { font-size: 0.75rem; opacity: 0.75; }
+.portal-chain { font-size: 0.72rem; opacity: 0.75; }
+.portal-icon { width: 30px; height: 30px; margin-bottom: 2px; }
 .portal-asset { font-weight: 700; font-size: 1.05rem; }
 .tunnel-track { position: relative; height: 6px; border-radius: 999px; background: linear-gradient(90deg, rgba(242, 240, 235, 0.25), var(--violet-deep), rgba(123, 98, 240, 0.4)); overflow: hidden; }
 .tunnel-track::after { content: ""; position: absolute; inset: 0; width: 30%; background: linear-gradient(90deg, transparent, rgba(207, 198, 255, 0.55), transparent); animation: shimmer 2.8s ease-in-out infinite; }
@@ -342,7 +344,9 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .chain-band { border-top: 1px solid var(--line-soft); border-bottom: 1px solid var(--line-soft); padding: 22px 0; }
 .chain-row { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 14px 24px; }
 .chain-row li { display: inline-flex; align-items: center; gap: 10px; font-weight: 600; font-size: 1.05rem; color: var(--lilac); }
-.chain-dot { width: 14px; height: 14px; border-radius: 50%; flex: none; box-shadow: 0 0 14px -2px currentColor; }
+.chain-icon { display: inline-block; flex: none; border-radius: 8px; }
+.chain-row .chain-icon { width: 2rem; height: 2rem; filter: drop-shadow(0 4px 14px rgba(123, 98, 240, 0.35)); transition: transform 0.25s ease; }
+.chain-row li:hover .chain-icon { transform: translateY(-3px) scale(1.06); }
 @media (max-width: 640px) { .chain-row { justify-content: flex-start; } .chain-row li { font-size: 0.95rem; } }
 html.motion .chain-row[data-reveal] li { opacity: 0; transform: translateY(10px); transition: opacity 0.5s ease, transform 0.5s ease; transition-delay: calc(var(--i, 0) * 70ms); }
 html.motion .chain-row[data-reveal].is-in li { opacity: 1; transform: none; }
@@ -400,7 +404,7 @@ html.motion .clean-grid[data-reveal].is-in li { opacity: 1; transform: none; }
 .trace-help { margin: 0; color: var(--lilac); min-height: 1.6em; }
 .trace-board { display: grid; gap: 18px; grid-template-columns: 1fr; }
 @media (min-width: 760px) { .trace-board { grid-template-columns: 1fr 1fr; gap: 28px; } }
-.trace-col-title { margin: 0 0 10px; font-weight: 700; }
+.trace-col-title { margin: 0 0 10px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
 .trace-col ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
 .trace-item {
   appearance: none; width: 100%; text-align: left; cursor: pointer; display: grid; grid-template-columns: 36px 1fr; grid-template-rows: auto auto; column-gap: 12px; align-items: center;

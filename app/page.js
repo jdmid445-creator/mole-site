@@ -2,6 +2,7 @@ import Link from 'next/link';
 import HeroStage from '@/components/HeroStage';
 import NetworkStatus from '@/components/NetworkStatus';
 import TraceGame from '@/components/TraceGame';
+import ChainIcon from '@/components/ChainIcon';
 import CopyButton from '@/components/CopyButton';
 import { SITE, pumpUrl, dexUrl } from '@/lib/site';
 
@@ -13,12 +14,12 @@ const STEPS = [
 ];
 
 const CHAIN_ROW = [
-  { name: 'Solana', color: 'linear-gradient(135deg, #9945ff, #14f195)' },
-  { name: 'Ethereum', color: '#8c8dfc' },
-  { name: 'Base', color: '#0052ff' },
-  { name: 'Arbitrum', color: '#28a0f0' },
-  { name: 'BNB Chain', color: '#f3ba2f' },
-  { name: 'Bitcoin', color: '#f7931a' },
+  { key: 'sol', name: 'Solana' },
+  { key: 'eth', name: 'Ethereum' },
+  { key: 'base', name: 'Base' },
+  { key: 'arb', name: 'Arbitrum' },
+  { key: 'bsc', name: 'BNB Chain' },
+  { key: 'btc', name: 'Bitcoin' },
 ];
 
 const CLEAN = [
@@ -110,7 +111,7 @@ export default function Home() {
           <ul className="chain-row" data-reveal>
             {CHAIN_ROW.map((c, i) => (
               <li key={c.name} style={{ '--i': i }}>
-                <span className="chain-dot" style={{ background: c.color }} aria-hidden="true" />
+                <ChainIcon chain={c.key} size={32} />
                 {c.name}
               </li>
             ))}

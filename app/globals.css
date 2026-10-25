@@ -179,7 +179,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 @keyframes duck { 0% { transform: translateY(0); } 30% { transform: translateY(170px); } 62% { transform: translateY(170px); } 82% { transform: translateY(-14px); } 100% { transform: translateY(0); } }
 @keyframes paws { 0%, 100% { opacity: 1; } 25%, 70% { opacity: 0; } }
 .boop-hint { position: absolute; left: calc(100% + 6px); top: 50%; transform: translateY(-50%); padding: 4px 10px; border-radius: 999px; background: rgba(12, 10, 24, 0.7); border: 1px solid var(--line-soft); font-size: 0.8rem; color: var(--muted); white-space: nowrap; opacity: 0.8; pointer-events: none; }
-@media (max-width: 700px) { .boop-hint { left: 50%; top: auto; bottom: -34px; transform: translateX(-50%); } }
+@media (max-width: 700px) { .boop-hint { left: 50%; top: 4px; bottom: auto; transform: translateX(-50%); } }
 @media (prefers-reduced-motion: reduce) { .plane, .stage-mole { transition: none; } }
 .mole-eye { animation: blink 6s infinite; transform-box: fill-box; transform-origin: center; }
 @keyframes blink { 0%, 94%, 100% { transform: scaleY(1); } 96% { transform: scaleY(0.1); } }

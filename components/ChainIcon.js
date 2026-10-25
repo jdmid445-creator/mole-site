@@ -1,5 +1,5 @@
 // Official network logos (Web3 Icons, MIT). Files live in /public/chains.
-const NAMES = { sol: 'Solana', eth: 'Ethereum', base: 'Base', arb: 'Arbitrum', bsc: 'BNB Chain', btc: 'Bitcoin' };
+const NAMES = { sol: 'Solana', eth: 'Ethereum', base: 'Base', arb: 'Arbitrum', bsc: 'BNB Chain', btc: 'Bitcoin', avax: 'Avalanche', op: 'Optimism', pol: 'Polygon', doge: 'Dogecoin', ltc: 'Litecoin', xrp: 'XRP Ledger', tron: 'Tron' };
 
 export default function ChainIcon({ chain, size = 24, className = '', label = false }) {
   if (!NAMES[chain]) return null;

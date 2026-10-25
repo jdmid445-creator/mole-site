@@ -38,10 +38,10 @@ export default function GhostWallet({ initialKind = 'solana', lockKind = false, 
   return (
     <div className={`ghost${compact ? ' ghost-compact' : ''}`}>
       {!lockKind ? (
-        <div className="trace-modes ghost-kinds" role="group" aria-label="Wallet type">
+        <div className="ghost-kinds" role="group" aria-label="Wallet type">
           {Object.entries(GHOST_KINDS).map(([k, v]) => (
             <button key={k} type="button" className={kind === k ? 'is-active' : ''} aria-pressed={kind === k} onClick={() => { setKind(k); discard(); }}>
-              {k === 'solana' ? <ChainIcon chain="sol" size={18} /> : <ChainIcon chain="eth" size={18} />}
+              <ChainIcon chain={v.icon} size={18} />
               {v.label}
             </button>
           ))}

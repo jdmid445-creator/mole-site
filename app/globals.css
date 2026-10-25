@@ -356,10 +356,10 @@ button, input, select, textarea { font: inherit; color: inherit; }
 
 /* Chain band */
 .chain-band { border-top: 1px solid var(--line-soft); border-bottom: 1px solid var(--line-soft); padding: 22px 0; }
-.chain-row { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 14px 24px; }
-.chain-row li { display: inline-flex; align-items: center; gap: 10px; font-weight: 600; font-size: 1.05rem; color: var(--lilac); }
+.chain-row { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 14px 30px; }
+.chain-row li { display: inline-flex; align-items: center; gap: 9px; font-weight: 600; font-size: 0.98rem; color: var(--lilac); }
 .chain-icon { display: inline-block; flex: none; border-radius: 8px; }
-.chain-row .chain-icon { width: 2rem; height: 2rem; filter: drop-shadow(0 4px 14px rgba(123, 98, 240, 0.35)); transition: transform 0.25s ease; }
+.chain-row .chain-icon { width: 1.75rem; height: 1.75rem; filter: drop-shadow(0 4px 14px rgba(123, 98, 240, 0.35)); transition: transform 0.25s ease; }
 .chain-row li:hover .chain-icon { transform: translateY(-3px) scale(1.06); }
 @media (max-width: 640px) { .chain-row { justify-content: flex-start; } .chain-row li { font-size: 0.95rem; } }
 html.motion .chain-row[data-reveal] li { opacity: 0; transform: translateY(10px); transition: opacity 0.5s ease, transform 0.5s ease; transition-delay: calc(var(--i, 0) * 70ms); }
@@ -447,8 +447,6 @@ html.motion .clean-grid[data-reveal].is-in li { opacity: 1; transform: none; }
 .ghost-wrap { max-width: 760px; margin: 28px auto 0; }
 .ghost { display: grid; gap: 18px; padding: 24px; border-radius: 24px; background: var(--surface); border: 1px solid var(--line); }
 .ghost-compact { padding: 18px; border-radius: 16px; background: rgba(12, 10, 24, 0.5); }
-.ghost-kinds { justify-self: center; }
-.ghost-kinds button { display: inline-flex; align-items: center; gap: 8px; }
 .ghost-start { display: grid; gap: 14px; justify-items: start; }
 .ghost-start p { margin: 0; }
 .ghost-card { display: grid; gap: 16px; animation: rise-in 0.4s cubic-bezier(.2,.8,.2,1); }
@@ -456,6 +454,11 @@ html.motion .clean-grid[data-reveal].is-in li { opacity: 1; transform: none; }
 .ghost-label { font-size: 0.85rem; color: var(--muted); }
 .ghost-secret { color: var(--lime); }
 .ghost-warning { border-color: rgba(255, 143, 184, 0.5); color: #ffd6e6; }
+.ghost-kinds { display: flex; flex-wrap: wrap; gap: 8px; }
+.ghost-kinds button { appearance: none; display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 8px 16px 8px 12px; border-radius: 999px; border: 1px solid var(--line); background: #0a0815; color: var(--muted); font: inherit; font-weight: 600; cursor: pointer; transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease; }
+.ghost-kinds button:hover { border-color: rgba(207, 198, 255, 0.4); color: var(--text); }
+.ghost-kinds button.is-active { background: var(--violet-deep); border-color: var(--violet-deep); color: var(--text); }
+.ghost-kinds button:focus-visible { outline: 2px solid var(--lime); outline-offset: 2px; }
 .ghost-link { appearance: none; background: none; border: 0; padding: 4px 0; min-height: 44px; color: var(--lilac); font: inherit; font-size: 0.92rem; cursor: pointer; text-align: left; text-decoration: underline; text-underline-offset: 3px; }
 .ghost-notes { max-width: 760px; margin: 40px auto 0; }
 .ghost-notes h2 { font-size: 1.35rem; }

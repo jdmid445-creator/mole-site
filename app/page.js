@@ -19,7 +19,14 @@ const CHAIN_ROW = [
   { key: 'base', name: 'Base' },
   { key: 'arb', name: 'Arbitrum' },
   { key: 'bsc', name: 'BNB Chain' },
+  { key: 'avax', name: 'Avalanche' },
+  { key: 'op', name: 'Optimism' },
+  { key: 'pol', name: 'Polygon' },
   { key: 'btc', name: 'Bitcoin' },
+  { key: 'doge', name: 'Dogecoin' },
+  { key: 'ltc', name: 'Litecoin' },
+  { key: 'xrp', name: 'XRP' },
+  { key: 'tron', name: 'Tron' },
 ];
 
 const CLEAN = [
@@ -68,7 +75,7 @@ const FAQ = [
   },
   {
     q: 'Which wallets work?',
-    a: 'Phantom, Solflare and Backpack on Solana. MetaMask, Rabby and Coinbase Wallet on Ethereum, Base, Arbitrum and BNB Chain. For Bitcoin, send from any wallet to the deposit address shown.',
+    a: 'Phantom, Solflare and Backpack on Solana. MetaMask, Rabby and Coinbase Wallet on Ethereum, Base, Arbitrum, Optimism, Polygon, Avalanche and BNB Chain. For Bitcoin, Dogecoin, Litecoin, XRP and Tron, send from any wallet to the deposit address shown.',
   },
   {
     q: 'Do I need $PARALLAX to use it?',
@@ -204,7 +211,7 @@ export default function Home() {
             <li style={{ '--i': 0 }}><strong>1</strong><span>signature to send</span></li>
             <li style={{ '--i': 1 }}><strong>0</strong><span>funds ever held by Parallax</span></li>
             <li style={{ '--i': 2 }}><strong>0%</strong><span>app fee</span></li>
-            <li style={{ '--i': 3 }}><strong>6</strong><span>chains: Solana, Ethereum, Base, Arbitrum, BNB Chain, Bitcoin</span></li>
+            <li style={{ '--i': 3 }}><strong>13</strong><span>chains, from Solana and Ethereum to Bitcoin, XRP and Tron</span></li>
           </ul>
         </div>
       </section>

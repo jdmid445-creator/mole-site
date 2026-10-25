@@ -73,8 +73,8 @@ export default function Docs() {
           <h2 id="chains">Chains and wallets</h2>
           <ul>
             <li><strong>Solana:</strong> Phantom, Solflare, Backpack (one click).</li>
-            <li><strong>Ethereum, Base, Arbitrum, BNB Chain:</strong> MetaMask, Rabby, Coinbase Wallet and other browser wallets (one click).</li>
-            <li><strong>Bitcoin:</strong> deposit mode. Send from any wallet to the deposit address shown.</li>
+            <li><strong>Ethereum, Base, Arbitrum, Optimism, Polygon, Avalanche, BNB Chain:</strong> MetaMask, Rabby, Coinbase Wallet and other browser wallets (one click).</li>
+            <li><strong>Bitcoin, Dogecoin, Litecoin, XRP, Tron:</strong> deposit mode. Send from any wallet to the deposit address shown (include the memo/tag if one is shown). XRP destinations need at least 1 XRP to activate a new address.</li>
           </ul>
           <p>Any wallet can also use deposit mode by entering a refund address and sending manually.</p>
 

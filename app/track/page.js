@@ -12,7 +12,7 @@ export default function TrackPage() {
       <div className="container track-page">
         <h1 className="page-title hero-in" style={{ '--d': '80ms' }}>My Crossings</h1>
         <p className="lede narrow hero-in" style={{ '--d': '200ms' }}>
-          Crossings you started on this device, with their live status. Nothing is stored on our side.
+          Check the live status of any crossing, and find the ones you started on this device. Nothing is stored on our side.
         </p>
         <div className="hero-in" style={{ '--d': '320ms' }}>
           <div className="track-any">

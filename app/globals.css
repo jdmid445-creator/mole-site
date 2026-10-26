@@ -945,3 +945,4 @@ html.motion .st-copy.is-lit { opacity: 1; transform: none; filter: none; }
 /* docs: keep the title and intro clear of him on mid-size screens */
 @media (min-width: 721px) and (max-width: 1299px) { .docs-body > .page-title, .docs-body > .lede { padding-right: 170px; } }
 @media (max-width: 720px) { .guard-bubble.guard-bubble-docs { top: 22px; } }
+@media (max-width: 1100px) { .peek-track { margin-top: 28px !important; } }

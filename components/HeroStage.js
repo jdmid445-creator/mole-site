@@ -40,8 +40,8 @@ export default function HeroStage() {
       setPhase('rise'); later(450, () => setBubble(true)); later(700, () => setPhase('idle')); later(3700, () => setBubble(false));
     };
     const onScroll = () => { clearTimeout(settle); settle = setTimeout(go, 280); };
-    const io = new IntersectionObserver((en) => { inView = en.some((e) => e.isIntersecting); clearTimeout(settle); if (inView) settle = setTimeout(go, 700); }, { threshold: 0.4 });
-    if (btn.current) io.observe(btn.current.parentElement);
+    const io = new IntersectionObserver((en) => { inView = en.some((e) => e.isIntersecting); clearTimeout(settle); if (inView) settle = setTimeout(go, 700); }, { threshold: 0.6, rootMargin: '-72px 0px 0px 0px' });
+    if (btn.current) io.observe(btn.current);
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => { io.disconnect(); window.removeEventListener('scroll', onScroll); clearTimeout(settle); tt.current.forEach(clearTimeout); };
     // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -800,7 +800,7 @@ html.motion .st-copy.is-lit { opacity: 1; transform: none; filter: none; }
   box-shadow: 0 16px 40px -16px rgba(0,0,0,0.7); pointer-events: none; opacity: 0; translate: 0 8px; scale: 0.96; transition: opacity 0.3s ease, translate 0.3s ease, scale 0.3s ease; z-index: 2; }
 .guard-bubble.is-on { opacity: 1; translate: 0 0; scale: 1; }
 @media (min-width: 720px) { .guard { right: 10px; } .guard-bubble { right: 160px; } }
-@media (max-width: 480px) { .guard { right: -14px; } .guard-bubble { right: 112px; top: 30px; font-size: 0.8rem; padding: 8px 12px; } }
+@media (max-width: 480px) { .guard { right: -14px; } .guard-bubble { right: 98px; top: 30px; font-size: 0.74rem; padding: 7px 11px; } }
 
 /* Toolkit panel: same creature, peeking over the panel's top edge just left of "Launch app" */
 .panel-stage { position: relative; margin-top: 32px; padding-top: 40px; }

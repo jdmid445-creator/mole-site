@@ -27,6 +27,8 @@ export default function Mole({ size = 360, eyes = '#C8FF2E', id = 'mole', title 
             <ellipse className="mole-eye" cx="226" cy="236" rx="10" ry="16" fill={eyes} />
           </g>
           <ellipse cx="200" cy="274" rx="15" ry="10" fill="#FF8FB8" />
+          <ellipse className="mole-cheek" cx="152" cy="264" rx="9" ry="4.5" fill="#FF8FB8" opacity="0" />
+          <ellipse className="mole-cheek" cx="248" cy="264" rx="9" ry="4.5" fill="#FF8FB8" opacity="0" />
         </g>
       </g>
       <g className="mole-paws">

@@ -697,7 +697,7 @@ html.motion .st-copy.is-lit { opacity: 1; transform: none; filter: none; }
 .qr-box { width: var(--qr); height: var(--qr); padding: 8px; border-radius: 14px; background: #fff; box-shadow: 0 10px 30px -12px rgba(0, 0, 0, 0.6); }
 .qr-box:empty { background: rgba(255, 255, 255, 0.08); }
 .qr-box svg { display: block; width: 100%; height: 100%; }
-.qr figcaption { font-size: 0.78rem; color: var(--muted); }
+.qr figcaption { font-size: 0.78rem; color: var(--muted); max-width: 210px; text-align: center; line-height: 1.4; }
 .deposit-item { display: grid; gap: 10px; }
 .deposit-item.has-qr { grid-template-columns: minmax(0, 1fr) auto; align-items: center; column-gap: 20px; }
 .deposit-item.has-qr > .qr { grid-column: 2; grid-row: 1 / span 3; }

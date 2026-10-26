@@ -1007,7 +1007,7 @@ export default function TunnelApp() {
                       <CopyButton value={p.depositMemo} />
                     </p>
                   ) : null}
-                  <QrCode value={p.depositAddress} size={pendingDeposits.length > 1 ? 132 : 168} label={p.depositMemo ? 'Scan for the address (add the memo by hand)' : 'Scan to send from your phone or exchange'} />
+                  <QrCode value={p.depositAddress} size={pendingDeposits.length > 1 ? 132 : 168} label={p.depositMemo ? 'Scan from the send screen in Coinbase, Phantom or any wallet app, then add the memo by hand' : 'Scan from the send screen in Coinbase, Phantom, Trust Wallet or any wallet app (not your phone camera)'} />
                 </div>
               ))}
               <p className="muted small">These addresses are for this crossing only. The page updates on its own once deposits land.</p>

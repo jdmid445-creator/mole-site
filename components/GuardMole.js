@@ -27,14 +27,26 @@ export default function GuardMole({ variant = '' }) {
     let still = false;
     try { still = window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch {}
     if (still || typeof IntersectionObserver === 'undefined' || !box.current) { setPhase('idle'); return undefined; }
-    const io = new IntersectionObserver((entries) => {
-      if (!entries.some((e) => e.isIntersecting)) return;
-      io.disconnect();
-      timers.current.push(setTimeout(() => setPhase('rise'), 250));
+    // Wait until the person stops scrolling with him in view, then pop up and say a line.
+    let inView = false, done = false, settle = 0;
+    const go = () => {
+      if (done || !inView) return;
+      done = true; io.disconnect(); window.removeEventListener('scroll', onScroll);
+      const text = LINES[next.current % LINES.length]; next.current += 1;
+      setLine(text);
+      setPhase('rise');
+      timers.current.push(setTimeout(() => setBubble(true), 450));
       timers.current.push(setTimeout(() => setPhase('idle'), 900));
+      timers.current.push(setTimeout(() => setBubble(false), 3900));
+    };
+    const onScroll = () => { clearTimeout(settle); settle = setTimeout(go, 280); };
+    const io = new IntersectionObserver((entries) => {
+      inView = entries.some((e) => e.isIntersecting);
+      clearTimeout(settle); if (inView) settle = setTimeout(go, 280);
     }, { threshold: 0.6, rootMargin: '0px 0px -12% 0px' });
     io.observe(box.current);
-    return () => io.disconnect();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => { io.disconnect(); window.removeEventListener('scroll', onScroll); clearTimeout(settle); };
   }, []);
 
   function at(ms, fn) { timers.current.push(setTimeout(fn, ms)); }

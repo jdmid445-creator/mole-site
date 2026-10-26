@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import HeroStage from '@/components/HeroStage';
+import GuardMole from '@/components/GuardMole';
 import NetworkStatus from '@/components/NetworkStatus';
 import TraceGame from '@/components/TraceGame';
 import Statement from '@/components/Statement';
@@ -132,7 +133,9 @@ export default function Home() {
       <section id="products" className="section">
         <div className="container">
           <h2 className="section-title" data-reveal>The privacy toolkit</h2>
-          <div className="panel" data-reveal>
+          <div className="panel-stage" data-reveal>
+          <GuardMole variant="toolkit" />
+          <div className="panel">
             <div className="panel-head">
               <span>Parallax</span>
               <Link href="/tunnel" className="btn btn-small">Launch app</Link>
@@ -149,6 +152,7 @@ export default function Home() {
                 </li>
               ))}
             </ul>
+          </div>
           </div>
         </div>
       </section>

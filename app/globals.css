@@ -795,9 +795,17 @@ html.motion .st-copy.is-lit { opacity: 1; transform: none; filter: none; }
 .guard-mole.is-up .mole-body { transform: translateY(0); transition: transform 0.45s cubic-bezier(.3,1.6,.5,1); }
 .guard-mole.is-peek .mole-eye { animation: none; transform: scaleY(0.3); transition: transform 0.15s ease 0.25s; }
 .guard-mole .mole-eye { transform-box: fill-box; transform-origin: center; }
-.guard-bubble { position: absolute; right: 150px; top: 26px; width: max-content; max-width: 300px; padding: 10px 14px; border-radius: 16px 16px 4px 16px;
+.guard-bubble { position: absolute; right: 150px; top: 26px; width: max-content; max-width: none; white-space: nowrap; padding: 10px 14px; border-radius: 16px 16px 4px 16px;
   background: var(--surface-2); border: 1px solid var(--line); color: var(--text); font-size: 0.88rem; font-weight: 600; line-height: 1.35;
   box-shadow: 0 16px 40px -16px rgba(0,0,0,0.7); pointer-events: none; opacity: 0; translate: 0 8px; scale: 0.96; transition: opacity 0.3s ease, translate 0.3s ease, scale 0.3s ease; z-index: 2; }
 .guard-bubble.is-on { opacity: 1; translate: 0 0; scale: 1; }
 @media (min-width: 720px) { .guard { right: 10px; } .guard-bubble { right: 160px; } }
-@media (max-width: 480px) { .guard { right: -14px; } .guard-bubble { max-width: 190px; right: 124px; top: 20px; } }
+@media (max-width: 480px) { .guard { right: -14px; } .guard-bubble { right: 112px; top: 30px; font-size: 0.8rem; padding: 8px 12px; } }
+
+/* Toolkit panel: same creature, peeking over the panel's top edge just left of "Launch app" */
+.panel-stage { position: relative; margin-top: 32px; padding-top: 40px; }
+.panel-stage .panel { position: relative; z-index: 1; margin-top: 0; }
+.guard.guard-toolkit { right: 170px; }
+.guard-bubble.guard-bubble-toolkit { right: 320px; }
+@media (min-width: 720px) { .guard.guard-toolkit { right: 170px; } .guard-bubble.guard-bubble-toolkit { right: 320px; } }
+@media (max-width: 480px) { .guard.guard-toolkit { right: 130px; } .guard-bubble.guard-bubble-toolkit { right: auto; left: 0; } }

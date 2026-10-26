@@ -13,7 +13,7 @@ const LINES = [
   'Nobody connects the dots on my watch.',
 ];
 
-export default function GuardMole() {
+export default function GuardMole({ variant = '' }) {
   const [phase, setPhase] = useState('idle'); // idle | down | peek | up
   const [line, setLine] = useState('');
   const [bubble, setBubble] = useState(false);
@@ -40,10 +40,10 @@ export default function GuardMole() {
 
   return (
     <>
-    <span className={`guard-bubble${bubble ? ' is-on' : ''}`} role="status" aria-live="polite">{line}</span>
-    <div className="guard">
+    <span className={`guard-bubble${variant ? ' guard-bubble-' + variant : ''}${bubble ? ' is-on' : ''}`} role="status" aria-live="polite">{line}</span>
+    <div className={`guard${variant ? ' guard-' + variant : ''}`}>
       <button type="button" className={`guard-mole is-${phase}`} onClick={tap} aria-label="Tap the Parallax creature">
-        <Mole size={150} id="mole-guard" title="Parallax creature" />
+        <Mole size={150} id={`mole-guard${variant ? '-' + variant : ''}`} title="Parallax creature" />
       </button>
     </div>
     </>

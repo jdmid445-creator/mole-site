@@ -719,6 +719,7 @@ html.motion .st-copy.is-lit { opacity: 1; transform: none; filter: none; }
 .swap-mole .mole-spiral { transform-box: fill-box; transform-origin: center; }
 .swap-mole.is-dizzy .mole-eyes { opacity: 0; }
 .swap-mole.is-dizzy .mole-spirals { opacity: 1; }
+.swap-mole .mole-spirals path { stroke-width: 4.5; }
 .swap-mole.is-dizzy .mole-spiral { animation: mole-spin 0.7s linear infinite; }
 .swap-mole.is-dizzy .mole-body { animation: mole-dizzy 3.2s ease-in-out; }
 @keyframes mole-spin { to { transform: rotate(360deg); } }
@@ -732,12 +733,12 @@ html.motion .st-copy.is-lit { opacity: 1; transform: none; filter: none; }
 }
 /* Easter egg: type "parallax" */
 .dig { position: fixed; left: 0; right: 0; bottom: 0; height: 130px; z-index: 60; pointer-events: none; overflow: hidden; }
-.dig::before { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 70px; background: linear-gradient(to top, rgba(12, 10, 24, 0.85), transparent); animation: dig-fade 6.4s ease both; }
+.dig::before { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 130px; background: linear-gradient(to top, rgba(10, 8, 20, 0.98) 0%, rgba(10, 8, 20, 0.94) 58%, rgba(10, 8, 20, 0) 100%); animation: dig-fade 6.4s ease both; }
 .dig-mole { position: absolute; left: 0; bottom: -14px; animation: dig-across 5.2s linear both; }
 .dig-hop { animation: dig-hop 0.42s ease-in-out infinite alternate; }
 .dig-hop svg { display: block; }
 .dig-mound { position: absolute; bottom: 10px; width: 46px; height: 15px; margin-left: -23px; border-radius: 50% 50% 6px 6px / 100% 100% 6px 6px; background: radial-gradient(ellipse at 50% 30%, #3a2c86, #1a1340 70%); box-shadow: 0 0 18px rgba(123, 98, 240, 0.25); opacity: 0; animation: dig-mound 1.9s ease both; }
-.dig-note { position: absolute; left: 50%; bottom: 22px; translate: -50% 0; margin: 0; color: var(--lilac); font-weight: 600; font-size: 0.95rem; letter-spacing: 0.02em; opacity: 0; animation: dig-note 6.4s ease both; }
+.dig-note { position: absolute; left: 50%; bottom: 26px; translate: -50% 0; margin: 0; color: var(--lilac); font-weight: 600; font-size: 0.95rem; letter-spacing: 0.02em; opacity: 0; animation: dig-note 6.4s ease both; }
 .dig.is-still .dig-note { animation: dig-note-still 3s ease both; }
 @keyframes dig-across { from { transform: translateX(-110px); } to { transform: translateX(calc(100vw + 30px)); } }
 @keyframes dig-hop { from { translate: 0 6px; rotate: -4deg; } to { translate: 0 -4px; rotate: 4deg; } }

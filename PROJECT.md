@@ -275,3 +275,9 @@ References from owner: blackout.exchange, vanish.trade/us, veilit.xyz, web-4.app
 - Swap guard bubble raised (≥17 px above his head throughout). Phone sweep (iPhone SE 320 px, iPhone 13, Pixel 7, all pages): fixed hero text cut off on SE, trace game + split toggle overflow, guard bubble overlapping the network pill; final scan: no clipped/overflowing text, no sideways scroll, bubbles on-screen, no errors.
 - Swap guard bubble raised again (owner: touching him): ≥23 px clear of his head even when fully up / hovered; on phones ≥24 px below the network pill.
 - REGRESSION fixed (owner caught it): a phone-only rule (.hero-grid one column) leaked to desktop and stacked the homepage hero. Scoped to <960 px; desktop/laptop re-screenshotted (two columns back), phones re-checked. Lesson: every phone CSS fix must be inside a max-width media query, and re-check desktop after phone fixes.
+
+## 2026-10-26 — Creatures pop up and talk
+- Owner asked for the creatures to start hidden under the box, pop up when you reach them, and say a line on their own. After the bubble fades, a tap ducks, peeks, talks and pops back up. Home hero creature included, bubble upper right above his head.
+- GuardMole (/tunnel + toolkit panel): pops up once he's ≥50% on screen and scrolling has stopped for 280 ms. The phone trigger was fixed by dropping the -12% rootMargin.
+- HeroStage: the same phases (hidden/rise/idle/down/peek/up) and the same LINES as GuardMole. He only pops up once he is ≥60% visible below the 72px nav, so on phones he waits until you scroll to the card. Removed the "psst… boop me" hint. Dizzy (10 boops), petting and eye-follow still work. The bob animation is turned off during the pop moves so it can't fight them.
+- Verified on desktop at 1440 (two-column hero intact), iPhone 13 and iPhone SE 320. No horizontal overflow.

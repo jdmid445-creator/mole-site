@@ -782,19 +782,22 @@ html.motion .st-copy.is-lit { opacity: 1; transform: none; filter: none; }
 /* Creature guarding the swap card (above the receiving portal, behind the card's top edge) */
 .tunnel-stage { position: relative; max-width: 760px; margin: 0 auto; padding-top: 40px; }
 .tunnel-stage .tunnel-app { z-index: 1; }
-.guard { position: absolute; top: 0; right: 9px; z-index: 0; width: 150px; height: 120px; }
+.guard { position: absolute; top: 0; right: -2px; z-index: 0; width: 150px; height: 120px; }
 .guard-mole { position: absolute; left: 0; top: -36px; appearance: none; background: none; border: 0; padding: 0; margin: 0; cursor: pointer; border-radius: 50%; }
 .guard-mole svg { display: block; width: 150px; height: auto; }
+.guard-mole svg > ellipse { display: none; } /* the card is his hole */
+.guard-mole svg > circle { transition: opacity 0.3s ease; }
+.guard-mole.is-down svg > circle { opacity: 0; }
 .guard-mole .mole-body { transition: transform 0.32s cubic-bezier(.5,0,.3,1); }
 .guard-mole.is-idle:hover .mole-body { transform: translateY(-6px); }
 .guard-mole.is-down .mole-body { transform: translateY(240px); }
-.guard-mole.is-peek .mole-body { transform: translateY(44px); transition: transform 0.38s cubic-bezier(.3,1.5,.5,1); }
+.guard-mole.is-peek .mole-body { transform: translateY(14px); transition: transform 0.38s cubic-bezier(.3,1.5,.5,1); }
 .guard-mole.is-up .mole-body { transform: translateY(0); transition: transform 0.45s cubic-bezier(.3,1.6,.5,1); }
 .guard-mole.is-peek .mole-eye { animation: none; transform: scaleY(0.3); transition: transform 0.15s ease 0.25s; }
 .guard-mole .mole-eye { transform-box: fill-box; transform-origin: center; }
-.guard-bubble { position: absolute; right: 120px; top: -16px; width: max-content; max-width: 260px; padding: 10px 14px; border-radius: 16px 16px 4px 16px;
+.guard-bubble { position: absolute; right: 128px; top: 24px; width: max-content; max-width: 360px; padding: 10px 14px; border-radius: 16px 16px 4px 16px;
   background: var(--surface-2); border: 1px solid var(--line); color: var(--text); font-size: 0.88rem; font-weight: 600; line-height: 1.35;
   box-shadow: 0 16px 40px -16px rgba(0,0,0,0.7); pointer-events: none; opacity: 0; translate: 0 8px; scale: 0.96; transition: opacity 0.3s ease, translate 0.3s ease, scale 0.3s ease; z-index: 2; }
 .guard-bubble.is-on { opacity: 1; translate: 0 0; scale: 1; }
-@media (min-width: 720px) { .guard { right: 21px; } }
-@media (max-width: 480px) { .guard { right: -2px; } .guard-bubble { max-width: 200px; right: 110px; } }
+@media (min-width: 720px) { .guard { right: 10px; } }
+@media (max-width: 480px) { .guard { right: -14px; } .guard-bubble { max-width: 210px; right: 120px; top: 10px; } }

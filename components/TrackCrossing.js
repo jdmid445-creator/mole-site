@@ -34,52 +34,57 @@ const MESSAGES = {
 
 export default function TrackCrossing() {
   const [address, setAddress] = useState('');
-  const [active, setActive] = useState('');
+  const [query, setQuery] = useState(null); // { addr, n } — n lets you re-check the same address
   const [result, setResult] = useState(null);
   const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [checking, setChecking] = useState(false); // only for checks you started, never background refreshes
   const timer = useRef(null);
 
   useEffect(() => {
     const fromUrl = new URLSearchParams(window.location.search).get('d');
     if (fromUrl) {
       setAddress(fromUrl);
-      setActive(fromUrl);
+      setQuery({ addr: fromUrl, n: 0 });
     }
   }, []);
 
   useEffect(() => {
-    if (!active) return undefined;
+    if (!query) return undefined;
     let cancelled = false;
+    const stop = () => { clearInterval(timer.current); timer.current = null; };
 
-    const check = async () => {
-      setLoading(true);
+    const check = async (background) => {
+      if (!background) setChecking(true);
       try {
-        const res = await fetch(`/api/status?depositAddress=${encodeURIComponent(active)}`);
-        const data = await res.json();
+        const res = await fetch(`/api/status?depositAddress=${encodeURIComponent(query.addr)}`, { cache: 'no-store' });
+        const data = await res.json().catch(() => ({}));
         if (cancelled) return;
         if (!res.ok || data.error) {
-          setResult(null);
-          setError(res.status === 404 ? 'No crossing found for that deposit address.' : data.error || 'Could not check that address.');
+          if (res.status >= 400 && res.status < 500) {
+            // Not found / bad address: show it once and stop asking.
+            stop();
+            setResult(null);
+            setError(res.status === 404 ? 'No crossing found for that deposit address. Check you pasted the deposit address (the one you sent funds to), not your own wallet.' : data.error || 'That does not look like a deposit address.');
+          } else if (!background) {
+            setError('The swap network did not answer. Try again in a moment.');
+          }
           return;
         }
         setError('');
         setResult(data);
-        if (TERMINAL.has(data.status)) clearInterval(timer.current);
+        if (TERMINAL.has(data.status)) stop();
       } catch {
-        if (!cancelled) setError('Could not reach the swap network. Try again shortly.');
+        if (!cancelled && !background) setError('Could not reach the swap network. Check your connection and try again.');
       } finally {
-        if (!cancelled) setLoading(false);
+        if (!cancelled && !background) setChecking(false);
       }
     };
 
-    check();
-    timer.current = setInterval(check, 6000);
-    return () => {
-      cancelled = true;
-      clearInterval(timer.current);
-    };
-  }, [active]);
+    stop();
+    check(false);
+    timer.current = setInterval(() => check(true), 6000);
+    return () => { cancelled = true; stop(); };
+  }, [query]);
 
   function onSubmit(e) {
     e.preventDefault();
@@ -89,7 +94,17 @@ export default function TrackCrossing() {
       return;
     }
     setResult(null);
-    setActive(value);
+    setError('');
+    setQuery((q) => ({ addr: value, n: (q?.n || 0) + 1 }));
+    try {
+      const url = new URL(window.location.href); url.searchParams.set('d', value);
+      window.history.replaceState(null, '', url);
+    } catch {}
+  }
+
+  function onType(v) {
+    setAddress(v);
+    if (error) setError('');
   }
 
   const stage = result ? STAGE_INDEX[result.status] ?? 0 : -1;
@@ -102,14 +117,14 @@ export default function TrackCrossing() {
           <span>Deposit address</span>
           <input
             value={address}
-            onChange={(e) => setAddress(e.target.value)}
+            onChange={(e) => onType(e.target.value)}
             placeholder="The address you sent your funds to"
             autoComplete="off"
             spellCheck="false"
           />
         </label>
-        <button type="submit" className="btn" disabled={loading && !result}>
-          {loading && !result ? 'Checking…' : 'Check status'}
+        <button type="submit" className="btn" disabled={checking}>
+          {checking ? 'Checking…' : 'Check status'}
         </button>
       </form>
 

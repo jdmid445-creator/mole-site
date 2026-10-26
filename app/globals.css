@@ -768,3 +768,5 @@ html.motion .st-copy.is-lit { opacity: 1; transform: none; filter: none; }
 .track-any .track { margin: 8px 0 0; width: 100%; max-width: none; }
 .track-page .recent, .track-page .track-any { max-width: 760px; margin-left: auto; margin-right: auto; }
 @media (min-width: 640px) { .track-any .track-form { grid-template-columns: 1fr auto; } }
+.connect-row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; }
+.btn-connect { min-height: 44px; }

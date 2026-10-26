@@ -713,9 +713,14 @@ export default function TunnelApp() {
                     </div>
                   </div>
                 ) : (
-                  <p className="pay-note">
-                    {walletKind === 'solana' ? 'Phantom, Solflare or Backpack' : 'MetaMask, Rabby or Coinbase Wallet'} pops up when you swap. Approve once and it's done.
-                  </p>
+                  <div className="connect-row">
+                    <button type="button" className="btn btn-connect" onClick={() => chooseWallet()} disabled={Boolean(picker?.busyId) || Boolean(busy)}>
+                      {picker?.busyId ? 'Check your wallet…' : `Connect ${fromChain.label} wallet`}
+                    </button>
+                    <p className="pay-note">
+                      {walletKind === 'solana' ? 'Phantom, Solflare or Backpack' : 'MetaMask, Rabby or Coinbase Wallet'}. You approve the swap once in your wallet.
+                    </p>
+                  </div>
                 )}
               </>
             )}

@@ -1,0 +1,573 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Parallax drop video</title>
+<style>
+@font-face { font-family: 'Manrope'; font-weight: 200 800; src: url(https://mole-site-mu.vercel.app/_next/static/media/4c9affa5bc8f420e-s.p.woff2) format('woff2'); }
+:root {
+  --bg: #0c0a18; --surface: #17132e; --surface2: #1d1838; --line: #2b2452; --text: #f2f0eb; --muted: #aaa3cb;
+  --lilac: #cfc6ff; --violet: #7b62f0; --violetDeep: #5a41d6; --lime: #c8ff2e; --pink: #ff8fb8;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 1920px; height: 1080px; overflow: hidden; background: var(--bg); }
+body { font-family: 'Manrope', system-ui, sans-serif; color: var(--text); -webkit-font-smoothing: antialiased; }
+.stage { position: relative; width: 1920px; height: 1080px; overflow: hidden;
+  background: radial-gradient(45% 60% at 50% 48%, rgba(123, 98, 240, 0.22), transparent 70%), var(--bg); }
+.abs { position: absolute; }
+.cx { left: 0; right: 0; text-align: center; }
+.bars { position: absolute; left: 0; right: 0; bottom: 0; height: 520px; display: flex; align-items: flex-end; justify-content: center; gap: 6px; padding: 0 30px;
+  -webkit-mask-image: linear-gradient(to top, rgba(0,0,0,0.95), transparent), linear-gradient(to right, transparent, #000 22%, #000 78%, transparent); -webkit-mask-composite: source-in; mask-composite: intersect; }
+.bars span { flex: 1; max-width: 3px; border-radius: 3px; transform-origin: bottom; }
+.bars.top { top: 0; bottom: auto; height: 260px; align-items: flex-start; -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,0.6), transparent), linear-gradient(to right, transparent, #000 22%, #000 78%, transparent); -webkit-mask-composite: source-in; mask-composite: intersect; }
+.bars.top span { transform-origin: top; }
+
+.head { font-size: 84px; font-weight: 600; letter-spacing: -0.045em; line-height: 1.04; }
+.head em { font-style: normal; color: var(--lilac); }
+.sub { font-size: 34px; color: var(--muted); font-weight: 500; letter-spacing: -0.01em; line-height: 1.3; }
+.kick { font-size: 24px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--lilac); }
+
+.mole { position: absolute; }
+.mole svg { display: block; width: 100%; height: auto; overflow: visible; }
+
+/* scene 1 */
+.wallet { width: 520px; padding: 30px 34px; border-radius: 30px; background: var(--surface); border: 1px solid var(--line); display: grid; gap: 10px; }
+.wallet .lbl { font-size: 20px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+.wallet .addr { font-size: 40px; font-weight: 600; letter-spacing: -0.02em; display: flex; align-items: center; gap: 16px; }
+.wallet .addr img { width: 44px; height: 44px; }
+.vline { width: 0; border-left: 5px dashed var(--pink); }
+.hline { height: 0; border-top: 5px dashed var(--pink); }
+.steps { display: grid; gap: 26px; }
+.step { display: grid; grid-template-columns: 58px 1fr; gap: 20px; align-items: center; }
+.step i { font-style: normal; display: grid; place-items: center; width: 58px; height: 58px; border-radius: 50%; border: 2px solid var(--line); font-weight: 700; font-size: 24px; color: var(--muted); }
+.step b { font-size: 38px; font-weight: 600; letter-spacing: -0.03em; color: var(--muted); }
+.step.on i { border-color: var(--lime); color: var(--lime); }
+.step.on b { color: var(--text); }
+.plabel { font-size: 24px; font-weight: 700; color: var(--pink); letter-spacing: 0.12em; text-transform: uppercase; }
+
+/* phone (built at 400x780, scaled up) */
+.phoneWrap { width: 440px; height: 858px; }
+.phone { width: 400px; height: 780px; border-radius: 64px; padding: 12px; transform: scale(1.1); transform-origin: top left;
+  background: linear-gradient(145deg, #3a3550, #15121f 40%, #2a2640 70%, #0d0b14);
+  box-shadow: 0 60px 120px -30px rgba(0,0,0,0.85), 0 0 0 1px rgba(255,255,255,0.08) inset, 0 0 90px rgba(123,98,240,0.25); }
+.screen { position: relative; width: 100%; height: 100%; border-radius: 52px; overflow: hidden; background: #0c0a18; }
+.island { position: absolute; top: 14px; left: 50%; width: 118px; height: 34px; margin-left: -59px; border-radius: 20px; background: #000; z-index: 5; }
+.sbar { position: absolute; top: 20px; left: 34px; right: 30px; display: flex; justify-content: space-between; font-size: 16px; font-weight: 700; z-index: 4; }
+.app, .status { position: absolute; inset: 64px 18px 18px; display: grid; align-content: start; gap: 12px; }
+.status { gap: 18px; }
+.appbar { display: flex; align-items: center; gap: 8px; padding: 4px 4px 8px; font-weight: 700; font-size: 19px; letter-spacing: -0.02em; }
+.appbar img { width: 30px; height: 30px; }
+.title { font-size: 26px; font-weight: 600; letter-spacing: -0.03em; padding: 0 4px 2px; }
+.box { border-radius: 18px; background: var(--surface); border: 1px solid var(--line); padding: 14px 16px; display: grid; gap: 10px; }
+.box .cap { font-size: 12px; font-weight: 700; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; }
+.row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.tok { display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px 6px 6px; border-radius: 999px; background: var(--surface2); border: 1px solid var(--line); font-weight: 700; font-size: 16px; }
+.tok img { width: 24px; height: 24px; }
+.tok small { font-weight: 500; color: var(--muted); font-size: 12px; margin-left: 2px; }
+.amt { font-size: 34px; font-weight: 700; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; min-height: 42px; }
+.caret { display: inline-block; width: 2px; height: 30px; background: var(--lilac); margin-left: 2px; vertical-align: -4px; }
+.addr-sm { font-size: 15px; color: var(--lilac); font-weight: 600; padding: 10px 12px; border-radius: 12px; background: #0a0815; border: 1px solid var(--line); }
+.quote { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; padding: 12px 14px; border-radius: 16px; background: #0a0815; border: 1px solid var(--line); }
+.quote div { display: grid; gap: 2px; }
+.quote span { font-size: 11px; color: var(--muted); font-weight: 600; }
+.quote b { font-size: 15px; }
+.btn { position: relative; height: 56px; border-radius: 999px; background: var(--lime); color: #0c0a18; display: grid; place-items: center; font-size: 18px; font-weight: 700; }
+.tap { position: absolute; left: 158px; width: 60px; height: 60px; border-radius: 50%; background: rgba(255,255,255,0.55); }
+.ripple { position: absolute; left: 158px; width: 60px; height: 60px; border-radius: 50%; border: 3px solid rgba(255,255,255,0.7); }
+.portals { position: relative; height: 120px; margin-top: 18px; }
+.portal { position: absolute; top: 0; width: 104px; height: 104px; border-radius: 50%; display: grid; place-items: center; align-content: center; gap: 2px; font-weight: 700; font-size: 15px; }
+.portal img { width: 30px; height: 30px; }
+.portal small { font-size: 11px; font-weight: 600; opacity: 0.8; }
+.pA { left: 6px; background: radial-gradient(circle at 35% 30%, #fff, #d9d3ff); color: #0c0a18; }
+.pB { right: 6px; background: #0c0a18; border: 2px solid var(--violet); box-shadow: 0 0 30px rgba(123,98,240,0.45); }
+.track { position: absolute; top: 50px; left: 116px; right: 116px; height: 4px; border-radius: 4px; background: rgba(123,98,240,0.25); }
+.trackfill { position: absolute; top: 50px; left: 116px; height: 4px; border-radius: 4px; background: linear-gradient(90deg, var(--violet), var(--lilac)); }
+.dot { position: absolute; top: 44px; width: 16px; height: 16px; border-radius: 50%; background: var(--lime); box-shadow: 0 0 18px var(--lime); margin-left: -8px; }
+.spill { justify-self: start; font-size: 15px; font-weight: 700; padding: 8px 14px; border-radius: 999px; }
+.facts { display: grid; gap: 10px; padding: 16px; border-radius: 18px; background: var(--surface); border: 1px solid var(--line); }
+.facts .row span { color: var(--muted); font-size: 14px; }
+.facts .row b { font-size: 15px; }
+.arrived { display: grid; justify-items: center; gap: 6px; padding: 18px 10px; border-radius: 18px; border: 1px solid rgba(200,255,46,0.35); background: rgba(200,255,46,0.06); }
+.arrived .big { font-size: 38px; font-weight: 700; letter-spacing: -0.03em; color: var(--lime); }
+.arrived .small { font-size: 14px; color: var(--muted); font-weight: 600; }
+.stepcap { display: inline-flex; align-items: center; gap: 16px; padding: 14px 28px 14px 16px; border-radius: 999px; background: rgba(23,19,46,0.85); border: 1px solid var(--line); font-size: 32px; font-weight: 600; letter-spacing: -0.02em; }
+.stepcap i { font-style: normal; display: grid; place-items: center; width: 50px; height: 50px; border-radius: 50%; border: 2px solid var(--lime); color: var(--lime); font-size: 24px; font-weight: 700; }
+
+/* 3D */
+.coin { position: absolute; width: 150px; height: 150px; transform-style: preserve-3d; }
+.coin .ly { position: absolute; inset: 0; border-radius: 50%; backface-visibility: visible; }
+.coin .face { display: grid; place-items: center; border: 3px solid rgba(255,255,255,0.18); box-shadow: inset 0 0 0 10px rgba(0,0,0,0.12), inset 0 -18px 30px rgba(0,0,0,0.35), inset 0 14px 24px rgba(255,255,255,0.18); }
+.coin .face img { width: 46%; height: 46%; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.4)); }
+.coinShadow { position: absolute; width: 130px; height: 26px; border-radius: 50%; background: radial-gradient(closest-side, rgba(0,0,0,0.55), transparent); }
+.rig { position: absolute; transform-style: preserve-3d; }
+.slab { transform-style: preserve-3d; }
+.slab .depth { position: absolute; inset: -1px; border-radius: inherit; pointer-events: none; }
+.word3d { position: relative; transform-style: preserve-3d; font-size: 190px; font-weight: 800; letter-spacing: -0.055em; line-height: 1; }
+.word3d span { position: absolute; left: 0; top: 0; white-space: nowrap; }
+.word3d .front { position: relative; color: var(--text); }
+
+/* scene 3 */
+.view { width: 640px; padding: 34px 40px; border-radius: 32px; background: var(--surface); border: 1px solid var(--line); display: grid; gap: 18px; }
+.view .vh { display: flex; align-items: center; gap: 16px; font-size: 36px; font-weight: 700; letter-spacing: -0.02em; }
+.view .vh img { width: 46px; height: 46px; }
+.view .vr { display: flex; justify-content: space-between; padding-top: 16px; border-top: 1px solid rgba(207,198,255,0.1); font-size: 28px; }
+.view .vr span { color: var(--muted); }
+
+/* end card */
+.url { display: inline-flex; padding: 20px 40px; border-radius: 999px; border: 1px solid var(--line); background: rgba(23,19,46,0.85); font-size: 38px; font-weight: 600; color: var(--lilac); }
+
+/* ---- drop video: new scenes ---- */
+.card { width: 760px; padding: 34px 38px; border-radius: 32px; background: var(--surface); border: 1px solid var(--line); display: grid; gap: 20px; }
+.card .ch { display: flex; align-items: center; gap: 14px; font-size: 34px; font-weight: 700; letter-spacing: -0.02em; }
+.card .ch img { width: 44px; height: 44px; }
+.chips { display: flex; flex-wrap: wrap; gap: 10px; }
+.chip { display: inline-flex; align-items: center; gap: 8px; padding: 8px 16px 8px 10px; border-radius: 999px; background: #0a0815; border: 1px solid var(--line); font-size: 20px; font-weight: 600; color: var(--muted); }
+.chip img { width: 22px; height: 22px; }
+.chip.on { background: var(--violetDeep); border-color: var(--violetDeep); color: var(--text); }
+.bigbtn { position: relative; justify-self: start; padding: 18px 30px; border-radius: 999px; background: var(--lime); color: #0c0a18; font-size: 24px; font-weight: 700; }
+.field { padding: 16px 18px; border-radius: 16px; background: #0a0815; border: 1px solid var(--line); font-size: 26px; font-weight: 600; font-family: ui-monospace, Menlo, monospace; color: var(--text); min-height: 64px; letter-spacing: 0; }
+.keyline { display: flex; align-items: center; gap: 12px; font-size: 24px; color: var(--lilac); font-weight: 600; }
+.keyline i { font-style: normal; display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; background: rgba(200,255,46,0.14); color: var(--lime); font-size: 20px; }
+.tapdot { position: absolute; width: 60px; height: 60px; border-radius: 50%; background: rgba(255,255,255,0.55); pointer-events: none; }
+.wcard { width: 470px; padding: 22px 26px; border-radius: 24px; background: var(--surface); border: 1px solid var(--line); display: grid; gap: 6px; }
+.wcard .t { display: flex; align-items: center; justify-content: space-between; font-size: 20px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+.wcard .t b { letter-spacing: 0; text-transform: none; font-size: 18px; padding: 4px 12px; border-radius: 999px; background: var(--lime); color: #0c0a18; }
+.wcard .v { font-size: 34px; font-weight: 700; letter-spacing: -0.02em; }
+.wcard .v small { font-size: 22px; color: var(--muted); font-weight: 600; margin-left: 8px; }
+.tile { position: absolute; width: 170px; height: 170px; border-radius: 30px; background: var(--surface); border: 1px solid var(--line); display: grid; place-items: center; align-content: center; gap: 12px; font-size: 21px; font-weight: 600; color: var(--muted); }
+.tile img { width: 64px; height: 64px; }
+.stat { width: 360px; padding: 26px 30px; border-radius: 26px; background: var(--surface); border: 1px solid var(--line); display: grid; gap: 6px; text-align: center; }
+.stat b { font-size: 64px; font-weight: 600; letter-spacing: -0.04em; line-height: 1; }
+.stat span { font-size: 20px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+.list { width: 1000px; padding: 30px 36px; border-radius: 30px; background: var(--surface); border: 1px solid var(--line); display: grid; gap: 4px; }
+.list .lh { display: flex; justify-content: space-between; align-items: baseline; font-size: 30px; font-weight: 700; padding-bottom: 12px; }
+.list .lh u { font-size: 20px; color: var(--lilac); font-weight: 500; }
+.lrow { display: grid; grid-template-columns: 1fr auto 140px 90px; align-items: center; gap: 18px; padding: 18px 0; border-top: 1px solid rgba(207,198,255,0.1); font-size: 27px; }
+.lrow b { font-weight: 700; }
+.lrow .m { color: var(--muted); }
+.lrow .tm { color: var(--muted); font-size: 21px; text-align: right; }
+.lrow .tr { color: var(--lilac); font-size: 24px; text-align: right; }
+.pill { justify-self: end; padding: 8px 16px; border-radius: 999px; font-size: 20px; font-weight: 700; background: var(--violetDeep); color: var(--text); white-space: nowrap; }
+.pill.ok { background: var(--lime); color: #0c0a18; }
+.navpill { display: inline-flex; align-items: center; gap: 12px; padding: 14px 24px; border-radius: 999px; background: rgba(23,19,46,0.9); border: 1px solid var(--line); font-size: 26px; font-weight: 600; }
+.badge { display: inline-flex; align-items: center; gap: 8px; padding: 4px 12px; border-radius: 999px; background: rgba(200,255,46,0.12); border: 1px solid rgba(200,255,46,0.4); color: var(--lime); font-size: 20px; font-weight: 700; }
+.badge i { width: 9px; height: 9px; border-radius: 50%; background: var(--lime); }
+.ca { display: inline-flex; align-items: center; gap: 16px; padding: 16px 26px; border-radius: 999px; background: rgba(23,19,46,0.85); border: 1px solid rgba(200,255,46,0.35); font-size: 28px; }
+.ca b { color: var(--lime); letter-spacing: 0.06em; font-size: 22px; }
+.ca code { font-family: ui-monospace, Menlo, monospace; font-size: 27px; color: var(--text); }
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="bars top" id="barsTop"></div>
+  <div class="bars" id="bars"></div>
+
+  <div id="coins"></div>
+  <!-- Scene 1: the public trail, the creature tunnels through it -->
+  <div class="abs cx" id="h1" style="top:150px"><p class="head" style="font-size:96px">Every swap leaves a trail.</p></div>
+  <div class="abs cx" id="h2" style="top:150px"><p class="head" style="font-size:96px">Parallax <em>breaks that trail.</em></p></div>
+  <div class="abs cx" id="s1" style="top:280px"><p class="sub" style="font-size:38px">Anyone can follow a public swap from wallet to wallet.</p></div>
+  <div class="abs wallet" id="wA" style="left:150px; top:560px"><span class="lbl">Sent from</span><span class="addr"><img src="sol.svg" alt="">7xKX…gAsU</span></div>
+  <div class="abs hline" id="lnTop" style="left:670px; top:638px; width:290px"></div>
+  <div class="abs hline" id="lnBot" style="left:960px; top:638px; width:290px"></div>
+  <div class="abs cx plabel" id="plbl" style="top:690px">public link</div>
+  <div class="mole" id="m1" style="left:820px; top:430px; width:280px"></div>
+  <div class="abs wallet" id="wB" style="left:1250px; top:560px"><span class="lbl">Arrived in</span><span class="addr"><img src="base.svg" alt="">0x9d…f07a</span></div>
+
+  <!-- Scene 2: phone swap, creature rides along -->
+  <div class="abs" id="h3" style="left:170px; top:250px"><p class="head" style="font-size:92px">Private<br>cross-chain swaps.</p></div>
+  <div class="abs steps" id="steps" style="left:170px; top:560px">
+    <div class="step" id="st1"><i>1</i><b>Pick both ends</b></div>
+    <div class="step" id="st2"><i>2</i><b>Approve once</b></div>
+    <div class="step" id="st3"><i>3</i><b>It arrives elsewhere</b></div>
+  </div>
+  <div class="rig" id="rig" style="left:1240px; top:0; width:440px; height:1080px">
+  <div class="mole" id="m2" style="left:150px; top:-15px; width:220px"></div>
+  <div class="abs phoneWrap" id="phone" style="left:0; top:150px">
+    <div class="phone"><div class="screen">
+      <div class="island"></div>
+      <div class="sbar"><span>9:41</span><span>●●● ▮</span></div>
+      <div class="app" id="formView">
+        <div class="appbar"><img src="mole.svg" alt="">Parallax</div>
+        <p class="title">Make a crossing</p>
+        <div class="box"><span class="cap">From your wallet</span>
+          <div class="row"><span class="amt" id="amt"></span><span class="tok"><img src="sol.svg" alt="">SOL<small>Solana</small></span></div></div>
+        <div class="box"><span class="cap">To your private wallet</span>
+          <div class="row"><span class="amt" id="amtOut" style="font-size:28px">—</span><span class="tok"><img src="base.svg" alt="">ETH<small>Base</small></span></div>
+          <span class="addr-sm">0x9d…f07a</span></div>
+        <div class="quote" id="quote"><div><span>About</span><b>0.002157 ETH</b></div><div><span>Time</span><b>~25 sec</b></div><div><span>Mode</span><b>Confidential</b></div></div>
+        <div class="btn" id="btn"><span id="btnTxt">Swap privately</span></div>
+      </div>
+      <div class="status" id="statusView">
+        <div class="appbar"><img src="mole.svg" alt="">Parallax</div>
+        <div class="portals">
+          <div class="portal pA"><img src="sol.svg" alt=""><small>Solana</small>SOL</div>
+          <div class="track"></div><div class="trackfill" id="fill"></div><div class="dot" id="dot"></div>
+          <div class="portal pB"><img src="base.svg" alt=""><small>Base</small>ETH</div>
+        </div>
+        <span class="spill" id="spill">Deposit seen</span>
+        <div class="facts">
+          <div class="row"><span>Sending</span><b>0.05 SOL on Solana</b></div>
+          <div class="row"><span>Arriving</span><b>~0.002157 ETH on Base</b></div>
+          <div class="row"><span>Mode</span><b>Confidential</b></div>
+        </div>
+        <div class="arrived" id="arrived"><span class="big">+0.002157 ETH</span><span class="small">Arrived on Base · 0x9d…f07a</span></div>
+      </div>
+      <div class="tap" id="tap"></div><div class="ripple" id="ripple"></div>
+    </div></div>
+  </div>
+
+  </div>
+  <!-- Scene 3: two views, creature in the gap -->
+  <div class="abs cx" id="h4" style="top:150px"><p class="head" style="font-size:90px">Two chains. <em>No line between them.</em></p></div>
+  <div class="abs view" id="vA" style="left:150px; top:420px">
+    <span class="vh"><img src="sol.svg" alt="">What Solana sees</span>
+    <div class="vr"><span>From</span><b>Your wallet</b></div>
+    <div class="vr"><span>To</span><b>A swap network</b></div>
+    <div class="vr"><span>Amount</span><b>0.05 SOL</b></div>
+  </div>
+  <div class="mole" id="m3" style="left:850px; top:470px; width:220px"></div>
+  <div class="abs cx plabel" id="nolink" style="top:740px; color:var(--lilac)">no public link</div>
+  <div class="abs view" id="vB" style="left:1130px; top:420px">
+    <span class="vh"><img src="base.svg" alt="">What Base sees</span>
+    <div class="vr"><span>From</span><b>A network address</b></div>
+    <div class="vr"><span>To</span><b>0x9d…f07a</b></div>
+    <div class="vr"><span>Amount</span><b>0.002157 ETH</b></div>
+  </div>
+
+
+  <!-- Scene 4: ghost wallets -->
+  <div class="abs cx" id="h5" style="top:150px"><p class="head" style="font-size:90px">No fresh wallet? <em>Make a ghost one.</em></p></div>
+  <div class="mole" id="m5" style="left:1150px; top:228px; width:200px"></div>
+  <div class="abs card" id="gcard" style="left:580px; top:350px">
+    <span class="ch"><img src="mole.svg" alt="">Ghost wallet</span>
+    <div class="chips" id="gchips"></div>
+    <div class="bigbtn" id="gbtn">Create a Solana ghost wallet<div class="tapdot" id="gtap" style="left:150px; top:4px"></div></div>
+    <div class="field" id="gaddr"></div>
+    <div class="keyline" id="gkey"><i>✓</i>Made in your browser. The keys never leave it.</div>
+  </div>
+
+  <!-- Scene 5: split send -->
+  <div class="abs cx" id="h6" style="top:150px"><p class="head" style="font-size:90px">Split one swap <em>across wallets.</em></p></div>
+  <div class="abs cx" id="s6" style="top:270px"><p class="sub" style="font-size:36px">Uneven amounts are harder to match.</p></div>
+  <svg class="abs" id="splitSvg" style="left:0; top:0" width="1920" height="1080" viewBox="0 0 1920 1080">
+    <defs><linearGradient id="sg" x1="0" x2="1"><stop offset="0" stop-color="#7b62f0"/><stop offset="1" stop-color="#c8ff2e"/></linearGradient></defs>
+    <path id="sp0" d="M 690 640 C 900 640 1000 470 1240 470" fill="none" stroke="url(#sg)" stroke-width="5" stroke-linecap="round" pathLength="1"/>
+    <path id="sp1" d="M 690 640 C 900 640 1000 640 1240 640" fill="none" stroke="url(#sg)" stroke-width="5" stroke-linecap="round" pathLength="1"/>
+    <path id="sp2" d="M 690 640 C 900 640 1000 810 1240 810" fill="none" stroke="url(#sg)" stroke-width="5" stroke-linecap="round" pathLength="1"/>
+    <circle id="sd0" r="11" fill="#c8ff2e"/><circle id="sd1" r="11" fill="#c8ff2e"/><circle id="sd2" r="11" fill="#c8ff2e"/>
+  </svg>
+  <div class="abs wcard" id="src" style="left:220px; top:568px"><span class="t">You send</span><span class="v"><img src="sol.svg" alt="" style="width:38px;height:38px;vertical-align:-6px;margin-right:12px">0.1 SOL</span></div>
+  <div class="abs wcard" id="w1" style="left:1240px; top:400px"><span class="t">Wallet 1 <b id="ok1">Arrived</b></span><span class="v">0.046 SOL<small>→ ~0.0020 ETH</small></span></div>
+  <div class="abs wcard" id="w2" style="left:1240px; top:570px"><span class="t">Wallet 2 <b id="ok2">Arrived</b></span><span class="v">0.031 SOL<small>→ ~0.0013 ETH</small></span></div>
+  <div class="abs wcard" id="w3" style="left:1240px; top:740px"><span class="t">Wallet 3 <b id="ok3">Arrived</b></span><span class="v">0.023 SOL<small>→ ~0.0010 ETH</small></span></div>
+
+  <!-- Scene 6: 13 chains + zero fee -->
+  <div class="abs cx" id="h7" style="top:150px"><p class="head" style="font-size:96px">13 chains. <em>Zero app fee.</em></p></div>
+  <div id="tiles"></div>
+  <div class="mole" id="m6" style="left:1600px; top:520px; width:190px"></div>
+  <div class="abs" id="stats" style="left:0; right:0; top:800px; display:flex; justify-content:center; gap:30px">
+    <div class="stat"><b>0%</b><span>App fee</span></div>
+    <div class="stat"><b>0</b><span>Funds held by us</span></div>
+    <div class="stat"><b>~25s</b><span>Per crossing</span></div>
+  </div>
+
+  <!-- Scene 7: My Crossings -->
+  <div class="abs cx" id="h8" style="top:150px"><p class="head" style="font-size:96px">Watch it cross, <em>live.</em></p></div>
+  <div class="abs" id="nav8" style="left:1160px; top:300px"><span class="navpill">My Crossings <span class="badge" id="badge"><i></i>1</span></span></div>
+  <div class="mole" id="m7" style="left:420px; top:248px; width:200px"></div>
+  <div class="abs list" id="xlist" style="left:460px; top:400px">
+    <div class="lh">Your crossings <u>Forget these</u></div>
+    <div class="lrow"><span><b>0.1 SOL</b> <span class="m">Solana → ETH Base</span></span><span class="pill" id="xp1">Waiting for deposit</span><span class="tm">just now</span><span class="tr">Track</span></div>
+    <div class="lrow"><span><b>250 USDC</b> <span class="m">Ethereum → SOL Solana</span></span><span class="pill ok">Arrived</span><span class="tm">2 h ago</span><span class="tr">Track</span></div>
+    <div class="lrow"><span><b>0.002 BTC</b> <span class="m">Bitcoin → ETH Arbitrum</span></span><span class="pill ok">Arrived</span><span class="tm">yesterday</span><span class="tr">Track</span></div>
+  </div>
+
+  <!-- Scene 8: end card -->
+  <div class="mole" id="m4" style="left:420px; top:220px; width:440px"></div>
+  <div class="abs" id="end" style="left:860px; top:300px">
+    <p style="font-size:190px; font-weight:800; letter-spacing:-0.055em; line-height:1">Parallax</p>
+    <p class="sub" style="margin-top:22px; font-size:44px">Private cross-chain swaps</p>
+    <div style="margin-top:40px; display:flex; gap:18px; align-items:center"><span class="url">parallaxswap.com</span></div>
+    <div style="margin-top:22px"><span class="ca"><b>$PARALLAX</b><code id="caText"></code></span></div>
+  </div>
+</div>
+
+<script>
+const $ = (id) => document.getElementById(id);
+const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+const prog = (t, a, b) => clamp((t - a) / (b - a));
+const easeOut = (x) => 1 - Math.pow(1 - x, 3);
+const easeInOut = (x) => (x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2);
+const backOut = (x) => { const c = 1.9; return 1 + (c + 1) * Math.pow(x - 1, 3) + c * Math.pow(x - 1, 2); };
+const env = (t, a, b, d = 0.35) => Math.min(easeOut(prog(t, a, a + d)), 1 - easeInOut(prog(t, b - d, b)));
+function show(el, o, dy = 0, scale = 1) {
+  el.style.opacity = o.toFixed(3);
+  el.style.transform = `translateY(${dy.toFixed(1)}px) scale(${scale.toFixed(4)})`;
+  el.style.visibility = o < 0.002 ? 'hidden' : 'visible';
+}
+
+// The mascot, same artwork as the site, with parts we can move.
+function moleSVG(id) {
+  return `<svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="${id}-b" cx="38%" cy="28%" r="78%"><stop offset="0%" stop-color="#9A86FF"/><stop offset="55%" stop-color="#5A41D6"/><stop offset="100%" stop-color="#2A1C7A"/></radialGradient>
+    <radialGradient id="${id}-g" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#7B62F0" stop-opacity="0.5"/><stop offset="100%" stop-color="#7B62F0" stop-opacity="0"/></radialGradient>
+    <clipPath id="${id}-c"><rect x="0" y="-200" width="400" height="500"/></clipPath>
+  </defs>
+  <circle id="${id}-glow" cx="200" cy="230" r="185" fill="url(#${id}-g)"/>
+  <ellipse id="${id}-hole" cx="200" cy="300" rx="158" ry="36" fill="#030208" stroke="#3A2A8C" stroke-width="2" stroke-opacity="0.3"/>
+  <g clip-path="url(#${id}-c)"><g id="${id}-body">
+    <path d="M200 100 C286 100 330 166 330 250 C330 320 280 352 200 352 C120 352 70 320 70 250 C70 166 114 100 200 100 Z" fill="url(#${id}-b)"/>
+    <path d="M200 176 C248 176 278 208 278 244 C278 278 244 298 200 298 C156 298 122 278 122 244 C122 208 152 176 200 176 Z" fill="#07050F"/>
+    <g id="${id}-eyes"><ellipse id="${id}-e1" cx="174" cy="236" rx="10" ry="16" fill="#C8FF2E"/><ellipse id="${id}-e2" cx="226" cy="236" rx="10" ry="16" fill="#C8FF2E"/></g>
+    <ellipse cx="200" cy="274" rx="15" ry="10" fill="#FF8FB8"/>
+  </g></g>
+  <g id="${id}-paws"><ellipse cx="118" cy="300" rx="34" ry="18" fill="#6B52E4"/><ellipse cx="282" cy="300" rx="34" ry="18" fill="#6B52E4"/></g>
+</svg>`;
+}
+const moles = {};
+['m1', 'm2', 'm3', 'm4', 'm5', 'm6', 'm7'].forEach((id) => { $(id).innerHTML = moleSVG(id); moles[id] = id; });
+// up: 0 = hidden in the hole, 1 = fully out. look: eyes offset in px. blink: 0..1 closed. happy: squints.
+function mole(id, { o = 1, up = 1, lookX = 0, lookY = 0, blink = 0, happy = 0, hole = 1, scale = 1, dy = 0 }) {
+  const el = $(id);
+  show(el, o, dy, scale);
+  const bodyY = (1 - up) * 230;
+  $(`${id}-body`).setAttribute('transform', `translate(0 ${bodyY.toFixed(1)})`);
+  // body hidden below the hole line: clip by moving clip rect bottom fixed at 300
+  $(`${id}-paws`).style.opacity = clamp((up - 0.55) / 0.3).toFixed(3);
+  $(`${id}-eyes`).setAttribute('transform', `translate(${lookX.toFixed(1)} ${lookY.toFixed(1)})`);
+  const ry = Math.max(1.5, 16 * (1 - blink) * (1 - 0.7 * happy));
+  $(`${id}-e1`).setAttribute('ry', ry.toFixed(2)); $(`${id}-e2`).setAttribute('ry', ry.toFixed(2));
+  $(`${id}-hole`).style.opacity = hole; $(`${id}-glow`).style.opacity = (0.4 + 0.6 * up).toFixed(3);
+}
+// The body must vanish into the hole: clip everything below the hole's centre line.
+['m1', 'm2', 'm3', 'm4', 'm5', 'm6', 'm7'].forEach((id) => document.querySelector(`#${id}-c rect`).setAttribute('height', '500') || document.querySelector(`#${id}-c rect`).setAttribute('y', '-200'));
+['m1', 'm2', 'm3', 'm4', 'm5', 'm6', 'm7'].forEach((id) => { const r = document.querySelector(`#${id}-c rect`); r.setAttribute('y', '-200'); r.setAttribute('height', '500'); });
+const blinkAt = (t, at) => { const x = prog(t, at, at + 0.18); return x > 0 && x < 1 ? Math.sin(x * Math.PI) : 0; };
+
+// 3D coins: stacked layers give real thickness; faces carry the chain logo.
+const COINS = {
+  sol: { icon: 'sol.svg', face: 'radial-gradient(circle at 35% 30%, #3a2f7a, #17132e 70%)', edge: ['#2a2160', '#4b3cae'] },
+  eth: { icon: 'base.svg', face: 'radial-gradient(circle at 35% 30%, #2d4fd6, #0c1f6e 70%)', edge: ['#0d2a8a', '#2f56e0'] },
+};
+function makeCoin(id, kind, size) {
+  const c = COINS[kind]; const el = document.createElement('div'); el.className = 'coin'; el.id = id;
+  el.style.width = el.style.height = size + 'px';
+  const depth = Math.round(size * 0.11);
+  for (let i = 0; i <= depth; i++) {
+    const ly = document.createElement('div'); ly.className = 'ly';
+    ly.style.background = i % 2 ? c.edge[0] : c.edge[1];
+    ly.style.transform = `translateZ(${(i - depth / 2).toFixed(1)}px)`; el.appendChild(ly);
+  }
+  for (const side of [1, -1]) {
+    const f = document.createElement('div'); f.className = 'ly face'; f.style.background = c.face;
+    f.style.transform = `translateZ(${(side * (depth / 2 + 0.6)).toFixed(1)}px)${side < 0 ? ' rotateY(180deg)' : ''}`;
+    f.innerHTML = `<img src="${c.icon}" alt="">`; el.appendChild(f);
+  }
+  const sh = document.createElement('div'); sh.className = 'coinShadow'; sh.id = id + '-sh';
+  const wrap = document.createElement('div'); wrap.className = 'abs'; wrap.id = id + '-w'; wrap.style.left = '0'; wrap.style.top = '0';
+  wrap.appendChild(sh); wrap.appendChild(el); $('coins').appendChild(wrap);
+  return el;
+}
+const coinDefs = [
+  ['c2s', 'sol', 160, 990, 260], ['c2e', 'eth', 160, 1715, 600],
+];
+coinDefs.forEach(([id, k, sz, x, y]) => { const el = makeCoin(id, k, sz); el.style.left = x + 'px'; el.style.top = y + 'px';
+  const sh = $(id + '-sh'); sh.style.left = (x + sz / 2 - 65) + 'px'; sh.style.top = (y + sz + 40) + 'px'; });
+function coin(id, t, o, { spin = 1, scale = 1, phase = 0, tilt = 14 } = {}) {
+  const el = $(id), sh = $(id + '-sh'), w = $(id + '-w');
+  const bob = Math.sin(t * 1.1 + phase) * 16;
+  w.style.opacity = o.toFixed(3); w.style.visibility = o < 0.002 ? 'hidden' : 'visible';
+  el.style.transform = `perspective(900px) translateY(${bob.toFixed(1)}px) rotateX(${tilt}deg) rotateY(${(Math.sin(t * 0.55 * spin + phase) * 38 + 18 * spin).toFixed(1)}deg) rotateZ(${(Math.sin(t * 0.7 + phase) * 6).toFixed(1)}deg) scale(${scale.toFixed(3)})`;
+  sh.style.opacity = (o * 0.8 * (1 - bob / 60)).toFixed(3); sh.style.transform = `scale(${(scale * (1 - bob / 80)).toFixed(3)})`;
+}
+function tilt3d(el, o, dy, ry, rx = 0, scale = 1) {
+  // Fade the wrapper, never the 3D object: a half-transparent 3D object gets flattened by the browser.
+  const fader = el.parentElement && el.parentElement.classList.contains('fadeWrap') ? el.parentElement : el;
+  fader.style.opacity = o.toFixed(3); fader.style.visibility = o < 0.002 ? 'hidden' : 'visible';
+  if (fader !== el) { el.style.opacity = 1; el.style.visibility = 'visible'; }
+  el.style.transform = `perspective(1400px) translateY(${dy.toFixed(1)}px) rotateY(${ry.toFixed(2)}deg) rotateX(${rx.toFixed(2)}deg) scale(${scale.toFixed(3)})`;
+}
+
+// Thick 3D cards: layers stacked behind each card give it visible depth when it tilts.
+function makeSlab(el, depth = 46) {
+  const wrap = document.createElement('div'); wrap.className = 'abs fadeWrap';
+  wrap.style.left = el.style.left; wrap.style.top = el.style.top; el.style.left = '0px'; el.style.top = '0px';
+  el.parentNode.insertBefore(wrap, el); wrap.appendChild(el);
+  el.classList.add('slab');
+  for (let i = 1; i <= depth; i++) {
+    const d = document.createElement('div'); d.className = 'depth';
+    const k = i / depth;
+    d.style.background = `rgb(${Math.round(78 - 48 * k)},${Math.round(62 - 40 * k)},${Math.round(170 - 110 * k)})`;
+    d.style.transform = `translateZ(${-i}px)`; el.insertBefore(d, el.firstChild);
+  }
+}
+['wA', 'wB', 'vA', 'vB', 'gcard', 'src', 'w1', 'w2', 'w3', 'xlist'].forEach((id) => makeSlab($(id)));
+
+
+// ambient bars
+function makeBars(el, n, hMax) {
+  const out = [];
+  for (let i = 0; i < n; i++) {
+    const s = document.createElement('span'); const u = i / (n - 1); const e = Math.sin(u * Math.PI);
+    const lerp = (a, b, k) => Math.round(a + (b - a) * k);
+    let c; if (u < 0.6) { const k = u / 0.6; c = `rgb(${lerp(90,207,k)},${lerp(65,198,k)},${lerp(214,255,k)})`; } else { const k = (u - 0.6) / 0.4; c = `rgb(${lerp(207,200,k)},${lerp(198,255,k)},${lerp(255,46,k)})`; }
+    s.style.background = `linear-gradient(${el.classList.contains('top') ? 'to bottom' : 'to top'}, ${c}, transparent)`;
+    const ee = Math.pow(e, 1.4); s.style.height = `${hMax * (0.08 + 0.92 * ee)}px`; s.style.opacity = (0.75 * ee).toFixed(3);
+    el.appendChild(s); out.push(s);
+  }
+  return out;
+}
+const bars = makeBars($('bars'), 150, 560), barsTop = makeBars($('barsTop'), 150, 260);
+
+
+// ---- drop video setup ----
+const CA = ''; // paste the contract address here at launch
+$('caText').textContent = CA || 'CA posted at launch';
+const GKINDS = [['sol', 'Solana'], ['eth', 'EVM'], ['btc', 'Bitcoin'], ['doge', 'Dogecoin'], ['ltc', 'Litecoin'], ['xrp', 'XRP'], ['tron', 'Tron']];
+$('gchips').innerHTML = GKINDS.map(([k, n], i) => `<span class="chip${i === 0 ? ' on' : ''}"><img src="chain-${k}.svg" alt="">${n}</span>`).join('');
+const GHOST = 'J8mQ4tVx2LkP9sRdW3nYbH6cZ1aF5eGuK7oTqXwE';
+const CH = [['sol','Solana'],['eth','Ethereum'],['base','Base'],['arb','Arbitrum'],['bsc','BNB Chain'],['avax','Avalanche'],['op','Optimism'],['pol','Polygon'],['btc','Bitcoin'],['doge','Dogecoin'],['ltc','Litecoin'],['xrp','XRP'],['tron','Tron']];
+const tilesEl = $('tiles');
+CH.forEach(([k, n], i) => {
+  const row = i < 7 ? 0 : 1, col = row ? i - 7 : i, perRow = row ? 6 : 7;
+  const x = 960 - (perRow * 170 + (perRow - 1) * 26) / 2 + col * 196, y = row ? 590 : 390;
+  const w = document.createElement('div'); w.className = 'abs fadeWrap'; w.style.left = x + 'px'; w.style.top = y + 'px';
+  w.innerHTML = `<div class="tile" id="tile${i}" style="left:0;top:0"><img src="chain-${k}.svg" alt="">${n}</div>`; tilesEl.appendChild(w);
+});
+const SP = [0, 1, 2].map((i) => $('sp' + i));
+const SPL = SP.map((p) => p.getTotalLength());
+
+window.render = function (t, wallT) {
+  const tb = wallT ?? t; // background keeps moving even while the story pauses
+  const dim = 1 - 0.55 * Math.max(env(t, 4.0, 11.0, 0.6), env(t, 13.3, 27.2, 0.6));
+  bars.forEach((s, i) => { const k = 0.4 + 0.6 * (0.5 + 0.5 * Math.sin((tb / 5) * Math.PI * 2 + i * 0.13)); s.style.transform = `scaleY(${k.toFixed(3)})`; });
+  barsTop.forEach((s, i) => { const k = 0.4 + 0.6 * (0.5 + 0.5 * Math.sin((tb / 5) * Math.PI * 2 + i * 0.13 + 2)); s.style.transform = `scaleY(${k.toFixed(3)})`; });
+  $('bars').style.opacity = (0.9 * dim * clamp(t / 0.6)).toFixed(3);
+  $('barsTop').style.opacity = (0.5 * dim * clamp(t / 0.6)).toFixed(3);
+
+  // ---------- Scene 1 (0 - 4.1) ----------
+  show($('h1'), env(t, 0.1, 2.95, 0.3), 20 * (1 - easeOut(prog(t, 0.1, 0.6))));
+  show($('s1'), env(t, 0.35, 2.95, 0.3), 16 * (1 - easeOut(prog(t, 0.35, 0.85))));
+  const wO = env(t, 0.3, 4.1, 0.4);
+  tilt3d($('wA'), wO, 30 * (1 - easeOut(prog(t, 0.3, 0.85))), 24 + 30 * (1 - easeOut(prog(t, 0.3, 1.0))), 10);
+  tilt3d($('wB'), wO, 30 * (1 - easeOut(prog(t, 0.45, 1.0))), -24 - 30 * (1 - easeOut(prog(t, 0.45, 1.15))), 10);
+  const draw = easeInOut(prog(t, 0.8, 1.6));
+  // creature bursts up through the middle of the line at 2.1, cutting it; halves retract
+  const cut = easeOut(prog(t, 2.15, 2.75));
+  const lnO = clamp(draw * 4) * (1 - prog(t, 3.4, 3.9));
+  $('lnTop').style.transformOrigin = 'left'; $('lnBot').style.transformOrigin = 'left';
+  $('lnTop').style.transform = `scaleX(${(clamp(draw * 2) * (1 - 0.75 * cut)).toFixed(3)})`;
+  $('lnBot').style.transform = `translateX(${(290 * 0.75 * cut).toFixed(1)}px) scaleX(${(clamp(draw * 2 - 1) * (1 - 0.75 * cut)).toFixed(3)})`;
+  $('lnTop').style.opacity = lnO; $('lnBot').style.opacity = lnO;
+  show($('plbl'), env(t, 1.3, 2.2, 0.25));
+  const pop1 = backOut(prog(t, 1.95, 2.45));
+  const m1Out = prog(t, 3.6, 4.0);
+  mole('m1', { o: env(t, 1.75, 4.05, 0.25), up: clamp(pop1) * (1 - easeInOut(m1Out)), lookX: -10 * prog(t, 2.6, 2.8) + 20 * prog(t, 2.9, 3.1) - 10 * prog(t, 3.2, 3.35), blink: blinkAt(t, 3.0), happy: prog(t, 2.8, 3.0) * (1 - prog(t, 3.5, 3.6)) });
+  show($('h2'), env(t, 3.0, 4.1, 0.3), 16 * (1 - easeOut(prog(t, 3.0, 3.4))));
+
+  // ---------- Scene 2 (4.1 - 10.9) ----------
+  show($('h3'), env(t, 4.2, 10.9, 0.4), 18 * (1 - easeOut(prog(t, 4.2, 4.7))));
+  const ph = easeOut(prog(t, 4.05, 4.9)), phOut = easeInOut(prog(t, 10.6, 11.05));
+  const rigO = clamp(ph * 1.4) * (1 - phOut);
+  const ry = -48 * (1 - ph) - 14 + 3 * Math.sin(tb * 0.9) + 30 * phOut;
+  const rx = 6 + 2 * Math.sin(tb * 0.7 + 1);
+  $('rig').style.transform = `perspective(1400px) translateY(${(380 * (1 - ph) + 80 * phOut).toFixed(1)}px) rotateY(${ry.toFixed(2)}deg) rotateX(${rx.toFixed(2)}deg) scale(0.94)`;
+  $('rig').style.opacity = 1; $('rig').style.visibility = rigO < 0.002 ? 'hidden' : 'visible';
+  show($('phone'), rigO);
+  const coinsO = env(t, 4.4, 10.9, 0.6);
+  coin('c2s', tb, coinsO, { phase: 0.6 });
+  coin('c2e', tb, coinsO, { phase: 2.4, spin: -1 });
+  show($('steps'), env(t, 4.6, 10.9, 0.35), 16 * (1 - easeOut(prog(t, 4.6, 5.0))));
+  $('st1').classList.toggle('on', t < 6.3); $('st2').classList.toggle('on', t >= 6.3 && t < 7.5); $('st3').classList.toggle('on', t >= 7.5);
+  // creature riding on the phone's top edge: peeks, watches the tap, ducks while crossing, pops up when it arrives
+  const m2up = backOut(prog(t, 5.0, 5.5)) * (1 - easeInOut(prog(t, 7.7, 8.0))) + backOut(prog(t, 9.8, 10.25)) * (t > 9.8 ? 1 : 0);
+  mole('m2', { o: rigO, dy: 0, up: clamp(m2up, 0, 1.08),
+    lookX: -14 * prog(t, 5.5, 5.8), lookY: 10 * prog(t, 5.6, 5.9) - 10 * prog(t, 9.8, 10), blink: blinkAt(t, 6.9), happy: prog(t, 10.0, 10.2) });
+
+  const typed = '0.05'.slice(0, Math.floor(prog(t, 5.0, 5.6) * 4 + 0.0001));
+  const caret = t > 4.9 && t < 6.0 && Math.floor(t * 2.4) % 2 === 0;
+  $('amt').innerHTML = (typed || '<span style="color:#5d5680">0.0</span>') + (caret ? '<span class="caret"></span>' : '');
+  $('amtOut').textContent = t > 5.9 ? '0.002157' : '—'; $('amtOut').style.color = t > 5.9 ? 'var(--text)' : 'var(--muted)';
+  const qO = easeOut(prog(t, 5.9, 6.25)); show($('quote'), qO, 8 * (1 - qO));
+  const btn = $('btn'); const sb = btn.offsetTop + 64 + btn.offsetHeight / 2 - 30;
+  $('tap').style.top = `${sb}px`; $('ripple').style.top = `${sb}px`;
+  const tapIn = prog(t, 6.35, 6.5), tapOut = prog(t, 6.55, 6.85);
+  $('tap').style.opacity = (Math.min(tapIn, 1 - tapOut) * 0.9).toFixed(3); $('tap').style.transform = `scale(${(0.6 + 0.4 * tapIn).toFixed(3)})`;
+  const r = prog(t, 6.5, 7.1); $('ripple').style.opacity = (r > 0 && r < 1 ? 1 - r : 0).toFixed(3); $('ripple').style.transform = `scale(${(1 + 2.4 * r).toFixed(3)})`;
+  btn.style.transform = `scale(${(1 - 0.04 * Math.sin(Math.PI * prog(t, 6.45, 6.7))).toFixed(4)})`;
+  $('btnTxt').textContent = t > 6.6 ? 'Check your wallet…' : 'Swap privately';
+  const sw = easeInOut(prog(t, 7.3, 7.65));
+  show($('formView'), 1 - sw, -20 * sw); show($('statusView'), sw, 20 * (1 - sw));
+  const trackW = 108, travel = easeInOut(prog(t, 7.9, 9.7));
+  $('fill').style.width = `${(trackW * travel).toFixed(1)}px`; $('dot').style.left = `${(116 + trackW * travel).toFixed(1)}px`; $('dot').style.opacity = t < 9.8 ? 1 : 0;
+  const sp = $('spill');
+  if (t < 8.2) { sp.textContent = 'Deposit seen, confirming'; sp.style.background = 'var(--violetDeep)'; sp.style.color = 'var(--text)'; }
+  else if (t < 9.8) { sp.textContent = 'In the tunnel'; sp.style.background = 'var(--violetDeep)'; sp.style.color = 'var(--text)'; }
+  else { sp.textContent = 'Arrived ✓'; sp.style.background = 'var(--lime)'; sp.style.color = '#0c0a18'; }
+  const ar = easeOut(prog(t, 9.85, 10.3)); show($('arrived'), ar, 14 * (1 - ar), 0.96 + 0.04 * ar);
+
+  // ---------- Scene 3 (11.0 - 13.2) ----------
+  show($('h4'), env(t, 11.05, 13.2, 0.35), 18 * (1 - easeOut(prog(t, 11.05, 11.5))));
+  tilt3d($('vA'), env(t, 11.2, 13.2, 0.35), 26 * (1 - easeOut(prog(t, 11.2, 11.7))), 20 + 36 * (1 - easeOut(prog(t, 11.2, 11.9))), 9);
+  tilt3d($('vB'), env(t, 11.35, 13.2, 0.35), 26 * (1 - easeOut(prog(t, 11.35, 11.85))), -20 - 36 * (1 - easeOut(prog(t, 11.35, 12.05))), 9);
+  mole('m3', { o: env(t, 11.5, 13.2, 0.3), up: backOut(prog(t, 11.6, 12.05)), lookX: -14 * prog(t, 12.1, 12.3) + 28 * prog(t, 12.45, 12.65) - 14 * prog(t, 12.8, 12.95), blink: blinkAt(t, 12.95) });
+  show($('nolink'), env(t, 11.8, 13.2, 0.3));
+
+
+  // ---------- Scene 4: ghost wallets (13.3 - 16.7) ----------
+  show($('h5'), env(t, 13.35, 16.7, 0.35), 18 * (1 - easeOut(prog(t, 13.35, 13.8))));
+  tilt3d($('gcard'), env(t, 13.5, 16.7, 0.4), 30 * (1 - easeOut(prog(t, 13.5, 14.1))), 26 * (1 - easeOut(prog(t, 13.5, 14.3))) - 6 + 2 * Math.sin(tb * 0.8), 8);
+  const gt = prog(t, 14.35, 14.5), gto = prog(t, 14.55, 14.8);
+  $('gtap').style.opacity = (Math.min(gt, 1 - gto) * 0.9).toFixed(3); $('gtap').style.transform = `scale(${(0.6 + 0.4 * gt).toFixed(3)})`;
+  $('gbtn').style.transform = `scale(${(1 - 0.04 * Math.sin(Math.PI * prog(t, 14.4, 14.65))).toFixed(4)})`;
+  const gn = Math.floor(prog(t, 14.6, 15.3) * GHOST.length);
+  $('gaddr').innerHTML = gn ? GHOST.slice(0, gn) + (gn < GHOST.length ? '<span class="caret"></span>' : '') : '<span style="color:#5d5680">Your new address</span>';
+  const gk = easeOut(prog(t, 15.35, 15.7)); show($('gkey'), gk, 10 * (1 - gk));
+  mole('m5', { o: env(t, 13.9, 16.7, 0.3), up: backOut(prog(t, 14.0, 14.45)), lookX: -12 * prog(t, 14.5, 14.7) + 12 * prog(t, 15.3, 15.5), lookY: 10 * prog(t, 14.5, 14.7) - 10 * prog(t, 15.3, 15.5), happy: prog(t, 15.4, 15.6) * (1 - prog(t, 16.2, 16.4)), blink: blinkAt(t, 16.0) });
+
+  // ---------- Scene 5: split send (16.8 - 20.2) ----------
+  show($('h6'), env(t, 16.85, 20.2, 0.35), 18 * (1 - easeOut(prog(t, 16.85, 17.3))));
+  show($('s6'), env(t, 17.0, 20.2, 0.35), 14 * (1 - easeOut(prog(t, 17.0, 17.45))));
+  const s5 = env(t, 17.0, 20.2, 0.4);
+  tilt3d($('src'), s5, 26 * (1 - easeOut(prog(t, 17.0, 17.5))), 22 * (1 - easeOut(prog(t, 17.0, 17.7))) + 10, 6);
+  [1, 2, 3].forEach((n, i) => {
+    const a = 17.2 + 0.12 * i; tilt3d($('w' + n), env(t, a, 20.2, 0.4), 26 * (1 - easeOut(prog(t, a, a + 0.5))), -22 * (1 - easeOut(prog(t, a, a + 0.7))) - 10, 6);
+    const draw = easeInOut(prog(t, 17.5 + 0.1 * i, 18.3 + 0.1 * i));
+    const p = SP[i]; p.style.strokeDasharray = '1'; p.style.strokeDashoffset = (1 - draw).toFixed(4); p.style.opacity = s5.toFixed(3);
+    const mv = easeInOut(prog(t, 18.35 + 0.12 * i, 19.25 + 0.12 * i)); const pt = p.getPointAtLength(SPL[i] * mv);
+    const d = $('sd' + i); d.setAttribute('cx', pt.x.toFixed(1)); d.setAttribute('cy', pt.y.toFixed(1)); d.style.opacity = (mv > 0 && mv < 1 ? 1 : 0) * s5;
+    const ok = easeOut(prog(t, 19.25 + 0.12 * i, 19.5 + 0.12 * i)); const b = $('ok' + n); b.style.opacity = ok.toFixed(3); b.style.transform = `scale(${(0.7 + 0.3 * ok).toFixed(3)})`;
+  });
+
+  // ---------- Scene 6: 13 chains + zero fee (20.3 - 23.7) ----------
+  show($('h7'), env(t, 20.35, 23.7, 0.35), 18 * (1 - easeOut(prog(t, 20.35, 20.8))));
+  CH.forEach((_, i) => { const a = 20.5 + 0.055 * i; tilt3d($('tile' + i), env(t, a, 23.7, 0.35), 24 * (1 - easeOut(prog(t, a, a + 0.45))), 70 * (1 - easeOut(prog(t, a, a + 0.55))) + 4 * Math.sin(tb * 0.9 + i), 6); });
+  const st = easeOut(prog(t, 21.6, 22.1)); show($('stats'), st * env(t, 21.6, 23.7, 0.35) / Math.max(st, 0.001), 26 * (1 - st));
+  mole('m6', { o: env(t, 21.2, 23.7, 0.3), up: backOut(prog(t, 21.3, 21.75)), lookX: -16 * prog(t, 21.8, 22.0), blink: blinkAt(t, 22.6), happy: prog(t, 22.9, 23.05) * (1 - prog(t, 23.4, 23.5)) });
+
+  // ---------- Scene 7: My Crossings (23.8 - 27.2) ----------
+  show($('h8'), env(t, 23.85, 27.2, 0.35), 18 * (1 - easeOut(prog(t, 23.85, 24.3))));
+  tilt3d($('xlist'), env(t, 24.0, 27.2, 0.4), 30 * (1 - easeOut(prog(t, 24.0, 24.6))), 18 * (1 - easeOut(prog(t, 24.0, 24.8))) - 4 + 2 * Math.sin(tb * 0.8), 7);
+  const nv = env(t, 24.2, 27.2, 0.35); show($('nav8'), nv, 14 * (1 - easeOut(prog(t, 24.2, 24.6))));
+  const x1 = $('xp1');
+  if (t < 24.9) { x1.textContent = 'Waiting for deposit'; x1.className = 'pill'; }
+  else if (t < 26.0) { x1.textContent = 'Crossing'; x1.className = 'pill'; }
+  else { x1.textContent = 'Arrived'; x1.className = 'pill ok'; }
+  const pulse = 1 + 0.12 * Math.sin(Math.PI * prog(t, 26.0, 26.3)); x1.style.transform = `scale(${pulse.toFixed(3)})`;
+  const bd = 1 - easeInOut(prog(t, 26.05, 26.35)); $('badge').style.opacity = bd.toFixed(3); $('badge').style.transform = `scale(${(0.6 + 0.4 * bd).toFixed(3)})`;
+  $('badge').querySelector('i').style.opacity = (0.55 + 0.45 * Math.sin(tb * 4)).toFixed(3);
+  mole('m7', { o: env(t, 24.4, 27.2, 0.3), up: backOut(prog(t, 24.5, 24.95)), lookX: 14 * prog(t, 25.0, 25.2), lookY: 8 * prog(t, 25.0, 25.2) - 8 * prog(t, 26.0, 26.15), happy: prog(t, 26.05, 26.2) * (1 - prog(t, 26.8, 26.95)), blink: blinkAt(t, 25.6) });
+
+  // ---------- Scene 8: end card (27.3 - 30.5) ----------
+  const e4 = easeOut(prog(t, 27.30, 27.80));
+  mole('m4', { o: e4, up: backOut(prog(t, 27.40, 27.90)), blink: blinkAt(t, 28.15), happy: 0.6 * easeOut(prog(t, 28.35, 28.50)) * (1 - easeInOut(prog(t, 28.70, 28.95))) });
+  const e5 = easeOut(prog(t, 27.55, 28.10)); show($('end'), e5, 22 * (1 - e5));
+
+
+};
+document.fonts.ready.then(() => { window.__ready = true; window.render(0); });
+</script>
+</body>
+</html>

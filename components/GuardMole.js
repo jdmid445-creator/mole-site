@@ -6,14 +6,11 @@ import Mole from './Mole';
 // The creature guarding the swap card. Tap him: he ducks, peeks back up to his eyes, squints,
 // says something about keeping you private, then pops fully back up.
 const LINES = [
-  'I keep your wallets from being linked.',
-  'No trail on my watch.',
-  'Your coins go in my tunnel. Nobody sees where they come out.',
-  'I never hold your coins. I just hide the line between your wallets.',
-  'Fresh wallet on the other side? Even better.',
-  'Round amounts blend in. Trust me.',
-  'Two chains. Zero link. That’s my job.',
-  'I’m watching the tunnel so nobody else can.',
+  'Your funds, my tunnel. Nobody follows.',
+  'I guard the gap between your wallets.',
+  'No trail gets past me.',
+  'I never hold your coins. Just your secret.',
+  'Nobody connects the dots on my watch.',
 ];
 
 export default function GuardMole() {
@@ -42,11 +39,13 @@ export default function GuardMole() {
   }
 
   return (
+    <>
+    <span className={`guard-bubble${bubble ? ' is-on' : ''}`} role="status" aria-live="polite">{line}</span>
     <div className="guard">
-      <span className={`guard-bubble${bubble ? ' is-on' : ''}`} role="status" aria-live="polite">{line}</span>
       <button type="button" className={`guard-mole is-${phase}`} onClick={tap} aria-label="Tap the Parallax creature">
         <Mole size={150} id="mole-guard" title="Parallax creature" />
       </button>
     </div>
+    </>
   );
 }

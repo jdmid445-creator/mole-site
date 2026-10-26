@@ -770,3 +770,6 @@ html.motion .st-copy.is-lit { opacity: 1; transform: none; filter: none; }
 @media (min-width: 640px) { .track-any .track-form { grid-template-columns: 1fr auto; } }
 .connect-row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; }
 .btn-connect { min-height: 44px; }
+.wallet-quick { display: flex; flex-wrap: wrap; gap: 8px; }
+.wallet-quick .ghost-app { appearance: none; font: inherit; font-weight: 600; font-size: 0.9rem; cursor: pointer; }
+.wallet-quick .ghost-app:disabled { opacity: 0.5; cursor: default; }

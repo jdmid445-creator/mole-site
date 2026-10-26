@@ -15,6 +15,7 @@ import {
   detectEvmWallets,
   isMobile,
   walletAppLinks,
+  INSTALL,
 } from '@/lib/wallets';
 import CopyButton from './CopyButton';
 import ChainIcon from './ChainIcon';
@@ -437,6 +438,18 @@ export default function TunnelApp() {
     return '';
   }
 
+  // One tap on a named wallet: connect it if it's installed, otherwise open its download page.
+  async function quickWallet(item) {
+    setError('');
+    const kind = fromChain.wallet;
+    const wallets = kind === 'solana' ? detectSolanaWallets() : await detectEvmWallets();
+    const first = (n) => String(n || '').toLowerCase().split(' ')[0];
+    const found = wallets.find((w) => w.id === item.id || first(w.name) === first(item.name));
+    if (found) return connectWith(kind, found);
+    window.open(item.href, '_blank', 'noopener,noreferrer');
+    return '';
+  }
+
   async function onPickWallet(id) {
     const pk = picker;
     const w = pk.wallets.find((x) => x.id === id);
@@ -687,8 +700,9 @@ export default function TunnelApp() {
                 {payMode === 'manual' ? (
                   <>
                     <p className="pay-note">
-                      You'll get a one-time deposit address (with a QR code). Send your {fromToken?.symbol || fromChain.native} to it from
-                      {walletKind === 'solana' ? ' Axiom,' : ''} an exchange, or any wallet. Nothing to connect.
+                      {payFrom
+                        ? `You'll get a one-time deposit address (with a QR code). In ${payFrom}, tap Withdraw and send your ${fromToken?.symbol || fromChain.native} to it. Nothing to connect.`
+                        : `You'll get a one-time deposit address (with a QR code). Send your ${fromToken?.symbol || fromChain.native} to it from${walletKind === 'solana' ? ' Axiom,' : ''} an exchange, or any wallet. Nothing to connect.`}
                     </p>
                     <label className="field">
                       <span>Refund address</span>
@@ -717,11 +731,25 @@ export default function TunnelApp() {
                     <button type="button" className="btn btn-connect" onClick={() => chooseWallet()} disabled={Boolean(picker?.busyId) || Boolean(busy)}>
                       {picker?.busyId ? 'Check your wallet…' : `Connect ${fromChain.label} wallet`}
                     </button>
-                    <p className="pay-note">
-                      {walletKind === 'solana' ? 'Phantom, Solflare or Backpack' : 'MetaMask, Rabby or Coinbase Wallet'}. You approve the swap once in your wallet.
-                    </p>
+                    <p className="pay-note">You approve the swap once in your wallet.</p>
                   </div>
                 )}
+                {!walletMatches && !appLinks.length && INSTALL[walletKind] ? (
+                  <div className="wallet-quick" role="group" aria-label="Wallets">
+                    {INSTALL[walletKind].map((w) => (
+                      <button key={w.id} type="button" className="ghost-app" onClick={() => quickWallet(w)} disabled={Boolean(picker?.busyId)}>
+                        <img src={w.icon} alt="" width="20" height="20" />
+                        {w.name}
+                      </button>
+                    ))}
+                    {walletKind === 'solana' ? (
+                      <button type="button" className="ghost-app" onClick={() => { setPayMode('manual'); setPayFrom('Axiom'); setPicker(null); setError(''); }}>
+                        <span className="ghost-app-tile" aria-hidden="true">A</span>
+                        Axiom
+                      </button>
+                    ) : null}
+                  </div>
+                ) : null}
               </>
             )}
             {picker && picker.kind === walletKind ? (

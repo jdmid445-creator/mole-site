@@ -32,8 +32,18 @@ export default function HeroStage() {
     try { still = window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch {}
     setLine(nextLine());
     if (still) { setPhase('idle'); setBubble(true); later(3000, () => setBubble(false)); }
-    else { later(900, () => setPhase('rise')); later(1350, () => setBubble(true)); later(1600, () => setPhase('idle')); later(4600, () => setBubble(false)); }
-    return () => tt.current.forEach(clearTimeout);
+    if (still) return () => tt.current.forEach(clearTimeout);
+    // Pop up once he's on screen and the page has stopped moving (on phones he starts below the fold).
+    let inView = false, done = false, settle = 0;
+    const go = () => {
+      if (done || !inView) return; done = true; io.disconnect(); window.removeEventListener('scroll', onScroll);
+      setPhase('rise'); later(450, () => setBubble(true)); later(700, () => setPhase('idle')); later(3700, () => setBubble(false));
+    };
+    const onScroll = () => { clearTimeout(settle); settle = setTimeout(go, 280); };
+    const io = new IntersectionObserver((en) => { inView = en.some((e) => e.isIntersecting); clearTimeout(settle); if (inView) settle = setTimeout(go, 700); }, { threshold: 0.4 });
+    if (btn.current) io.observe(btn.current.parentElement);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => { io.disconnect(); window.removeEventListener('scroll', onScroll); clearTimeout(settle); tt.current.forEach(clearTimeout); };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const stroke = useRef({ x: null, dir: 0, turns: [], t: 0 });

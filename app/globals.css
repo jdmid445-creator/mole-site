@@ -746,3 +746,4 @@ html.motion .st-copy.is-lit { opacity: 1; transform: none; filter: none; }
 @keyframes dig-note { 0%, 72% { opacity: 0; translate: -50% 6px; } 82%, 92% { opacity: 1; translate: -50% 0; } 100% { opacity: 0; } }
 @keyframes dig-note-still { 0% { opacity: 0; } 20%, 80% { opacity: 1; } 100% { opacity: 0; } }
 @keyframes dig-fade { 0% { opacity: 0; } 8%, 85% { opacity: 1; } 100% { opacity: 0; } }
+.deposit-item.has-qr + .muted, .deposit-item.has-qr ~ p.muted { margin-top: 14px; }

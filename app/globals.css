@@ -148,7 +148,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .mole-hint.is-on { opacity: 1; translate: 0 0; }
 /* petting: squint, blush, happy sway */
 .swap-mole .mole-cheek { transition: opacity 0.35s ease; }
-.swap-mole.is-petting .mole-cheek { opacity: 0.35; }
+.swap-mole.is-petting .mole-cheek { opacity: 0.5; }
 .swap-mole.is-petting .mole-eye { animation: none; transform: scaleY(0.25); transition: transform 0.15s ease; }
 .swap-mole.is-petting .mole-eyes { transform: translate(0, 2px); animation: none; }
 .swap-mole.is-petting .mole-body { animation: mole-purr 0.55s ease-in-out infinite; }

@@ -218,4 +218,4 @@ References from owner: blackout.exchange, vanish.trade/us, veilit.xyz, web-4.app
 - Token section label "Contract" → "CA" (owner).
 - "if i drag my cursor over him rapidly back and forth its like hes getting pet… squints" → petting: 3+ quick direction changes over him = squinted eyes, pink blush cheeks, happy sway (ends ~0.75 s after you stop). "looking around way too much" → idle glances now 2 per 18 s (was 3 per 7 s), wiggle every 20 s (was 9), slower bob, softer eye-follow.
 - Petting blush removed (owner). Eyes "stuck" looking right: cause was the last cursor position being kept when idle, then a CSS idle animation snapping them to center 2 s later. Rewrote: one JS system drives the eyes (cursor follow → eases back to center 2.5 s after the mouse stops or leaves the window → a glance left/right every ~8–11 s), all via one eased transition, so nothing can snap or stick.
-- Blush back, subtle: smaller cheeks (9×4.5 vs 14×7), 35% opacity (was 75%), slightly further in.
+- Blush back, subtle: smaller cheeks (9×4.5 vs 14×7), 50% opacity (was 75%), slightly further in.

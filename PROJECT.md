@@ -273,3 +273,4 @@ References from owner: blackout.exchange, vanish.trade/us, veilit.xyz, web-4.app
 - Guard: toolkit bubble sits above him to the upper right; swap-page bubble raised (gap above the card); while peeking he glances left, right, back to center, then pops up.
 - Swap guard: bubble pops up to his top right (above him on narrow screens), glance distance reduced, no focus ring after a click (soft glow for keyboard focus only).
 - Swap guard bubble raised (≥17 px above his head throughout). Phone sweep (iPhone SE 320 px, iPhone 13, Pixel 7, all pages): fixed hero text cut off on SE, trace game + split toggle overflow, guard bubble overlapping the network pill; final scan: no clipped/overflowing text, no sideways scroll, bubbles on-screen, no errors.
+- Swap guard bubble raised again (owner: touching him): ≥23 px clear of his head even when fully up / hovered; on phones ≥24 px below the network pill.

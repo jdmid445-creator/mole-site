@@ -815,8 +815,8 @@ html.motion .st-copy.is-lit { opacity: 1; transform: none; filter: none; }
 @media (max-width: 480px) { .panel-stage { margin-top: 64px; } .guard.guard-toolkit { right: 130px; } .guard-bubble.guard-bubble-toolkit { right: 0; left: auto; top: -46px; } }
 
 /* Swap page: bubble pops up to his top right */
-.tunnel-stage .guard-bubble { right: auto; left: calc(100% - 92px); top: -34px; border-radius: 16px 16px 16px 4px; }
-@media (max-width: 860px) { .tunnel-stage .guard-bubble { left: auto; right: 0; top: -40px; border-radius: 16px 16px 4px 16px; } .tunnel-stage { margin-top: 44px; } }
+.tunnel-stage .guard-bubble { right: auto; left: calc(100% - 70px); top: -64px; border-radius: 16px 16px 16px 4px; }
+@media (max-width: 860px) { .tunnel-stage .guard-bubble { left: auto; right: 0; top: -58px; border-radius: 16px 16px 4px 16px; } .tunnel-stage { margin-top: 44px; } }
 /* no ring around him after a mouse click; a soft glow only for keyboard focus */
 .guard-mole:focus { outline: none; }
 .guard-mole:focus-visible { outline: none; filter: drop-shadow(0 0 10px rgba(200, 255, 46, 0.55)); }

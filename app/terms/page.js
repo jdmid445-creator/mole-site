@@ -45,7 +45,7 @@ export default function Terms() {
 
         <h2>The $PARALLAX token</h2>
         <p>
-          $PARALLAX is a meme coin. It has no promised value, utility, dividends or returns, and you can lose everything you put
+          $PARALLAX is a cryptocurrency. It has no promised value, utility, dividends or returns, and you can lose everything you put
           in. Parallax is free to use; holding $PARALLAX is not required. Nothing on this site is financial advice.
         </p>
 

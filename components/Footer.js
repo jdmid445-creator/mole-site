@@ -40,7 +40,7 @@ export default function Footer() {
           </nav>
         </div>
         <p className="footer-legal">
-          $PARALLAX is a meme coin with no promised value or returns. Parallax runs on NEAR Intents and is not affiliated with
+          $PARALLAX is a cryptocurrency with no promised value or returns. Parallax runs on NEAR Intents and is not affiliated with
           NEAR. Nothing here is financial advice.
         </p>
       </div>

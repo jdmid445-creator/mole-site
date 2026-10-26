@@ -233,3 +233,4 @@ References from owner: blackout.exchange, vanish.trade/us, veilit.xyz, web-4.app
   - Solana expiry check waits a full validity window from the moment you approve (+20 blocks) before saying "nothing was sent", in case the wallet refreshed the blockhash.
 - X article drafted (Claude Doc "Every swap leaves a trail (X article)"): hook, why the trail matters, how a crossing works, honest limits, features, product-first + CA warning, CTA.
 - X article rewritten in founder voice like @_LaunchX post (owner reference): bold opener, short lines, problem → "Today, I am introducing PARALLAX" → "Here is how it works" 1–4 → free/privacy-not-hiding → product first + CA warning → "here is where I need you" → Web / How it works links.
+- "meme coin" → "cryptocurrency" in footer and terms (owner). The no-promised-value / can-lose-everything wording kept.

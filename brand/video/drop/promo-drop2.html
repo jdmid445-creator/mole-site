@@ -177,6 +177,7 @@ body { font-family: 'Manrope', system-ui, sans-serif; color: var(--text); -webki
   <div id="coins"></div>
   <!-- Intro: INTRODUCING PARALLAX, the creature pops up from behind the LLA -->
 
+  <div class="abs" id="introGroup" style="left:0; top:0; width:1920px; height:1080px">
   <div class="abs" id="orbBack" style="left:0; top:0; width:1920px; height:1080px"></div>
   <div class="mole" id="m0" style="left:0; top:0; width:300px"></div>
   <div class="abs" id="introW" style="left:0; right:0; top:330px; display:flex; justify-content:center">
@@ -186,6 +187,7 @@ body { font-family: 'Manrope', system-ui, sans-serif; color: var(--text); -webki
     </div>
   </div>
   <div class="abs" id="orbFront" style="left:0; top:0; width:1920px; height:1080px"></div>
+  </div>
   <!-- Scene 1: the public trail, the creature tunnels through it -->
   <div class="abs cx" id="h1" style="top:150px"><p class="head" style="font-size:96px">Most swaps leave a trail.</p></div>
   <div class="abs cx" id="h2" style="top:150px"><p class="head" style="font-size:96px">Parallax <em>cuts it.</em></p></div>
@@ -624,6 +626,8 @@ function placeIntro() {
   const W = 300, holeY = box.top - stage.top + 10;        // paws rest on the top edge of the box
   $('m0').style.left = (w.left - stage.left + w.width / 2 - W / 2 + 150).toFixed(0) + 'px';
   $('m0').style.top = (holeY - 0.75 * W).toFixed(0) + 'px';
+  // cut him off exactly at the box's top edge, so nothing below it can ever show (even while everything fades)
+  $('m0').style.clipPath = `inset(-200px -200px ${(W - (0.75 * W - 10) - 1).toFixed(0)}px -200px)`;
   introPlaced = true;
 }
 const VARIANT = new URLSearchParams(location.search).get('intro') || 'plain';
@@ -640,10 +644,11 @@ window.render = function (t, wallT) {
   const bx = easeOut(prog(t, 0.1, 0.6));
   $('introK').style.opacity = easeOut(prog(t, 0.3, 0.7)).toFixed(3); $('introK').style.transform = `translateY(${(14 * (1 - easeOut(prog(t, 0.3, 0.75)))).toFixed(1)}px)`;
   ['wPARA', 'wLLA', 'wX'].forEach((id, i) => { const a = 0.35 + 0.1 * i, e = easeOut(prog(t, a, a + 0.5)); $(id).style.opacity = e.toFixed(3); $(id).style.transform = `translateY(${(40 * (1 - e)).toFixed(1)}px)`; });
-  show($('introW'), bx * iO, 40 * (1 - bx) - 30 * easeInOut(prog(t, 2.75, 3.15)) + 6 * Math.sin(tb * 1.2), 0.94 + 0.06 * bx);
-  mole('m0', { o: iO, up: backOut(prog(t, 1.1, 1.55)), hole: 0, dy: -30 * easeInOut(prog(t, 2.75, 3.15)) + 6 * Math.sin(tb * 1.2),
+  $('introGroup').style.opacity = iO.toFixed(3); $('introGroup').style.visibility = iO < 0.002 ? 'hidden' : 'visible';
+  show($('introW'), bx, 40 * (1 - bx) - 30 * easeInOut(prog(t, 2.75, 3.15)) + 6 * Math.sin(tb * 1.2), 0.94 + 0.06 * bx);
+  mole('m0', { o: 1, up: backOut(prog(t, 1.1, 1.55)), hole: 0, dy: -30 * easeInOut(prog(t, 2.75, 3.15)) + 6 * Math.sin(tb * 1.2),
     lookX: -14 * prog(t, 1.65, 1.85) + 28 * prog(t, 1.95, 2.15) - 14 * prog(t, 2.25, 2.4), blink: blinkAt(t, 2.45), happy: prog(t, 2.5, 2.62) * (1 - prog(t, 2.8, 2.9)) });
-  const fillO = easeOut(prog(t, 0.25, 1.0)) * iO;
+  const fillO = easeOut(prog(t, 0.25, 1.0));
   // B: four 3D coins drifting in the corners
   [['k1', 0.3], ['k2', 1.4], ['k3', 2.5], ['k4', 3.6]].forEach(([id, ph], i) => {
     const o = VARIANT === 'coins' ? fillO * easeOut(prog(t, 0.25 + 0.12 * i, 0.9 + 0.12 * i)) : 0;

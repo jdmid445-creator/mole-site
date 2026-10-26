@@ -182,7 +182,9 @@ export default function Home() {
         <div className="container">
                     <h2 className="section-title" data-reveal>Private, not shady</h2>
           <p className="lede narrow" data-reveal>Privacy for normal people, not cover for bad actors.</p>
-          <ul className="features" data-reveal>
+          <div className="peek-stage peek-features" data-reveal>
+          <GuardMole variant="features" intro="I never hold your coins. Just your secret." />
+          <ul className="features">
             {FEATURES.map((c, i) => (
               <li key={c.title} style={{ '--i': i }}>
                 <svg className="feature-icon" viewBox="0 0 24 24" aria-hidden="true">
@@ -193,6 +195,7 @@ export default function Home() {
               </li>
             ))}
           </ul>
+          </div>
           <p className="built-on" data-reveal>
             <span className="built-on-label">Built on</span>
             <span className="built-on-name">NEAR Intents</span>
@@ -205,13 +208,16 @@ export default function Home() {
       <section id="faq" className="section">
         <div className="container faq-wrap">
           <h2 className="section-title" data-reveal>Frequently asked questions</h2>
-          <div className="faq" data-reveal>
+          <div className="peek-stage peek-faq" data-reveal>
+          <GuardMole variant="faq" intro="Questions? I’m all ears." />
+          <div className="faq">
             {FAQ.map((item) => (
               <details key={item.q}>
                 <summary>{item.q}</summary>
                 <p>{item.a}</p>
               </details>
             ))}
+          </div>
           </div>
         </div>
       </section>
@@ -270,7 +276,8 @@ export default function Home() {
           <p className="lede narrow" data-reveal>
             You’re the one watching the chains. Match each deposit to the arrival it became, then switch habits and try again.
           </p>
-          <div data-reveal>
+          <div className="peek-stage peek-trace" data-reveal>
+            <GuardMole variant="trace" intro="Think you can follow the trail?" />
             <TraceGame />
           </div>
         </div>
@@ -282,6 +289,7 @@ export default function Home() {
             <h2>Ready to cross?</h2>
             <p className="lede">No account, no app fee. Pick both ends and go.</p>
             <Link href="/tunnel" className="btn">Launch app</Link>
+            <GuardMole variant="closing" intro="Your next crossing starts here." />
           </div>
         </div>
       </section>

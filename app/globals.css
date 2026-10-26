@@ -864,3 +864,27 @@ html.motion .st-copy.is-lit { opacity: 1; transform: none; filter: none; }
 .hero-bubble { right: 6px; top: -56px; border-radius: 16px 16px 4px 16px; }
 @media (max-width: 480px) { .hero-bubble { right: 0; top: -54px; } }
 @media (prefers-reduced-motion: reduce) { .swap-mole.is-peek .mole-eye { animation: none; } }
+
+/* More peeking creatures: features grid, FAQ, trace game (peek over the top edge) and the closing card (peeks up from inside its bottom edge) */
+.peek-stage { position: relative; padding-top: 68px; }
+.peek-stage > :not(.guard):not(.guard-bubble) { position: relative; z-index: 1; }
+.peek-features { margin-top: 0; }
+.peek-features .features { margin-top: 0; background: var(--bg); }
+.peek-trace .trace { margin-top: 0; }
+.peek-faq .faq details { position: relative; z-index: 1; }
+.guard.guard-features, .guard.guard-faq, .guard.guard-trace { right: 24px; }
+.guard-bubble.guard-bubble-features, .guard-bubble.guard-bubble-faq, .guard-bubble.guard-bubble-trace { right: 150px; top: -2px; }
+.guard-bubble.guard-bubble-faq { top: -22px; }
+.closing-card { position: relative; overflow: hidden; }
+.guard.guard-closing { top: auto; bottom: 0; right: 40px; height: 100px; overflow: hidden; }
+.guard.guard-closing .guard-mole { top: -8px; }
+.guard-bubble.guard-bubble-closing { right: 150px; bottom: 96px; top: auto; }
+@media (max-width: 720px) {
+  .guard.guard-features, .guard.guard-faq, .guard.guard-trace { right: 4px; }
+  .guard-bubble.guard-bubble-features, .guard-bubble.guard-bubble-faq, .guard-bubble.guard-bubble-trace { right: 0; top: -46px; font-size: 0.74rem; padding: 7px 11px; }
+  .peek-stage { margin-top: 56px; }
+  .closing-card { padding-bottom: 120px; }
+  .guard.guard-closing { right: 50%; margin-right: -75px; }
+  .guard-bubble.guard-bubble-closing { right: 50%; translate: 50% 8px; bottom: 104px; font-size: 0.74rem; padding: 7px 11px; }
+  .guard-bubble.guard-bubble-closing.is-on { translate: 50% 0; }
+}

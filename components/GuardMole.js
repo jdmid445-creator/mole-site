@@ -13,7 +13,7 @@ export const LINES = [
   'Nobody connects the dots on my watch.',
 ];
 
-export default function GuardMole({ variant = '' }) {
+export default function GuardMole({ variant = '', intro = '' }) {
   const [phase, setPhase] = useState('hidden'); // hidden | rise | idle | down | peek | up
   const box = useRef(null);
   const [line, setLine] = useState('');
@@ -32,7 +32,8 @@ export default function GuardMole({ variant = '' }) {
     const go = () => {
       if (done || !inView) return;
       done = true; io.disconnect(); window.removeEventListener('scroll', onScroll);
-      const text = LINES[next.current % LINES.length]; next.current += 1;
+      let text = intro;
+      if (!text) { text = LINES[next.current % LINES.length]; next.current += 1; }
       setLine(text);
       setPhase('rise');
       timers.current.push(setTimeout(() => setBubble(true), 450));

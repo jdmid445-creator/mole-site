@@ -230,3 +230,4 @@ References from owner: blackout.exchange, vanish.trade/us, veilit.xyz, web-4.app
   - EVM: verifies the wallet really is on the right network after switch/add; chainId included in the transaction.
   - Native-token check uses contract address only. XRP destination warning (no exchange addresses). "Tick the box" error clears when ticked.
   - Ghost: wallet-type tabs locked while generating (no wrong-type wallet). Track: only 400/404 stop checking.
+  - Solana expiry check waits a full validity window from the moment you approve (+20 blocks) before saying "nothing was sent", in case the wallet refreshed the blockhash.

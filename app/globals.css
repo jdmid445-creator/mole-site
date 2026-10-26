@@ -795,6 +795,10 @@ html.motion .st-copy.is-lit { opacity: 1; transform: none; filter: none; }
 .guard-mole.is-up .mole-body { transform: translateY(0); transition: transform 0.45s cubic-bezier(.3,1.6,.5,1); }
 .guard-mole.is-peek .mole-eye { animation: none; transform: scaleY(0.3); transition: transform 0.15s ease 0.25s; }
 .guard-mole .mole-eye { transform-box: fill-box; transform-origin: center; }
+/* while peeking and squinting: glance left, then right, then back to center */
+.guard-mole.is-peek .mole-eyes { animation: guard-glance 2.8s ease-in-out 0.35s both; }
+@keyframes guard-glance { 0%, 14% { transform: translateX(0); } 26%, 42% { transform: translateX(-11px); } 56%, 72% { transform: translateX(11px); } 84%, 100% { transform: translateX(0); } }
+@media (prefers-reduced-motion: reduce) { .guard-mole.is-peek .mole-eyes { animation: none; } }
 .guard-bubble { position: absolute; right: 150px; top: 8px; width: max-content; max-width: none; white-space: nowrap; padding: 10px 14px; border-radius: 16px 16px 4px 16px;
   background: var(--surface-2); border: 1px solid var(--line); color: var(--text); font-size: 0.88rem; font-weight: 600; line-height: 1.35;
   box-shadow: 0 16px 40px -16px rgba(0,0,0,0.7); pointer-events: none; opacity: 0; translate: 0 8px; scale: 0.96; transition: opacity 0.3s ease, translate 0.3s ease, scale 0.3s ease; z-index: 2; }
@@ -806,6 +810,6 @@ html.motion .st-copy.is-lit { opacity: 1; transform: none; filter: none; }
 .panel-stage { position: relative; margin-top: 4px; padding-top: 68px; }
 .panel-stage .panel { position: relative; z-index: 1; margin-top: 0; }
 .guard.guard-toolkit { right: 170px; }
-.guard-bubble.guard-bubble-toolkit { right: 0; top: -6px; border-radius: 16px 16px 16px 4px; } /* to his upper right */
+.guard-bubble.guard-bubble-toolkit { right: 0; top: -50px; border-radius: 16px 16px 16px 4px; } /* above him, to the upper right */
 @media (min-width: 720px) { .guard.guard-toolkit { right: 170px; } .guard-bubble.guard-bubble-toolkit { right: 0; } }
-@media (max-width: 480px) { .guard.guard-toolkit { right: 130px; } .guard-bubble.guard-bubble-toolkit { right: 0; left: auto; top: -10px; } }
+@media (max-width: 480px) { .panel-stage { margin-top: 44px; } .guard.guard-toolkit { right: 130px; } .guard-bubble.guard-bubble-toolkit { right: 0; left: auto; top: -46px; } }

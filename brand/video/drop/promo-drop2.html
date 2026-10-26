@@ -451,7 +451,7 @@ const bars = makeBars($('bars'), 150, 560), barsTop = makeBars($('barsTop'), 150
 
 
 // ---- drop video setup ----
-const CA = ''; // paste the contract address here at launch
+const CA = '6QBFU9GJ5ZU1c27pRhGudqCXLoFchhsahr1Hi8wwpump';
 $('caText').textContent = CA || 'CA posted at launch';
 const GKINDS = [['sol', 'Solana'], ['eth', 'EVM'], ['btc', 'Bitcoin'], ['doge', 'Dogecoin'], ['ltc', 'Litecoin'], ['xrp', 'XRP'], ['tron', 'Tron']];
 $('gchips').innerHTML = GKINDS.map(([k, n], i) => `<span class="chip${i === 0 ? ' on' : ''}"><img src="chain-${k}.svg" alt="">${n}</span>`).join('');

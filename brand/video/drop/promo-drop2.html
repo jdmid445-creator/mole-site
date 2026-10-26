@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <title>Parallax drop video</title>
 <style>
+@font-face { font-family: 'JetBrains Mono'; font-weight: 400 600; src: url(https://mole-site-mu.vercel.app/_next/static/media/558ca1a6aa3cb55e-s.p.woff2) format('woff2'); }
 @font-face { font-family: 'Manrope'; font-weight: 200 800; src: url(https://mole-site-mu.vercel.app/_next/static/media/4c9affa5bc8f420e-s.p.woff2) format('woff2'); }
 :root {
   --bg: #0c0a18; --surface: #17132e; --surface2: #1d1838; --line: #2b2452; --text: #f2f0eb; --muted: #aaa3cb;
@@ -125,7 +126,7 @@ body { font-family: 'Manrope', system-ui, sans-serif; color: var(--text); -webki
 .chip img { width: 22px; height: 22px; }
 .chip.on { background: var(--violetDeep); border-color: var(--violetDeep); color: var(--text); }
 .bigbtn { position: relative; justify-self: start; padding: 18px 30px; border-radius: 999px; background: var(--lime); color: #0c0a18; font-size: 24px; font-weight: 700; }
-.field { padding: 16px 18px; border-radius: 16px; background: #0a0815; border: 1px solid var(--line); font-size: 26px; font-weight: 600; font-family: ui-monospace, Menlo, monospace; color: var(--text); min-height: 64px; letter-spacing: 0; }
+.field { padding: 16px 18px; border-radius: 16px; background: #0a0815; border: 1px solid var(--line); font-size: 26px; font-weight: 600; font-family: 'JetBrains Mono', ui-monospace, monospace; color: var(--text); min-height: 64px; letter-spacing: 0; }
 .keyline { display: flex; align-items: center; gap: 12px; font-size: 24px; color: var(--lilac); font-weight: 600; }
 .keyline i { font-style: normal; display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; background: rgba(200,255,46,0.14); color: var(--lime); font-size: 20px; }
 .tapdot { position: absolute; width: 60px; height: 60px; border-radius: 50%; background: rgba(255,255,255,0.55); pointer-events: none; }
@@ -154,9 +155,9 @@ body { font-family: 'Manrope', system-ui, sans-serif; color: var(--text); -webki
 .badge i { width: 9px; height: 9px; border-radius: 50%; background: var(--lime); }
 .ca { display: inline-flex; align-items: center; gap: 16px; padding: 16px 26px; border-radius: 999px; background: rgba(23,19,46,0.85); border: 1px solid rgba(200,255,46,0.35); font-size: 28px; }
 .ca b { color: var(--lime); letter-spacing: 0.06em; font-size: 22px; }
-.ca code { font-family: ui-monospace, Menlo, monospace; font-size: 27px; color: var(--text); }
+.ca code { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 27px; color: var(--text); }
 .ibox { position: relative; z-index: 3; display: grid; justify-items: center; gap: 18px; padding: 50px 80px 62px; border-radius: 56px;
-  background: linear-gradient(180deg, rgba(29,24,56,0.94), rgba(17,14,34,0.94)); border: 1px solid rgba(207,198,255,0.16);
+  background: linear-gradient(180deg, #1d1838, #110e22); border: 1px solid rgba(207,198,255,0.16);
   box-shadow: 0 60px 120px -40px rgba(0,0,0,0.8), 0 0 120px rgba(123,98,240,0.18), inset 0 1px 0 rgba(255,255,255,0.06); }
 #introW { z-index: 3; }
 .wordmark { position: relative; z-index: 3; font-size: 230px; font-weight: 800; letter-spacing: -0.045em; line-height: 1; color: var(--text); white-space: nowrap; }
@@ -273,7 +274,7 @@ body { font-family: 'Manrope', system-ui, sans-serif; color: var(--text); -webki
   <div class="abs cx" id="h6" style="top:150px"><p class="head" style="font-size:90px">Split one swap <em>across wallets.</em></p></div>
   <div class="abs cx" id="s6" style="top:270px"><p class="sub" style="font-size:36px">Uneven amounts are harder to match.</p></div>
   <svg class="abs" id="splitSvg" style="left:0; top:0" width="1920" height="1080" viewBox="0 0 1920 1080">
-    <defs><linearGradient id="sg" x1="0" x2="1"><stop offset="0" stop-color="#7b62f0"/><stop offset="1" stop-color="#c8ff2e"/></linearGradient></defs>
+    <defs><linearGradient id="sg" gradientUnits="userSpaceOnUse" x1="690" y1="0" x2="1240" y2="0"><stop offset="0" stop-color="#7b62f0"/><stop offset="1" stop-color="#c8ff2e"/></linearGradient></defs>
     <path id="sp0" d="M 690 640 C 900 640 1000 470 1240 470" fill="none" stroke="url(#sg)" stroke-width="5" stroke-linecap="round" pathLength="1"/>
     <path id="sp1" d="M 690 640 C 900 640 1000 640 1240 640" fill="none" stroke="url(#sg)" stroke-width="5" stroke-linecap="round" pathLength="1"/>
     <path id="sp2" d="M 690 640 C 900 640 1000 810 1240 810" fill="none" stroke="url(#sg)" stroke-width="5" stroke-linecap="round" pathLength="1"/>
@@ -296,8 +297,8 @@ body { font-family: 'Manrope', system-ui, sans-serif; color: var(--text); -webki
 
   <!-- Scene 7: My Crossings -->
   <div class="abs cx" id="h8" style="top:150px"><p class="head" style="font-size:96px">Watch it cross, <em>live.</em></p></div>
-  <div class="abs" id="nav8" style="left:1160px; top:300px"><span class="navpill">My Crossings <span class="badge" id="badge"><i></i>1</span></span></div>
-  <div class="mole" id="m7" style="left:420px; top:248px; width:200px"></div>
+  <div class="abs" id="nav8" style="left:470px; top:300px"><span class="navpill">My Crossings <span class="badge" id="badge" style="min-width:58px; justify-content:center"><i id="bdot"></i><b id="btxt" style="font-weight:700">1</b></span></span></div>
+  <div class="mole" id="m7" style="left:1180px; top:268px; width:200px"></div>
   <div class="abs list" id="xlist" style="left:460px; top:400px">
     <div class="lh">Your crossings <u>Forget these</u></div>
     <div class="lrow"><span><b>0.1 SOL</b> <span class="m">Solana → ETH Base</span></span><span class="pill" id="xp1">Waiting for deposit</span><span class="tm">just now</span><span class="tr">Track</span></div>
@@ -537,7 +538,7 @@ const renderOld = function (t, wallT) {
   show($('h4'), env(t, 11.05, 13.2, 0.35), 18 * (1 - easeOut(prog(t, 11.05, 11.5))));
   tilt3d($('vA'), env(t, 11.2, 13.2, 0.35), 26 * (1 - easeOut(prog(t, 11.2, 11.7))), 20 + 36 * (1 - easeOut(prog(t, 11.2, 11.9))), 9);
   tilt3d($('vB'), env(t, 11.35, 13.2, 0.35), 26 * (1 - easeOut(prog(t, 11.35, 11.85))), -20 - 36 * (1 - easeOut(prog(t, 11.35, 12.05))), 9);
-  mole('m3', { o: env(t, 11.5, 13.2, 0.3), up: backOut(prog(t, 11.6, 12.05)), lookX: -14 * prog(t, 12.1, 12.3) + 28 * prog(t, 12.45, 12.65) - 14 * prog(t, 12.8, 12.95), blink: blinkAt(t, 12.95) });
+  mole('m3', { o: env(t, 11.5, 13.2, 0.4), up: backOut(prog(t, 11.6, 12.05)), lookX: -14 * prog(t, 12.1, 12.3) + 28 * prog(t, 12.45, 12.65) - 14 * prog(t, 12.8, 12.95), blink: blinkAt(t, 12.95) });
   show($('nolink'), env(t, 11.8, 13.2, 0.3));
 
 
@@ -550,7 +551,7 @@ const renderOld = function (t, wallT) {
   const gn = Math.floor(prog(t, 14.6, 15.3) * GHOST.length);
   $('gaddr').innerHTML = gn ? GHOST.slice(0, gn) + (gn < GHOST.length ? '<span class="caret"></span>' : '') : '<span style="color:#5d5680">Your new address</span>';
   const gk = easeOut(prog(t, 15.35, 15.7)); show($('gkey'), gk, 10 * (1 - gk));
-  mole('m5', { o: env(t, 13.9, 16.7, 0.3), up: backOut(prog(t, 14.0, 14.45)), lookX: -12 * prog(t, 14.5, 14.7) + 12 * prog(t, 15.3, 15.5), lookY: 10 * prog(t, 14.5, 14.7) - 10 * prog(t, 15.3, 15.5), happy: prog(t, 15.4, 15.6) * (1 - prog(t, 16.2, 16.4)), blink: blinkAt(t, 16.0) });
+  mole('m5', { o: env(t, 13.9, 16.7, 0.4), up: backOut(prog(t, 14.0, 14.45)), lookX: -12 * prog(t, 14.5, 14.7) + 12 * prog(t, 15.3, 15.5), lookY: 10 * prog(t, 14.5, 14.7) - 10 * prog(t, 15.3, 15.5), happy: prog(t, 15.4, 15.6) * (1 - prog(t, 16.2, 16.4)), blink: blinkAt(t, 16.0) });
 
   // ---------- Scene 5: split send (16.8 - 20.2) ----------
   show($('h6'), env(t, 16.85, 20.2, 0.35), 18 * (1 - easeOut(prog(t, 16.85, 17.3))));
@@ -570,7 +571,7 @@ const renderOld = function (t, wallT) {
   show($('h7'), env(t, 20.35, 23.7, 0.35), 18 * (1 - easeOut(prog(t, 20.35, 20.8))));
   CH.forEach((_, i) => { const a = 20.5 + 0.055 * i; tilt3d($('tile' + i), env(t, a, 23.7, 0.35), 24 * (1 - easeOut(prog(t, a, a + 0.45))), 70 * (1 - easeOut(prog(t, a, a + 0.55))) + 4 * Math.sin(tb * 0.9 + i), 6); });
   const st = easeOut(prog(t, 21.6, 22.1)); show($('stats'), st * env(t, 21.6, 23.7, 0.35) / Math.max(st, 0.001), 26 * (1 - st));
-  mole('m6', { o: env(t, 21.2, 23.7, 0.3), up: backOut(prog(t, 21.3, 21.75)), lookX: -16 * prog(t, 21.8, 22.0), blink: blinkAt(t, 22.6), happy: prog(t, 22.9, 23.05) * (1 - prog(t, 23.4, 23.5)) });
+  mole('m6', { o: 0, up: backOut(prog(t, 21.3, 21.75)), lookX: -16 * prog(t, 21.8, 22.0), blink: blinkAt(t, 22.6), happy: prog(t, 22.9, 23.05) * (1 - prog(t, 23.4, 23.5)) });
 
   // ---------- Scene 7: My Crossings (23.8 - 27.2) ----------
   show($('h8'), env(t, 23.85, 27.2, 0.35), 18 * (1 - easeOut(prog(t, 23.85, 24.3))));
@@ -581,13 +582,15 @@ const renderOld = function (t, wallT) {
   else if (t < 26.0) { x1.textContent = 'Crossing'; x1.className = 'pill'; }
   else { x1.textContent = 'Arrived'; x1.className = 'pill ok'; }
   const pulse = 1 + 0.12 * Math.sin(Math.PI * prog(t, 26.0, 26.3)); x1.style.transform = `scale(${pulse.toFixed(3)})`;
-  const bd = 1 - easeInOut(prog(t, 26.05, 26.35)); $('badge').style.opacity = bd.toFixed(3); $('badge').style.transform = `scale(${(0.6 + 0.4 * bd).toFixed(3)})`;
-  $('badge').querySelector('i').style.opacity = (0.55 + 0.45 * Math.sin(tb * 4)).toFixed(3);
-  mole('m7', { o: env(t, 24.4, 27.2, 0.3), up: backOut(prog(t, 24.5, 24.95)), lookX: 14 * prog(t, 25.0, 25.2), lookY: 8 * prog(t, 25.0, 25.2) - 8 * prog(t, 26.0, 26.15), happy: prog(t, 26.05, 26.2) * (1 - prog(t, 26.8, 26.95)), blink: blinkAt(t, 25.6) });
+  // badge stays put: a pulsing "1" while crossing, then a calm check once it arrives (same size, no jump)
+  const done = t >= 26.05; $('btxt').textContent = done ? '✓' : '1'; $('bdot').style.display = done ? 'none' : 'inline-block';
+  $('bdot').style.opacity = (0.55 + 0.45 * Math.sin(tb * 4)).toFixed(3);
+  $('badge').style.transform = `scale(${(1 + 0.15 * Math.sin(Math.PI * prog(t, 26.05, 26.35))).toFixed(3)})`;
+  mole('m7', { o: env(t, 24.4, 27.2, 0.4), hole: 0, up: backOut(prog(t, 24.5, 24.95)), lookX: -14 * prog(t, 25.0, 25.2), lookY: 8 * prog(t, 25.0, 25.2) - 8 * prog(t, 26.0, 26.15), happy: prog(t, 26.05, 26.2) * (1 - prog(t, 26.8, 26.95)), blink: blinkAt(t, 25.6) });
 
   // ---------- Scene 8: end card (27.3 - 30.5) ----------
   const e4 = easeOut(prog(t, 27.30, 27.80));
-  mole('m4', { o: e4, up: backOut(prog(t, 27.40, 27.90)), blink: blinkAt(t, 28.15), happy: 0.6 * easeOut(prog(t, 28.35, 28.50)) * (1 - easeInOut(prog(t, 28.70, 28.95))) });
+  mole('m4', { o: e4, hole: clamp(prog(t, 27.40, 27.62)), up: backOut(prog(t, 27.40, 27.90)), blink: blinkAt(t, 28.15), happy: 0.6 * easeOut(prog(t, 28.35, 28.50)) * (1 - easeInOut(prog(t, 28.70, 28.95))) });
   const e5 = easeOut(prog(t, 27.55, 28.10)); show($('end'), e5, 22 * (1 - e5));
 
 
@@ -608,11 +611,18 @@ function oldTime(t) {
 }
 // place the creature so it rises from behind the "LLA"
 let introPlaced = false;
+(function wrapContent() {
+  const stage = document.querySelector('.stage'), c = document.createElement('div');
+  c.id = 'content'; c.style.cssText = 'position:absolute; inset:0;';
+  [...stage.children].forEach((el) => { if (el.id !== 'bars' && el.id !== 'barsTop') c.appendChild(el); });
+  stage.appendChild(c);
+})();
+const CUTS = [3.2, 6.6, 19.85, 23.3, 26.8, 30.25];
 function placeIntro() {
   const w = $('wLLA').getBoundingClientRect(), stage = document.querySelector('.stage').getBoundingClientRect();
   const box = document.querySelector('.ibox').getBoundingClientRect();
   const W = 300, holeY = box.top - stage.top + 10;        // paws rest on the top edge of the box
-  $('m0').style.left = (w.left - stage.left + w.width / 2 - W / 2).toFixed(0) + 'px';
+  $('m0').style.left = (w.left - stage.left + w.width / 2 - W / 2 + 150).toFixed(0) + 'px';
   $('m0').style.top = (holeY - 0.75 * W).toFixed(0) + 'px';
   introPlaced = true;
 }
@@ -623,6 +633,8 @@ window.render = function (t, wallT) {
   const tb = wallT ?? t;
   if (!introPlaced) placeIntro();
   renderOld(oldTime(t), tb);
+  let dip = 1; CUTS.forEach((c) => { const d = Math.abs(t - c); if (d < 0.22) dip = Math.min(dip, easeInOut(d / 0.22)); });
+  $('content').style.opacity = dip.toFixed(3);
   // intro (0 - 3.2)
   const iO = 1 - easeInOut(prog(t, 2.75, 3.15));
   const bx = easeOut(prog(t, 0.1, 0.6));

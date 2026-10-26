@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import CopyButton from './CopyButton';
+import { updateRecentByDeposit } from '@/lib/recent';
 
 const STAGES = [
   { key: 'deposit', label: 'Waiting for deposit' },
@@ -72,6 +73,7 @@ export default function TrackCrossing() {
         }
         setError('');
         setResult(data);
+        if (data.status && data.status !== 'UNKNOWN') updateRecentByDeposit(query.addr, data.status);
         if (TERMINAL.has(data.status)) stop();
       } catch {
         if (!cancelled && !background) setError('Could not reach the swap network. Check your connection and try again.');

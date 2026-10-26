@@ -182,7 +182,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .dot-in { background: var(--lime); }
 .mole-eye { animation: blink 6s infinite; transform-box: fill-box; transform-origin: center; }
 @keyframes blink { 0%, 94%, 100% { transform: scaleY(1); } 96% { transform: scaleY(0.1); } }
-@media (prefers-reduced-motion: reduce) { .mole-eye, .tunnel-dot, .swap-mole .mole-body, .swap-mole .mole-eyes { animation: none !important; } }
+@media (prefers-reduced-motion: reduce) { .mole-eye, .tunnel-dot, .swap-mole .mole-body, .swap-mole .mole-eyes, .swap-mole .mole-spiral { animation: none !important; } }
 
 /* Sections */
 .section { padding: 88px 0; }

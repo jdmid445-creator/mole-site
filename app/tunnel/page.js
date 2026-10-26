@@ -2,7 +2,7 @@ import TunnelApp from '@/components/TunnelApp';
 import NetworkStatus from '@/components/NetworkStatus';
 
 export const metadata = {
-  title: 'Swap — Parallax',
+  title: 'Make a crossing — Parallax',
   description: 'Move value privately between chains. Non-custodial, powered by NEAR Intents confidential swaps.',
 };
 
@@ -12,7 +12,7 @@ export default function TunnelPage() {
       <div className="container">
         <h1 className="page-title hero-in" style={{ '--d': '80ms' }}>Make a crossing</h1>
         <p className="lede narrow hero-in" style={{ '--d': '200ms' }}>
-          Pick both ends, send once, arrive elsewhere. Your funds go straight into NEAR Intents' confidential network.
+          Pick both ends, send once, arrive elsewhere. Your funds go straight into NEAR Intents’ confidential network.
           This site never holds them.
         </p>
         <div className="hero-in tunnel-status" style={{ '--d': '260ms' }}>

@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { RECENT_EVENT, loadRecent } from '@/lib/recent';
 
-const DONE = new Set(['SUCCESS', 'REFUNDED', 'FAILED']);
+const DONE = new Set(['SUCCESS', 'REFUNDED', 'FAILED', 'PARTIAL']);
 const DAY = 24 * 60 * 60 * 1000;
 
 // "My crossings" in the menu, with a small live badge while a crossing on this device is still moving.

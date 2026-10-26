@@ -27,18 +27,19 @@ import { addRecent, updateRecentStatus } from '@/lib/recent';
 import { ghostKindFor } from '@/lib/ghost';
 
 const STORAGE_KEY = 'mole-tunnel-pair-v1';
-const TERMINAL = new Set(['SUCCESS', 'REFUNDED', 'FAILED']);
+const TERMINAL = new Set(['SUCCESS', 'REFUNDED', 'FAILED', 'PARTIAL']);
 const MAX_SPLIT = 5;
 const MIN_PCT = 5;
 const STATUS_TEXT = {
   PENDING_DEPOSIT: 'Waiting for your deposit',
   KNOWN_DEPOSIT_TX: 'Deposit seen, confirming',
-  PROCESSING: 'In the tunnel',
+  PROCESSING: 'Crossing',
   SUCCESS: 'Arrived',
   INCOMPLETE_DEPOSIT: 'Deposit was smaller than quoted',
   REFUNDED: 'Refunded to your sending wallet',
   FAILED: 'Swap failed',
   UNKNOWN: 'Checking…',
+  PARTIAL: 'Partly refunded',
 };
 
 // "≈ $18.40" from a token's USD price (from the swap network's token list). Empty when there is no price.
@@ -79,6 +80,7 @@ function writeSaved(value) {
   }
 }
 
+const lowerFirst = (t) => (t ? t[0].toLowerCase() + t.slice(1) : t);
 const short = (a) => (a && a.length > 14 ? `${a.slice(0, 6)}…${a.slice(-4)}` : a);
 
 // Split percentages that add up to 100. Even = equal parts; otherwise random but never below MIN_PCT.
@@ -101,7 +103,7 @@ function overallStatus(parts) {
   if (s.every((x) => x === s[0])) return s[0];
   if (s.some((x) => x === 'FAILED')) return 'FAILED';
   if (s.some((x) => ['KNOWN_DEPOSIT_TX', 'PROCESSING'].includes(x))) return 'PROCESSING';
-  if (s.every((x) => TERMINAL.has(x))) return s.includes('SUCCESS') ? 'SUCCESS' : 'REFUNDED';
+  if (s.every((x) => TERMINAL.has(x))) return s.includes('SUCCESS') ? 'PARTIAL' : 'REFUNDED'; // (all-same handled above)
   if (s.some((x) => x === 'INCOMPLETE_DEPOSIT')) return 'INCOMPLETE_DEPOSIT';
   if (s.some((x) => x === 'SUCCESS' || x === 'REFUNDED')) return 'PROCESSING'; // some parts done, others still moving
   return 'PENDING_DEPOSIT';
@@ -120,6 +122,8 @@ export default function TunnelApp() {
   const [amount, setAmount] = useState('');
   const [recipient, setRecipient] = useState('');
   const [manualRefund, setManualRefund] = useState('');
+  const [connecting, setConnecting] = useState('');
+  const [extraWallets, setExtraWallets] = useState([]); // installed wallets we don't list by name (Brave, OKX, Trust…)
   const [wallet, setWallet] = useState({ type: '', address: '', name: '' });
   const [picker, setPicker] = useState(null); // { kind, wallets, busyId, thenSwap }
   const [payMode, setPayMode] = useState('wallet'); // 'wallet' = approve in your wallet, 'manual' = send it yourself
@@ -158,8 +162,22 @@ export default function TunnelApp() {
 
   const walletMatches = Boolean(wallet.address && wallet.type === fromChain?.wallet);
   // Connected wallet + its address in the From box = approve in the wallet. Anything else = get a deposit address and send it yourself.
-  const useWallet = fromChain?.wallet !== 'deposit' && walletMatches && manualRefund.trim() === wallet.address;
+  const sameAddress = (a, b) => (fromChain?.wallet === 'evm' ? String(a).trim().toLowerCase() === String(b).trim().toLowerCase() : String(a).trim() === String(b).trim());
+  // The site can sign native coins, and ERC-20 tokens on EVM chains. Anything else (e.g. Solana tokens) is sent by hand.
+  const canAutoSend = Boolean(fromToken && fromChain && (isNative(fromToken, fromChain) || (fromChain.wallet === 'evm' && fromToken.contractAddress)));
+  const useWallet = fromChain?.wallet !== 'deposit' && walletMatches && canAutoSend && sameAddress(manualRefund, wallet.address);
   const pctTotal = parts.reduce((a, p) => a + (Number(p.pct) || 0), 0);
+
+  // Installed wallets that aren't in our named list still get a button.
+  useEffect(() => {
+    let alive = true;
+    const kind = fromChain?.wallet;
+    if (kind !== 'solana' && kind !== 'evm') { setExtraWallets([]); return undefined; }
+    const listed = (INSTALL[kind] || []).map((w) => w.name.toLowerCase().split(' ')[0]);
+    const pick = (list) => list.filter((w) => !listed.includes(String(w.name).toLowerCase().split(' ')[0]));
+    Promise.resolve(kind === 'solana' ? detectSolanaWallets() : detectEvmWallets()).then((list) => { if (alive) setExtraWallets(pick(list || [])); }).catch(() => {});
+    return () => { alive = false; };
+  }, [fromChain?.wallet]);
 
   useEffect(() => {
     swapRef.current = swap;
@@ -308,7 +326,7 @@ export default function TunnelApp() {
     if (!isValidAddress(fromChainKey, refundAddr)) {
       const placeholder = PREVIEW_REFUND[fromChainKey] || PREVIEW_REFUND[fromChain.wallet];
       if (preview && placeholder) refundAddr = placeholder;
-      else throw new Error(`Your wallet address: enter ${addressHint(fromChainKey).toLowerCase()} (the one you're sending from).`);
+      else throw new Error(`Your wallet address: enter ${lowerFirst(addressHint(fromChainKey))} (the one you’re sending from).`);
     }
     if (splitOn) {
       if (pctTotal !== 100) throw new Error(`The split adds up to ${pctTotal}%. It needs to be exactly 100%.`);
@@ -320,10 +338,10 @@ export default function TunnelApp() {
     // an amount. Nothing is created by a price check, and real swaps never use this.
     const destPlaceholder = PREVIEW_REFUND[toChainKey] || PREVIEW_REFUND[toChain?.wallet];
     dests.forEach((d, i) => {
-      const label = splitOn ? `Wallet ${i + 1}` : 'Destination';
+      const label = splitOn ? `Wallet ${i + 1}` : 'Your private wallet address';
       if (priceOnly && !isValidAddress(toChainKey, d.address) && destPlaceholder) { d.address = destPlaceholder; d.placeholder = true; return; }
-      if (hasChecksumTypo(toChainKey, d.address)) throw new Error(`${label}: this address has a typo (its capital letters don't match). Copy it again from your wallet.`);
-      if (!isValidAddress(toChainKey, d.address)) throw new Error(`${label}: enter ${addressHint(toChainKey).toLowerCase()}.`);
+      if (hasChecksumTypo(toChainKey, d.address)) throw new Error(`${label}: this address has a typo (its capital letters don’t match). Copy it again from your wallet.`);
+      if (!isValidAddress(toChainKey, d.address)) throw new Error(`${label}: enter ${lowerFirst(addressHint(toChainKey))}.`);
       const key = d.address.toLowerCase();
       if (seen.has(key)) throw new Error(`${label} is used twice. Each part should land in a different wallet.`);
       seen.add(key);
@@ -331,6 +349,9 @@ export default function TunnelApp() {
         throw new Error(`${label}: send to a different wallet than the one you send from. That is the whole point of Parallax.`);
       }
       if (BigInt(d.units) <= 0n) throw new Error(`${label}: the amount is too small to split this way.`);
+      if (fromChain.key === 'sol' && isNative(fromToken, fromChain) && BigInt(d.units) < 1000000n) {
+        throw new Error(splitOn ? `${label}: each part needs at least 0.001 SOL.` : 'Send at least 0.001 SOL.');
+      }
     });
     return { units, dests, refundAddr };
   }
@@ -352,7 +373,7 @@ export default function TunnelApp() {
     if (!res.ok || data.error) {
       const msg = String(data.error || '');
       if (/recipient is not valid|failed to get quote/i.test(msg) && !dest.placeholder) {
-        throw new Error(`The network wouldn't accept ${short(dest.address)} as a destination. Double-check it, or use a different wallet (a fresh ghost wallet always works).`);
+        throw new Error(`The network wouldn’t accept ${short(dest.address)} as a destination. Double-check it, or use a different wallet (a fresh ghost wallet always works).`);
       }
       throw new Error(msg || 'Could not get a quote.');
     }
@@ -385,7 +406,7 @@ export default function TunnelApp() {
     } catch (e) {
       ready = false;
       setPreview(null);
-      setPreviewNote('');
+      setPreviewNote(e?.message || '');
     }
     if (!ready) return undefined;
     setPreviewNote('loading');
@@ -443,12 +464,14 @@ export default function TunnelApp() {
 
   // One tap on a named wallet: connect it if it's installed, otherwise open its download page.
   async function quickWallet(item) {
+    if (connecting) return '';
     setError('');
     const kind = fromChain.wallet;
+    if (item.detected) { setConnecting(item.id); try { return await connectWith(kind, item.detected); } finally { setConnecting(''); } }
     const wallets = kind === 'solana' ? detectSolanaWallets() : await detectEvmWallets();
     const first = (n) => String(n || '').toLowerCase().split(' ')[0];
     const found = wallets.find((w) => w.id === item.id || first(w.name) === first(item.name));
-    if (found) return connectWith(kind, found);
+    if (found) { setConnecting(item.id); try { return await connectWith(kind, found); } finally { setConnecting(''); } }
     window.open(item.href, '_blank', 'noopener,noreferrer');
     return '';
   }
@@ -587,7 +610,7 @@ export default function TunnelApp() {
     } catch (e) {
       if (id && !mine()) return; // an abandoned run must not change a newer swap
       const msg = e?.message || 'Something went wrong.';
-      setError(/reject|denied|cancel/i.test(msg) ? 'You cancelled in your wallet. You can send it yourself below, or start over.' : msg);
+      setError(/reject|denied|cancel/i.test(msg) ? 'You cancelled in your wallet. You can send to the deposit address below yourself, or start over.' : msg);
       // Anything not yet sent can still be paid by hand.
       setSwap((s) => (s && (!id || s.id === id) ? { ...s, parts: s.parts.map((p) => (p.txHash ? p : { ...p, mode: 'deposit' })) } : s));
     } finally {
@@ -597,6 +620,8 @@ export default function TunnelApp() {
 
   function reset() {
     swapRef.current = null;
+    swapLock.current = false;
+    setBusy('');
     setSwap(null);
     setPreview(null);
     setAmount('');
@@ -681,11 +706,15 @@ export default function TunnelApp() {
             <label className="field">
               <span>{payFrom ? `Your ${payFrom} wallet address` : 'Your wallet address'} <em className="field-tag">sending from</em></span>
               <input id="pay-from-address" placeholder={addressHint(fromChainKey)} value={manualRefund} onChange={(e) => setManualRefund(e.target.value)} autoComplete="off" spellCheck="false" />
-              <small className="field-hint">If anything fails, your coins come back here.</small>
+              <small className="field-hint">
+                If anything fails, your coins come back here, so use a wallet you control. Sending from an exchange? Put your own wallet here, not the exchange’s.
+              </small>
             </label>
-            {walletKind !== 'deposit' && useWallet ? (
+            {walletKind !== 'deposit' && walletMatches && sameAddress(manualRefund, wallet.address) ? (
               <p className="wallet-line">
-                Connected with {wallet.name || 'your wallet'}. It pops up to approve when you swap.
+                {canAutoSend
+                  ? `Connected with ${wallet.name || 'your wallet'}. It pops up to approve when you swap.`
+                  : `Connected with ${wallet.name || 'your wallet'}. For ${fromToken?.symbol || 'this asset'}, you’ll get a deposit address and send it from your wallet yourself.`}
                 <button type="button" className="wallet-switch" onClick={() => { setWallet({ type: '', address: '', name: '' }); setManualRefund(''); }}>Disconnect</button>
               </p>
             ) : walletKind !== 'deposit' && appLinks.length ? (
@@ -701,16 +730,16 @@ export default function TunnelApp() {
               </div>
             ) : walletKind !== 'deposit' && INSTALL[walletKind] ? (
               <div className="fill-from">
-                <span className="pay-how-label">{picker?.busyId ? 'Check your wallet…' : 'Or fill it in from your wallet:'}</span>
+                <span className="pay-how-label">{connecting ? 'Check your wallet…' : 'Or fill it in from your wallet:'}</span>
                 <div className="wallet-quick" role="group" aria-label="Fill in from a wallet">
-                  {INSTALL[walletKind].map((w) => (
-                    <button key={w.id} type="button" className="ghost-app" onClick={() => quickWallet(w)} disabled={Boolean(picker?.busyId)}>
-                      <img src={w.icon} alt="" width="20" height="20" />
+                  {[...INSTALL[walletKind], ...extraWallets.map((w) => ({ id: w.id, name: w.name, icon: w.icon, detected: w }))].map((w) => (
+                    <button key={w.id} type="button" className="ghost-app" onClick={() => quickWallet(w)} disabled={Boolean(connecting)}>
+                      {w.icon ? <img src={w.icon} alt="" width="20" height="20" /> : <span className="ghost-app-tile" aria-hidden="true">{w.name[0]}</span>}
                       {w.name}
                     </button>
                   ))}
                   {walletKind === 'solana' ? (
-                    <button type="button" className="ghost-app" onClick={() => { setPayFrom('Axiom'); setError(''); document.getElementById('pay-from-address')?.focus(); }}>
+                    <button type="button" className={`ghost-app${payFrom === 'Axiom' ? ' is-on' : ''}`} aria-pressed={payFrom === 'Axiom'} onClick={() => { setPayFrom(payFrom === 'Axiom' ? '' : 'Axiom'); setError(''); document.getElementById('pay-from-address')?.focus(); }}>
                       <span className="ghost-app-tile" aria-hidden="true">A</span>
                       Axiom
                     </button>
@@ -928,7 +957,7 @@ export default function TunnelApp() {
                 ))}
               </div>
               <button type="button" className="text-link" onClick={() => { setPayMode('manual'); setPayFrom(''); setNeedApp(false); }}>
-                Or pay from any wallet or exchange
+                Or send from any wallet or exchange instead
               </button>
             </div>
           ) : null}
@@ -1043,10 +1072,10 @@ export default function TunnelApp() {
           {error ? <p className="notice notice-error" role="alert">{error}</p> : null}
 
           {swap.parts.some((p) => p.status === 'INCOMPLETE_DEPOSIT') ? (
-            <p className="notice">A deposit was smaller than quoted. That part will be refunded to your refund address.</p>
+            <p className="notice">A deposit was smaller than quoted. That part will be refunded to the wallet you sent from.</p>
           ) : null}
           {swap.parts.some((p) => p.status === 'FAILED') ? (
-            <p className="notice notice-error">A swap failed. Funds that reached the network are refunded to your refund address.</p>
+            <p className="notice notice-error">A swap failed. Funds that reached the network are refunded to the wallet you sent from.</p>
           ) : null}
 
           <p className="muted small">
@@ -1058,10 +1087,10 @@ export default function TunnelApp() {
             ) : (
               ', or track each part later with its link above'
             )}
-            . Don't send from a destination wallet back to your sending wallet directly; that links them.
+            . Don’t send from a destination wallet back to your sending wallet directly; that links them.
           </p>
           <button type="button" className="btn btn-ghost" onClick={reset}>
-            {TERMINAL.has(status) ? 'Start a new swap' : 'Start over'}
+            {TERMINAL.has(status) ? 'Start a new crossing' : 'Start over'}
           </button>
         </div>
       )}
@@ -1069,7 +1098,7 @@ export default function TunnelApp() {
       {!swap ? <RecentCrossings /> : null}
 
       {!loading && !tokens.length && networkChains.length ? (
-        <p className="muted small">Network chains reported: {networkChains.join(', ')}</p>
+        <p className="muted small">The swap network is up but has no assets listed right now. Try again in a minute.</p>
       ) : null}
     </div>
   );

@@ -35,29 +35,13 @@ export default function WalletPicker({ kind, chainLabel, wallets, onPick, onClos
       ) : (
         <div className="wpick-none">
           <p className="muted small wpick-note">
-            There's no {label} wallet extension in this browser. Paying from Axiom, an exchange, or a wallet on your phone?
-            Type your address and send it yourself.
+            There’s no {label} wallet extension in this browser. Paste your wallet address in the box above instead, and you’ll get a deposit address to send to.
           </p>
           {onEnterAddress ? (
             <button type="button" className="btn" onClick={onEnterAddress}>Enter my address instead</button>
           ) : null}
         </div>
       )}
-
-      {onManual ? (
-        <>
-          <p className="wpick-sub">Trading app</p>
-          <ul className="wpick-list">
-            <li>
-              <button type="button" className="wpick-item" onClick={onManual}>
-                <span className="wpick-tile" aria-hidden="true">A</span>
-                <span>Axiom</span>
-                <em>Send from Axiom</em>
-              </button>
-            </li>
-          </ul>
-        </>
-      ) : null}
 
       {suggestions.length && wallets.length ? (
         <>

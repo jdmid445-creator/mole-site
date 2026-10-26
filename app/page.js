@@ -10,7 +10,7 @@ import { SITE, pumpUrl, dexUrl } from '@/lib/site';
 const STEPS = [
   { title: 'Pick both ends', body: 'What you send and from where. What arrives, and the wallet it lands in.' },
   { title: 'Approve one transfer', body: 'One signature in your wallet. It goes straight to the swap network, never to us.' },
-  { title: 'It crosses privately', body: 'NEAR Intents runs the swap in confidential mode. Our test route quoted about 24 seconds.' },
+  { title: 'It crosses privately', body: 'NEAR Intents runs the swap in confidential mode. A typical crossing takes about 25 seconds.' },
   { title: 'It arrives elsewhere', body: 'Your other wallet receives it from a network address. If anything fails, it’s refunded.' },
 ];
 
@@ -35,7 +35,7 @@ const FEATURES = [
   { title: 'Never custodial', body: 'Your wallet signs, the network delivers. We never hold funds or keys.', icon: 'M15 7a3 3 0 11-6 0 3 3 0 016 0z M12 10v11 M12 15h4 M12 18h3' },
   { title: 'Zero app fee', body: 'You only pay the network’s costs, shown in the quote before you send.', icon: 'M19 5L5 19 M7.5 7.5h.01 M16.5 16.5h.01 M9 7.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z M18 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z' },
   { title: 'Ghost wallets', body: 'Make a fresh wallet for the far side, right in your browser.', icon: 'M5 20V10a7 7 0 0114 0v10l-2.5-2-2.3 2-2.2-2-2.2 2-2.3-2z M9.5 11h.01 M14.5 11h.01' },
-  { title: 'Automatic refunds', body: 'If a swap can’t finish, it goes back to your refund address.', icon: 'M4 12a8 8 0 1 0 2.3-5.6 M4 4v4h4' },
+  { title: 'Automatic refunds', body: 'If a swap can’t finish, it goes back to the wallet you sent from.', icon: 'M4 12a8 8 0 1 0 2.3-5.6 M4 4v4h4' },
   { title: 'Screened at the door', body: 'Every deposit enters a network that screens assets as they arrive.', icon: 'M12 3l7 3v5c0 4.5-3 8.3-7 10-4-1.7-7-5.5-7-10V6l7-3z M9 12l2 2 4-4' },
   { title: 'Closed where sanctioned', body: 'Swaps are blocked from sanctioned countries and regions.', icon: 'M12 21a9 9 0 100-18 9 9 0 000 18z M5.6 5.6l12.8 12.8' },
   { title: 'No accounts, no logs', body: 'No sign-ups and no stored swap history.', icon: 'M3 3l18 18 M10.6 6.1A9.8 9.8 0 0112 6c5 0 9 6 9 6a17 17 0 01-2.6 3.3 M6.3 7.6C4.1 9.2 3 12 3 12s4 6 9 6c1.3 0 2.5-.3 3.6-.8 M9.9 9.9a3 3 0 004.2 4.2' },
@@ -44,7 +44,7 @@ const FEATURES = [
 const PRODUCTS = [
   { title: 'Private crossing', body: 'Swap between 13 chains with no public link between the wallet you send from and the one you receive in.', href: '/tunnel', cta: 'Launch app', chains: ['sol', 'eth', 'btc'] },
   { title: 'Ghost wallets', body: 'A brand-new wallet with no history for Solana, EVM chains, Bitcoin, Dogecoin, Litecoin, XRP and Tron.', href: '/ghost', cta: 'Create one', chains: ['doge', 'xrp', 'tron'] },
-  { title: 'Track a crossing', body: 'Paste a deposit address and follow it from deposit to arrival. Nothing is stored.', href: '/track', cta: 'Track', chains: ['base', 'arb', 'ltc'] },
+  { title: 'My Crossings', body: 'Follow your crossings live, from deposit to arrival. Nothing is stored on our side.', href: '/track', cta: 'Open My Crossings', chains: ['base', 'arb', 'ltc'] },
 ];
 
 const FAQ = [
@@ -66,11 +66,11 @@ const FAQ = [
   },
   {
     q: 'How long does a crossing take?',
-    a: 'Usually under a minute. Our test quote for SOL to ETH on Base estimated about 24 seconds. Bitcoin is slower because blocks are slower.',
+    a: 'Usually under a minute. SOL to ETH on Base takes about 25 seconds. Bitcoin is slower because blocks are slower.',
   },
   {
     q: 'What if something goes wrong?',
-    a: 'If a swap can’t complete, the network refunds it to your refund address, which is the wallet you sent from unless you enter another.',
+    a: 'If a swap can’t complete, the network refunds it to the wallet you sent from.',
   },
   {
     q: 'Which wallets work?',
@@ -217,7 +217,7 @@ export default function Home() {
           <div>
             <h2 className="section-title">$PARALLAX</h2>
             <p className="lede narrow">
-              The token for the community behind Parallax, launching on pump.fun. Parallax itself stays free.
+              The cryptocurrency for the community behind Parallax, launching on pump.fun. Parallax itself stays free.
             </p>
           </div>
           <dl className="facts">

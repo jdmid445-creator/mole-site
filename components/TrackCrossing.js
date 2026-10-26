@@ -28,9 +28,9 @@ const MESSAGES = {
   KNOWN_DEPOSIT_TX: 'The deposit was seen and is being confirmed.',
   PROCESSING: 'The swap is running in the network.',
   SUCCESS: 'Arrived. The funds reached the destination wallet.',
-  INCOMPLETE_DEPOSIT: 'The deposit was smaller than quoted. It will be refunded to the refund address.',
-  REFUNDED: 'Refunded to the refund address.',
-  FAILED: 'This swap failed. Funds that reached the network are refunded to the refund address.',
+  INCOMPLETE_DEPOSIT: 'The deposit was smaller than quoted. It will be refunded to the wallet it was sent from.',
+  REFUNDED: 'Refunded to the wallet it was sent from.',
+  FAILED: 'This swap failed. Funds that reached the network are refunded to the wallet they were sent from.',
 };
 
 export default function TrackCrossing() {

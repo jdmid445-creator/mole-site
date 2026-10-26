@@ -11,6 +11,7 @@ const LABEL = {
   INCOMPLETE_DEPOSIT: 'Deposit too small',
   REFUNDED: 'Refunded',
   FAILED: 'Failed',
+  PARTIAL: 'Partly refunded',
 };
 
 function when(ts) {
@@ -37,7 +38,7 @@ export default function RecentCrossings({ title = 'Your recent crossings', showE
     return (
       <section className="recent recent-empty" aria-label={title}>
         <h2 className="recent-title">{title}</h2>
-        <p className="muted small">Crossings you start on this device show up here, so you can find them again even if you close the tab. They're saved only in this browser.</p>
+        <p className="muted small">Crossings you start on this device show up here, so you can find them again even if you close the tab. They’re saved only in this browser.</p>
       </section>
     );
   }

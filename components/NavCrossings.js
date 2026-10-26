@@ -20,8 +20,8 @@ export default function NavCrossings() {
     return () => { window.removeEventListener(RECENT_EVENT, sync); window.removeEventListener('storage', sync); clearInterval(t); };
   }, []);
   return (
-    <Link href="/track" className={`nav-crossings${live ? ' has-live' : ''}`} aria-label={live ? `My crossings, ${live} in progress` : 'My crossings'}>
-      <span className="nc-text">My crossings</span>
+    <Link href="/track" className={`nav-crossings${live ? ' has-live' : ''}`} aria-label={live ? `My Crossings, ${live} in progress` : 'My Crossings'}>
+      <span className="nc-text">My Crossings</span>
       {live ? <span className="nc-badge"><span className="nc-dot" aria-hidden="true" />{live}</span> : null}
     </Link>
   );

@@ -727,14 +727,9 @@ export default function TunnelApp() {
                     </div>
                   </div>
                 ) : (
-                  <div className="connect-row">
-                    <button type="button" className="btn btn-connect" onClick={() => chooseWallet()} disabled={Boolean(picker?.busyId) || Boolean(busy)}>
-                      {picker?.busyId ? 'Check your wallet…' : `Connect ${fromChain.label} wallet`}
-                    </button>
-                    <p className="pay-note">You approve the swap once in your wallet.</p>
-                  </div>
+                  <p className="pay-note">{picker?.busyId ? 'Check your wallet…' : 'Tap your wallet to connect it. You approve the swap once.'}</p>
                 )}
-                {!walletMatches && !appLinks.length && INSTALL[walletKind] ? (
+                {payMode === 'wallet' && !walletMatches && !appLinks.length && INSTALL[walletKind] ? (
                   <div className="wallet-quick" role="group" aria-label="Wallets">
                     {INSTALL[walletKind].map((w) => (
                       <button key={w.id} type="button" className="ghost-app" onClick={() => quickWallet(w)} disabled={Boolean(picker?.busyId)}>

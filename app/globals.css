@@ -765,4 +765,6 @@ html.motion .st-copy.is-lit { opacity: 1; transform: none; filter: none; }
 /* My crossings page */
 .track-page .recent { margin-top: 0; }
 .track-any { margin-top: 36px; display: grid; gap: 6px; }
-.track-any .track { margin-top: 8px; }
+.track-any .track { margin: 8px 0 0; width: 100%; max-width: none; }
+.track-page .recent, .track-page .track-any { max-width: 760px; margin-left: auto; margin-right: auto; }
+@media (min-width: 640px) { .track-any .track-form { grid-template-columns: 1fr auto; } }

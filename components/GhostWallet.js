@@ -1,7 +1,7 @@
 'use client';
 
 import { useRef, useState } from 'react';
-import { GHOST_KINDS, createGhostWallet, downloadBackup } from '@/lib/ghost';
+import { GHOST_APPS, GHOST_KINDS, createGhostWallet, downloadBackup } from '@/lib/ghost';
 import ChainIcon from './ChainIcon';
 import CopyButton from './CopyButton';
 
@@ -112,6 +112,19 @@ export default function GhostWallet({ initialKind = 'solana', lockKind = false, 
               How to import: {GHOST_KINDS[wallet.kind].importIn}.
             </p>
           )}
+          {GHOST_APPS[wallet.kind]?.length ? (
+            <div className="ghost-apps">
+              <span className="ghost-label">Open it in</span>
+              <div className="ghost-apps-row">
+                {GHOST_APPS[wallet.kind].map((app) => (
+                  <a key={app.name} className="ghost-app" href={app.href} target="_blank" rel="noopener noreferrer">
+                    {app.icon ? <img src={app.icon} alt="" width="20" height="20" /> : <span className="ghost-app-tile" aria-hidden="true">{app.name[0]}</span>}
+                    {app.name}
+                  </a>
+                ))}
+              </div>
+            </div>
+          ) : null}
         </div>
       )}
 

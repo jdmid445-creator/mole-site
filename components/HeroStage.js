@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import Mole from './Mole';
 import { LINES } from './GuardMole';
+import useBubbleClear from '@/lib/useBubbleClear';
 import ChainIcon from './ChainIcon';
 
 // Hero visual: a clean preview of the swap box, with the creature peeking over the top.
@@ -25,6 +26,7 @@ export default function HeroStage() {
   const [bubble, setBubble] = useState(false);
   const lineIdx = useRef(Math.floor(Math.random() * 5));
   const tt = useRef([]);
+  const bub = useRef(null);
   const later = (ms, fn) => tt.current.push(setTimeout(fn, ms));
   const nextLine = () => { const l = LINES[lineIdx.current % LINES.length]; lineIdx.current += 1; return l; };
   useEffect(() => {
@@ -70,6 +72,7 @@ export default function HeroStage() {
   }
   function onLeave() { stroke.current.x = null; stroke.current.dir = 0; }
   const btn = useRef(null);
+  useBubbleClear(bub, btn, [line]);
 
   useEffect(() => {
     let seen = false;
@@ -153,7 +156,7 @@ export default function HeroStage() {
       >
         <Mole size={170} id="mole-stage" title="Parallax creature" />
       </button>
-      <span className={`guard-bubble hero-bubble${bubble && !dizzy ? ' is-on' : ''}`} role="status" aria-live="polite">{line}</span>
+      <span ref={bub} className={`guard-bubble hero-bubble${bubble && !dizzy ? ' is-on' : ''}`} role="status" aria-live="polite">{line}</span>
 
       <div className="swap-card">
         <div className="swap-head">

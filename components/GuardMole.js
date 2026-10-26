@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import Mole from './Mole';
+import useBubbleClear from '@/lib/useBubbleClear';
 
 // The creature guarding the swap card. Tap him: he ducks, peeks back up to his eyes, squints,
 // says something about keeping you private, then pops fully back up.
@@ -20,6 +21,9 @@ export default function GuardMole({ variant = '', intro = '' }) {
   const [bubble, setBubble] = useState(false);
   const next = useRef(Math.floor(Math.random() * LINES.length));
   const timers = useRef([]);
+  const bub = useRef(null);
+  const btnRef = useRef(null);
+  useBubbleClear(bub, btnRef, [line]);
   useEffect(() => () => timers.current.forEach(clearTimeout), []);
 
   // Starts hidden below the edge; pops up the first time you scroll to him.
@@ -69,9 +73,9 @@ export default function GuardMole({ variant = '', intro = '' }) {
 
   return (
     <>
-    <span className={`guard-bubble${variant ? ' guard-bubble-' + variant : ''}${bubble ? ' is-on' : ''}`} role="status" aria-live="polite">{line}</span>
+    <span ref={bub} className={`guard-bubble${variant ? ' guard-bubble-' + variant : ''}${bubble ? ' is-on' : ''}`} role="status" aria-live="polite">{line}</span>
     <div ref={box} className={`guard${variant ? ' guard-' + variant : ''}`}>
-      <button type="button" className={`guard-mole is-${phase}`} onClick={tap} aria-label="Tap the Parallax creature">
+      <button ref={btnRef} type="button" className={`guard-mole is-${phase}`} onClick={tap} aria-label="Tap the Parallax creature">
         <Mole size={150} id={`mole-guard${variant ? '-' + variant : ''}`} title="Parallax creature" />
       </button>
     </div>

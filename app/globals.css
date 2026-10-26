@@ -840,3 +840,9 @@ html.motion .st-copy.is-lit { opacity: 1; transform: none; filter: none; }
   .split-toggle button, .trace-modes button { white-space: normal; line-height: 1.15; padding: 8px 8px; }
   .swap-caption { overflow-wrap: anywhere; }
 }
+
+/* Guard: hidden under the edge until you scroll to him, then pops up */
+.guard-mole.is-hidden .mole-body { transform: translateY(240px); transition: none; }
+.guard-mole.is-hidden svg > circle { opacity: 0; }
+.guard-mole.is-rise .mole-body { transform: translateY(0); transition: transform 0.6s cubic-bezier(.3,1.6,.5,1); }
+.guard-mole.is-hidden, .guard-mole.is-rise { pointer-events: none; }

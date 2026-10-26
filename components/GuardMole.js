@@ -14,12 +14,28 @@ const LINES = [
 ];
 
 export default function GuardMole({ variant = '' }) {
-  const [phase, setPhase] = useState('idle'); // idle | down | peek | up
+  const [phase, setPhase] = useState('hidden'); // hidden | rise | idle | down | peek | up
+  const box = useRef(null);
   const [line, setLine] = useState('');
   const [bubble, setBubble] = useState(false);
   const next = useRef(Math.floor(Math.random() * LINES.length));
   const timers = useRef([]);
   useEffect(() => () => timers.current.forEach(clearTimeout), []);
+
+  // Starts hidden below the edge; pops up the first time you scroll to him.
+  useEffect(() => {
+    let still = false;
+    try { still = window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch {}
+    if (still || typeof IntersectionObserver === 'undefined' || !box.current) { setPhase('idle'); return undefined; }
+    const io = new IntersectionObserver((entries) => {
+      if (!entries.some((e) => e.isIntersecting)) return;
+      io.disconnect();
+      timers.current.push(setTimeout(() => setPhase('rise'), 250));
+      timers.current.push(setTimeout(() => setPhase('idle'), 900));
+    }, { threshold: 0.6, rootMargin: '0px 0px -12% 0px' });
+    io.observe(box.current);
+    return () => io.disconnect();
+  }, []);
 
   function at(ms, fn) { timers.current.push(setTimeout(fn, ms)); }
 
@@ -41,7 +57,7 @@ export default function GuardMole({ variant = '' }) {
   return (
     <>
     <span className={`guard-bubble${variant ? ' guard-bubble-' + variant : ''}${bubble ? ' is-on' : ''}`} role="status" aria-live="polite">{line}</span>
-    <div className={`guard${variant ? ' guard-' + variant : ''}`}>
+    <div ref={box} className={`guard${variant ? ' guard-' + variant : ''}`}>
       <button type="button" className={`guard-mole is-${phase}`} onClick={tap} aria-label="Tap the Parallax creature">
         <Mole size={150} id={`mole-guard${variant ? '-' + variant : ''}`} title="Parallax creature" />
       </button>

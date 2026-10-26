@@ -1,4 +1,5 @@
 import TrackCrossing from '@/components/TrackCrossing';
+import RecentCrossings from '@/components/RecentCrossings';
 
 export const metadata = {
   title: 'Track a crossing — Parallax',
@@ -16,6 +17,7 @@ export default function TrackPage() {
         </p>
         <div className="hero-in" style={{ '--d': '320ms' }}>
           <TrackCrossing />
+          <RecentCrossings />
         </div>
       </div>
     </section>

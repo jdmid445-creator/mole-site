@@ -2,6 +2,7 @@ import { Manrope, JetBrains_Mono } from 'next/font/google';
 import './globals.css';
 import Header from '@/components/Header';
 import CaBar from '@/components/CaBar';
+import SecretDig from '@/components/SecretDig';
 import Footer from '@/components/Footer';
 import MotionObserver from '@/components/MotionObserver';
 
@@ -64,6 +65,7 @@ export default function RootLayout({ children }) {
         <main>{children}</main>
         <Footer />
         <MotionObserver />
+        <SecretDig />
       </body>
     </html>
   );

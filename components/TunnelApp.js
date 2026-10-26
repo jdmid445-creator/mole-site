@@ -20,6 +20,9 @@ import CopyButton from './CopyButton';
 import ChainIcon from './ChainIcon';
 import GhostWallet from './GhostWallet';
 import WalletPicker from './WalletPicker';
+import QrCode from './QrCode';
+import RecentCrossings from './RecentCrossings';
+import { addRecent, updateRecentStatus } from '@/lib/recent';
 import { ghostKindFor } from '@/lib/ghost';
 
 const STORAGE_KEY = 'mole-tunnel-pair-v1';
@@ -36,6 +39,14 @@ const STATUS_TEXT = {
   FAILED: 'Swap failed',
   UNKNOWN: 'Checking…',
 };
+
+// "≈ $18.40" from a token's USD price (from the swap network's token list). Empty when there is no price.
+function usd(amount, price) {
+  const v = Number(amount) * Number(price);
+  if (!price || !Number.isFinite(v) || v <= 0) return '';
+  if (v < 0.01) return '< $0.01';
+  return `≈ $${v.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+}
 
 function isNative(token, chain) {
   if (!token || !chain) return false;
@@ -150,6 +161,7 @@ export default function TunnelApp() {
 
   useEffect(() => {
     swapRef.current = swap;
+    if (swap) updateRecentStatus(swap.id, overallStatus(swap.parts));
   }, [swap]);
 
   // Which wallets this browser has (phones only get them inside the wallet's own app).
@@ -488,6 +500,8 @@ export default function TunnelApp() {
         amountIn: fromUnits(units, fromToken.decimals),
         symbolIn: fromToken.symbol,
         symbolOut: toToken.symbol,
+        priceIn: fromToken.price ?? null,
+        priceOut: toToken.price ?? null,
         confidentiality: quotes[0]?.confidentiality,
         parts: quotes.map((q) => ({
           depositAddress: q.depositAddress,
@@ -502,6 +516,16 @@ export default function TunnelApp() {
       };
       swapRef.current = created; // record it now, not after the next render, so the checks below see it
       setSwap(created);
+      addRecent({
+        id,
+        deposits: created.parts.map((p) => p.depositAddress),
+        amountIn: created.amountIn,
+        symbolIn: created.symbolIn,
+        symbolOut: created.symbolOut,
+        fromLabel: fromChain.label,
+        toLabel: toChain.label,
+        status: 'PENDING_DEPOSIT',
+      });
 
       if (!autoSend) return;
 
@@ -843,10 +867,12 @@ export default function TunnelApp() {
                 <div>
                   <span className="muted small">You send</span>
                   <strong>{fromUnits(preview.units, fromToken.decimals)} {fromToken.symbol}</strong>
+                  {usd(fromUnits(preview.units, fromToken.decimals), fromToken.price) ? <span className="usd">{usd(fromUnits(preview.units, fromToken.decimals), fromToken.price)}</span> : null}
                 </div>
                 <div>
                   <span className="muted small">{preview.quotes.length > 1 ? 'About, in total' : 'About'}</span>
                   <strong>{displayAmount(String(preview.out))} {toToken.symbol}</strong>
+                  {usd(preview.out, toToken.price) ? <span className="usd">{usd(preview.out, toToken.price)}</span> : null}
                 </div>
                 <div>
                   <span className="muted small">Time</span>
@@ -929,7 +955,7 @@ export default function TunnelApp() {
                 </p>
               )}
               {pendingDeposits.map((p) => (
-                <div key={p.depositAddress} className="deposit-item">
+                <div key={p.depositAddress} className="deposit-item has-qr">
                   {pendingDeposits.length > 1 || swap.split ? (
                     <p className="deposit-amt"><strong>{p.amountIn} {swap.symbolIn}</strong> to:</p>
                   ) : null}
@@ -943,6 +969,7 @@ export default function TunnelApp() {
                       <CopyButton value={p.depositMemo} />
                     </p>
                   ) : null}
+                  <QrCode value={p.depositAddress} size={pendingDeposits.length > 1 ? 132 : 168} label={p.depositMemo ? 'Scan for the address (add the memo by hand)' : 'Scan to send from your phone or exchange'} />
                 </div>
               ))}
               <p className="muted small">These addresses are for this crossing only. The page updates on its own once deposits land.</p>
@@ -952,12 +979,12 @@ export default function TunnelApp() {
           <dl className="swap-facts">
             <div>
               <dt>Sending</dt>
-              <dd>{swap.amountIn} {swap.symbolIn} on {fromChain.label}</dd>
+              <dd>{swap.amountIn} {swap.symbolIn} on {fromChain.label}{usd(swap.amountIn, swap.priceIn) ? <span className="usd"> {usd(swap.amountIn, swap.priceIn)}</span> : null}</dd>
             </div>
             {!swap.split ? (
               <div>
                 <dt>Arriving</dt>
-                <dd>{swap.parts[0].amountOutFormatted ? `~${displayAmount(swap.parts[0].amountOutFormatted)}` : '—'} {swap.symbolOut} on {toChain.label}</dd>
+                <dd>{swap.parts[0].amountOutFormatted ? `~${displayAmount(swap.parts[0].amountOutFormatted)}` : '—'} {swap.symbolOut} on {toChain.label}{usd(swap.parts[0].amountOutFormatted, swap.priceOut) ? <span className="usd"> {usd(swap.parts[0].amountOutFormatted, swap.priceOut)}</span> : null}</dd>
               </div>
             ) : null}
             {swap.parts[0].txHash && (!swap.split || swap.parts.every((p) => p.txHash === swap.parts[0].txHash)) ? (
@@ -1029,6 +1056,8 @@ export default function TunnelApp() {
           </button>
         </div>
       )}
+
+      {!swap ? <RecentCrossings /> : null}
 
       {!loading && !tokens.length && networkChains.length ? (
         <p className="muted small">Network chains reported: {networkChains.join(', ')}</p>

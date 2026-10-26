@@ -236,3 +236,9 @@ References from owner: blackout.exchange, vanish.trade/us, veilit.xyz, web-4.app
 - "meme coin" → "cryptocurrency" in footer and terms (owner). The no-promised-value / can-lose-everything wording kept.
 - Ghost wallet: "Open it in" row of app links under each new wallet (owner ask). Solana: Phantom, Solflare, Backpack, Axiom; EVM: MetaMask, Rabby, Phantom; BTC: Trust, Sparrow, BlueWallet; DOGE/LTC: Trust; XRP: Trust, Xaman; Tron: TronLink, Trust. Official download/home pages, open in a new tab. Solana import text now mentions Axiom.
 - Header/footer logo creature lifted 1.5px (3px was a touch high) so it lines up with the "Parallax" word (owner nitpick).
+- New features (owner picked from my list, 2026-10-26):
+  - QR code beside each deposit address (pay-it-yourself / Axiom / exchange). Made in the browser with the `qrcode` package (1.5.4); verified it decodes for SOL/EVM/BTC/XRP addresses.
+  - "Your recent crossings": last 8 kept only in this browser (deposit addresses, amounts, chains, status; never the destination wallet), shown on /tunnel and /track with Track links + "Forget these".
+  - Dollar values ("≈ $18.40") under You send / About, and in the swap summary, from the network's token prices.
+  - Easter egg: 10 quick boops → spiral eyes + dizzy wobble, then he shakes it off.
+  - Easter egg: type "parallax" (outside text boxes) → creature digs along the bottom of the screen, dirt mounds vanish behind him, "Leave no trace."

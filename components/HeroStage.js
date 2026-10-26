@@ -16,6 +16,8 @@ export default function HeroStage() {
   const [hint, setHint] = useState(false);
   const [booped, setBooped] = useState(false);
   const [petting, setPetting] = useState(false);
+  const [dizzy, setDizzy] = useState(false);
+  const boops = useRef([]);
   const stroke = useRef({ x: null, dir: 0, turns: [], t: 0 });
 
   // Petting: quick back-and-forth strokes over him (3+ direction changes within ~0.9 s).
@@ -90,7 +92,17 @@ export default function HeroStage() {
     setHint(false);
     setBooped(true);
     try { localStorage.setItem(HINT_KEY, '1'); } catch {}
-    if (ducking) return;
+    // Boop him 10 times in quick succession and he gets dizzy.
+    const now = performance.now();
+    boops.current = [...boops.current.filter((t) => now - t < 7000), now];
+    if (boops.current.length >= 10 && !dizzy) {
+      boops.current = [];
+      setDucking(false);
+      setDizzy(true);
+      setTimeout(() => setDizzy(false), 3200);
+      return;
+    }
+    if (ducking || dizzy) return;
     setDucking(true);
     setTimeout(() => setDucking(false), 1700);
   }
@@ -100,7 +112,7 @@ export default function HeroStage() {
       <button
         ref={btn}
         type="button"
-        className={`swap-mole${ducking ? ' is-ducking' : ''}${idle ? ' is-idle' : ''}${petting ? ' is-petting' : ''}`}
+        className={`swap-mole${ducking ? ' is-ducking' : ''}${idle ? ' is-idle' : ''}${petting ? ' is-petting' : ''}${dizzy ? ' is-dizzy' : ''}`}
         onClick={boop}
         onPointerMove={onPet}
         onPointerLeave={onLeave}

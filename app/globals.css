@@ -830,3 +830,13 @@ html.motion .st-copy.is-lit { opacity: 1; transform: none; filter: none; }
   .trace-item { padding-left: 10px; padding-right: 10px; }
   .trace-actions .btn { flex: 1 1 auto; }
 }
+/* Small phones, round 2 */
+.hero-grid { grid-template-columns: minmax(0, 1fr); }
+.hero-grid > *, .hero-copy, .hero-swap { min-width: 0; }
+.net-status { max-width: 100%; }
+@media (max-width: 860px) { .tunnel-stage { margin-top: 72px; } }
+@media (max-width: 400px) {
+  .hero-panel { padding-left: 18px; padding-right: 18px; }
+  .split-toggle button, .trace-modes button { white-space: normal; line-height: 1.15; padding: 8px 8px; }
+  .swap-caption { overflow-wrap: anywhere; }
+}

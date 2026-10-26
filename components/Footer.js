@@ -23,7 +23,7 @@ export default function Footer() {
             <h4>App</h4>
             <Link href="/tunnel">Make a crossing</Link>
             <Link href="/ghost">Ghost wallet</Link>
-            <Link href="/track">Track a crossing</Link>
+            <Link href="/track">My crossings</Link>
           </nav>
           <nav className="footer-col" aria-label="Learn">
             <h4>Learn</h4>

@@ -2,22 +2,25 @@ import TrackCrossing from '@/components/TrackCrossing';
 import RecentCrossings from '@/components/RecentCrossings';
 
 export const metadata = {
-  title: 'Track a crossing — Parallax',
-  description: 'Check the live status of a Parallax crossing with its deposit address.',
+  title: 'My crossings — Parallax',
+  description: 'Your recent Parallax crossings on this device, and live status for any crossing by its deposit address.',
 };
 
 export default function TrackPage() {
   return (
     <section className="section tunnel-section">
-      <div className="container">
-        <h1 className="page-title hero-in" style={{ '--d': '80ms' }}>Track a crossing</h1>
+      <div className="container track-page">
+        <h1 className="page-title hero-in" style={{ '--d': '80ms' }}>My crossings</h1>
         <p className="lede narrow hero-in" style={{ '--d': '200ms' }}>
-          Paste the deposit address from your crossing to see where it is. Nothing is stored; the status comes straight from
-          the swap network.
+          Crossings you started on this device, with their live status. Nothing is stored on our side.
         </p>
         <div className="hero-in" style={{ '--d': '320ms' }}>
-          <TrackCrossing />
-          <RecentCrossings showEmpty />
+          <RecentCrossings title="On this device" showEmpty />
+          <div className="track-any">
+            <h2 className="recent-title">Track any crossing</h2>
+            <p className="muted small">Started it somewhere else? Paste its deposit address (the address the coins were sent to).</p>
+            <TrackCrossing />
+          </div>
         </div>
       </div>
     </section>

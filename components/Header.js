@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import Mole from './Mole';
 import { SITE } from '@/lib/site';
+import NavCrossings from './NavCrossings';
 
 export default function Header() {
   return (
@@ -14,7 +15,7 @@ export default function Header() {
           <Link href="/#how">How it works</Link>
           <Link href="/docs">Docs</Link>
           <Link href="/ghost">Ghost wallet</Link>
-          <Link href="/track">Track</Link>
+          <NavCrossings />
           <Link href="/#token">$PARALLAX</Link>
           {SITE.xUrl ? (
             <a href={SITE.xUrl} className="nav-x" target="_blank" rel="noopener noreferrer" aria-label="Parallax on X">

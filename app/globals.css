@@ -888,3 +888,12 @@ html.motion .st-copy.is-lit { opacity: 1; transform: none; filter: none; }
   .guard-bubble.guard-bubble-closing { right: 50%; translate: 50% 8px; bottom: 104px; font-size: 0.74rem; padding: 7px 11px; }
   .guard-bubble.guard-bubble-closing.is-on { translate: 50% 0; }
 }
+@media (min-width: 721px) {
+  .peek-features { margin-top: -28px; }
+  .peek-trace { margin-top: -32px; }
+  .peek-faq { margin-top: -60px; }
+}
+@media (max-width: 720px) {
+  .closing-card { padding-bottom: 170px; }
+  .guard-bubble.guard-bubble-closing { bottom: 100px; }
+}

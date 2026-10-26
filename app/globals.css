@@ -905,3 +905,28 @@ html.motion .st-copy.is-lit { opacity: 1; transform: none; filter: none; }
 .guard-bubble.guard-bubble-ghost { right: -150px; top: -22px; border-radius: 16px 16px 16px 4px; }
 @media (max-width: 1100px) { .guard-bubble.guard-bubble-ghost { right: 0; top: -40px; border-radius: 16px 16px 4px 16px; } .peek-ghost { margin-top: 0; } }
 @media (max-width: 720px) { .guard.guard-ghost { right: 4px; } .guard-bubble.guard-bubble-ghost { top: -46px; } .peek-ghost { margin-top: 72px; } }
+
+/* My Crossings: peeks over the "Your crossings" box */
+.peek-track { margin-top: -40px; }
+.peek-track .recent { margin-top: 0; }
+.guard.guard-track { right: 28px; }
+.guard-bubble.guard-bubble-track { right: -150px; top: -22px; border-radius: 16px 16px 16px 4px; }
+@media (max-width: 1100px) { .guard-bubble.guard-bubble-track { right: 0; top: -40px; border-radius: 16px 16px 4px 16px; } .peek-track { margin-top: 0; } }
+@media (max-width: 720px) { .guard.guard-track { right: 4px; } .guard-bubble.guard-bubble-track { top: -46px; } .peek-track { margin-top: 56px; } }
+
+/* Docs: no box to hide behind, so he pops out of his own hole beside the title */
+.docs-body { position: relative; }
+.guard.guard-docs { top: -6px; right: 24px; height: 126px; overflow: hidden; }
+.guard.guard-docs .guard-mole { top: 0; }
+.guard.guard-docs .guard-mole svg > ellipse { display: block; }
+.guard-bubble.guard-bubble-docs { right: 0; top: -58px; }
+.docs-body > :not(.guard):not(.guard-bubble) { position: relative; z-index: 1; }
+@media (max-width: 720px) {
+  .docs-body { padding-top: 150px; }
+  .guard.guard-docs { top: 18px; right: 50%; margin-right: -75px; }
+  .guard-bubble.guard-bubble-docs { right: 50%; translate: 50% 8px; top: -18px; font-size: 0.74rem; padding: 7px 11px; border-radius: 16px; }
+  .guard-bubble.guard-bubble-docs.is-on { translate: 50% 0; }
+}
+.peek-track { max-width: 760px; margin-left: auto; margin-right: auto; }
+.peek-track .recent { background: #0e0b1d; }
+@media (min-width: 1300px) { .guard.guard-docs { right: -200px; } .guard-bubble.guard-bubble-docs { right: -230px; } }

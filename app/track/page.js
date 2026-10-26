@@ -1,5 +1,6 @@
 import TrackCrossing from '@/components/TrackCrossing';
 import RecentCrossings from '@/components/RecentCrossings';
+import GuardMole from '@/components/GuardMole';
 
 export const metadata = {
   title: 'My Crossings — Parallax',
@@ -20,7 +21,10 @@ export default function TrackPage() {
             <p className="muted small">Paste a deposit address (the address the coins were sent to) to see its live status.</p>
             <TrackCrossing />
           </div>
-          <RecentCrossings title="Your crossings" showEmpty />
+          <div className="peek-stage peek-track">
+            <GuardMole variant="track" intro="Let’s check your crossing." />
+            <RecentCrossings title="Your crossings" showEmpty />
+          </div>
         </div>
       </div>
     </section>

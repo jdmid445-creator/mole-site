@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import GuardMole from '@/components/GuardMole';
 
 export const metadata = {
   title: 'Docs — Parallax',
@@ -35,6 +36,7 @@ export default function Docs() {
         </nav>
 
         <article className="docs-body prose">
+          <GuardMole variant="docs" intro="Let me show you around." />
           <h1 className="page-title hero-in">Parallax docs</h1>
           <p className="lede hero-in" style={{ '--d': '120ms' }}>
             Everything Parallax does, what it doesn’t, and how to get the most privacy out of it.

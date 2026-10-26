@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { CHAINS, getChain, isValidAddress, addressHint } from '@/lib/chains';
+import { CHAINS, getChain, isValidAddress, addressHint, hasChecksumTypo } from '@/lib/chains';
 import { toUnits, fromUnits, looksRound, suggestRound, displayAmount } from '@/lib/units';
 import {
   connectSolana,
@@ -302,6 +302,7 @@ export default function TunnelApp() {
     if (fromToken.assetId === toToken.assetId) throw new Error('Pick a different asset or chain for the other side.');
     const units = toUnits(amount, fromToken.decimals);
     let refundAddr = (refund || '').trim();
+    if (refundAddr && hasChecksumTypo(fromChainKey, refundAddr)) throw new Error('Refund address: it has a typo (its capital letters don\'t match). Copy it again from your wallet.');
     if (!isValidAddress(fromChainKey, refundAddr)) {
       const placeholder = PREVIEW_REFUND[fromChainKey] || PREVIEW_REFUND[fromChain.wallet];
       if (preview && placeholder) refundAddr = placeholder;
@@ -319,6 +320,7 @@ export default function TunnelApp() {
     dests.forEach((d, i) => {
       const label = splitOn ? `Wallet ${i + 1}` : 'Destination';
       if (priceOnly && !isValidAddress(toChainKey, d.address) && destPlaceholder) { d.address = destPlaceholder; d.placeholder = true; return; }
+      if (hasChecksumTypo(toChainKey, d.address)) throw new Error(`${label}: this address has a typo (its capital letters don't match). Copy it again from your wallet.`);
       if (!isValidAddress(toChainKey, d.address)) throw new Error(`${label}: enter ${addressHint(toChainKey).toLowerCase()}.`);
       const key = d.address.toLowerCase();
       if (seen.has(key)) throw new Error(`${label} is used twice. Each part should land in a different wallet.`);
@@ -345,7 +347,13 @@ export default function TunnelApp() {
       }),
     });
     const data = await res.json();
-    if (!res.ok || data.error) throw new Error(data.error || 'Could not get a quote.');
+    if (!res.ok || data.error) {
+      const msg = String(data.error || '');
+      if (/recipient is not valid|failed to get quote/i.test(msg) && !dest.placeholder) {
+        throw new Error(`The network wouldn't accept ${short(dest.address)} as a destination. Double-check it, or use a different wallet (a fresh ghost wallet always works).`);
+      }
+      throw new Error(msg || 'Could not get a quote.');
+    }
     return { ...data, units: dest.units, recipient: dest.address };
   }
 

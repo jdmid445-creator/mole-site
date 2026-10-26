@@ -242,3 +242,4 @@ References from owner: blackout.exchange, vanish.trade/us, veilit.xyz, web-4.app
   - Dollar values ("≈ $18.40") under You send / About, and in the swap summary, from the network's token prices.
   - Easter egg: 10 quick boops → spiral eyes + dizzy wobble, then he shakes it off.
   - Easter egg: type "parallax" (outside text boxes) → creature digs along the bottom of the screen, dirt mounds vanish behind him, "Leave no trace."
+- Double-check of new features found: (1) spiral eyes ignored reduce-motion → fixed; (2) recent list only updated on the swap page → Track now updates it too; (3) Ethereum address with a capitalization typo (EIP-55 checksum) was only caught by the network with a vague "Failed to get quote" → now caught in the form with "this address has a typo", and any network refusal of a destination says so clearly.

@@ -30,7 +30,7 @@ export default function HeroStage() {
   useEffect(() => {
     let still = false;
     try { still = window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch {}
-    setLine(nextLine());
+    setLine('Your coins cross. Your wallet stays yours.'); // always the opening line
     if (still) { setPhase('idle'); setBubble(true); later(3000, () => setBubble(false)); }
     if (still) return () => tt.current.forEach(clearTimeout);
     // Pop up once he's on screen and the page has stopped moving (on phones he starts below the fold).

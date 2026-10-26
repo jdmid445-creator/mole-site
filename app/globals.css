@@ -820,3 +820,13 @@ html.motion .st-copy.is-lit { opacity: 1; transform: none; filter: none; }
 /* no ring around him after a mouse click; a soft glow only for keyboard focus */
 .guard-mole:focus { outline: none; }
 .guard-mole:focus-visible { outline: none; filter: drop-shadow(0 0 10px rgba(200, 255, 46, 0.55)); }
+/* Small phones (iPhone SE / 320–400px): nothing wider than the screen */
+.trace { grid-template-columns: minmax(0, 1fr); }
+.trace > *, .trace-board > *, .trace-col, .trace-item { min-width: 0; }
+@media (max-width: 400px) {
+  .trace { padding: 16px; }
+  .trace-modes, .split-toggle { display: flex; width: 100%; }
+  .trace-modes button, .split-toggle button { flex: 1 1 0; min-width: 0; padding: 8px 10px; font-size: 0.85rem; }
+  .trace-item { padding-left: 10px; padding-right: 10px; }
+  .trace-actions .btn { flex: 1 1 auto; }
+}

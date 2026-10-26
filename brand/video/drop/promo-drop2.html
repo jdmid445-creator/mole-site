@@ -155,7 +155,11 @@ body { font-family: 'Manrope', system-ui, sans-serif; color: var(--text); -webki
 .ca { display: inline-flex; align-items: center; gap: 16px; padding: 16px 26px; border-radius: 999px; background: rgba(23,19,46,0.85); border: 1px solid rgba(200,255,46,0.35); font-size: 28px; }
 .ca b { color: var(--lime); letter-spacing: 0.06em; font-size: 22px; }
 .ca code { font-family: ui-monospace, Menlo, monospace; font-size: 27px; color: var(--text); }
-.wordmark { position: relative; z-index: 3; font-size: 260px; font-weight: 800; letter-spacing: -0.045em; line-height: 1; color: var(--text); white-space: nowrap; }
+.ibox { position: relative; z-index: 3; display: grid; justify-items: center; gap: 18px; padding: 50px 80px 62px; border-radius: 56px;
+  background: linear-gradient(180deg, rgba(29,24,56,0.94), rgba(17,14,34,0.94)); border: 1px solid rgba(207,198,255,0.16);
+  box-shadow: 0 60px 120px -40px rgba(0,0,0,0.8), 0 0 120px rgba(123,98,240,0.18), inset 0 1px 0 rgba(255,255,255,0.06); }
+#introW { z-index: 3; }
+.wordmark { position: relative; z-index: 3; font-size: 230px; font-weight: 800; letter-spacing: -0.045em; line-height: 1; color: var(--text); white-space: nowrap; }
 .wordmark span { display: inline-block; }
 #m0 { z-index: 2; }
 .orb { position: absolute; width: 96px; height: 96px; margin: -48px 0 0 -48px; border-radius: 50%; display: grid; place-items: center;
@@ -171,10 +175,15 @@ body { font-family: 'Manrope', system-ui, sans-serif; color: var(--text); -webki
 
   <div id="coins"></div>
   <!-- Intro: INTRODUCING PARALLAX, the creature pops up from behind the LLA -->
-  <div class="abs cx" id="introK" style="top:215px"><p class="kick" style="font-size:34px; letter-spacing:0.42em">Introducing</p></div>
+
   <div class="abs" id="orbBack" style="left:0; top:0; width:1920px; height:1080px"></div>
   <div class="mole" id="m0" style="left:0; top:0; width:300px"></div>
-  <div class="abs cx" id="introW" style="top:470px"><p class="wordmark"><span id="wPARA">PARA</span><span id="wLLA">LLA</span><span id="wX">X</span></p></div>
+  <div class="abs" id="introW" style="left:0; right:0; top:330px; display:flex; justify-content:center">
+    <div class="ibox">
+      <p class="kick" id="introK" style="font-size:58px; letter-spacing:0.38em; text-indent:0.38em">Introducing</p>
+      <p class="wordmark"><span id="wPARA">PARA</span><span id="wLLA">LLA</span><span id="wX">X</span></p>
+    </div>
+  </div>
   <div class="abs" id="orbFront" style="left:0; top:0; width:1920px; height:1080px"></div>
   <!-- Scene 1: the public trail, the creature tunnels through it -->
   <div class="abs cx" id="h1" style="top:150px"><p class="head" style="font-size:96px">Most swaps leave a trail.</p></div>
@@ -601,8 +610,8 @@ function oldTime(t) {
 let introPlaced = false;
 function placeIntro() {
   const w = $('wLLA').getBoundingClientRect(), stage = document.querySelector('.stage').getBoundingClientRect();
-  const W = 300, capTop = w.top - stage.top + 0.2 * 260; // cap height starts ~20% into the line box
-  const holeY = capTop + 22;                              // paws rest just inside the top of the letters
+  const box = document.querySelector('.ibox').getBoundingClientRect();
+  const W = 300, holeY = box.top - stage.top + 10;        // paws rest on the top edge of the box
   $('m0').style.left = (w.left - stage.left + w.width / 2 - W / 2).toFixed(0) + 'px';
   $('m0').style.top = (holeY - 0.75 * W).toFixed(0) + 'px';
   introPlaced = true;
@@ -616,10 +625,11 @@ window.render = function (t, wallT) {
   renderOld(oldTime(t), tb);
   // intro (0 - 3.2)
   const iO = 1 - easeInOut(prog(t, 2.75, 3.15));
-  show($('introK'), easeOut(prog(t, 0.15, 0.55)) * iO, 14 * (1 - easeOut(prog(t, 0.15, 0.6))) - 30 * easeInOut(prog(t, 2.75, 3.15)));
+  const bx = easeOut(prog(t, 0.1, 0.6));
+  $('introK').style.opacity = easeOut(prog(t, 0.3, 0.7)).toFixed(3); $('introK').style.transform = `translateY(${(14 * (1 - easeOut(prog(t, 0.3, 0.75)))).toFixed(1)}px)`;
   ['wPARA', 'wLLA', 'wX'].forEach((id, i) => { const a = 0.35 + 0.1 * i, e = easeOut(prog(t, a, a + 0.5)); $(id).style.opacity = e.toFixed(3); $(id).style.transform = `translateY(${(40 * (1 - e)).toFixed(1)}px)`; });
-  show($('introW'), iO, -30 * easeInOut(prog(t, 2.75, 3.15)));
-  mole('m0', { o: iO, up: backOut(prog(t, 1.1, 1.55)), hole: 0, dy: -30 * easeInOut(prog(t, 2.75, 3.15)),
+  show($('introW'), bx * iO, 40 * (1 - bx) - 30 * easeInOut(prog(t, 2.75, 3.15)) + 6 * Math.sin(tb * 1.2), 0.94 + 0.06 * bx);
+  mole('m0', { o: iO, up: backOut(prog(t, 1.1, 1.55)), hole: 0, dy: -30 * easeInOut(prog(t, 2.75, 3.15)) + 6 * Math.sin(tb * 1.2),
     lookX: -14 * prog(t, 1.65, 1.85) + 28 * prog(t, 1.95, 2.15) - 14 * prog(t, 2.25, 2.4), blink: blinkAt(t, 2.45), happy: prog(t, 2.5, 2.62) * (1 - prog(t, 2.8, 2.9)) });
   const fillO = easeOut(prog(t, 0.25, 1.0)) * iO;
   // B: four 3D coins drifting in the corners
@@ -630,7 +640,7 @@ window.render = function (t, wallT) {
   // C: the 13 chains orbit the wordmark, passing behind and in front of it
   ORB.forEach((el, i) => {
     const a = (i / ORB.length) * Math.PI * 2 + tb * 0.45, z = Math.sin(a);
-    const x = 960 + Math.cos(a) * 820, y = 545 + z * 250;
+    const x = 960 + Math.cos(a) * 860, y = 560 + z * 300;
     const k = 0.62 + 0.38 * (z + 1) / 2;
     const parent = z > 0.15 ? $('orbFront') : $('orbBack'); if (el.parentElement !== parent) parent.appendChild(el);
     el.style.left = x.toFixed(1) + 'px'; el.style.top = y.toFixed(1) + 'px';

@@ -797,7 +797,7 @@ html.motion .st-copy.is-lit { opacity: 1; transform: none; filter: none; }
 .guard-mole .mole-eye { transform-box: fill-box; transform-origin: center; }
 /* while peeking and squinting: glance left, then right, then back to center */
 .guard-mole.is-peek .mole-eye { animation: guard-glance 2.8s ease-in-out 0.35s both; }
-@keyframes guard-glance { 0%, 14% { translate: 0 0; } 26%, 42% { translate: -30px 0; } 56%, 72% { translate: 30px 0; } 84%, 100% { translate: 0 0; } }
+@keyframes guard-glance { 0%, 14% { translate: 0 0; } 26%, 42% { translate: -17px 0; } 56%, 72% { translate: 17px 0; } 84%, 100% { translate: 0 0; } }
 @media (prefers-reduced-motion: reduce) { .guard-mole.is-peek .mole-eye { animation: none; } }
 .guard-bubble { position: absolute; right: 150px; top: 8px; width: max-content; max-width: none; white-space: nowrap; padding: 10px 14px; border-radius: 16px 16px 4px 16px;
   background: var(--surface-2); border: 1px solid var(--line); color: var(--text); font-size: 0.88rem; font-weight: 600; line-height: 1.35;
@@ -813,3 +813,10 @@ html.motion .st-copy.is-lit { opacity: 1; transform: none; filter: none; }
 .guard-bubble.guard-bubble-toolkit { right: 0; top: -50px; border-radius: 16px 16px 16px 4px; } /* above him, to the upper right */
 @media (min-width: 720px) { .guard.guard-toolkit { right: 170px; } .guard-bubble.guard-bubble-toolkit { right: 0; } }
 @media (max-width: 480px) { .panel-stage { margin-top: 64px; } .guard.guard-toolkit { right: 130px; } .guard-bubble.guard-bubble-toolkit { right: 0; left: auto; top: -46px; } }
+
+/* Swap page: bubble pops up to his top right */
+.tunnel-stage .guard-bubble { right: auto; left: calc(100% - 92px); top: -34px; border-radius: 16px 16px 16px 4px; }
+@media (max-width: 860px) { .tunnel-stage .guard-bubble { left: auto; right: 0; top: -40px; border-radius: 16px 16px 4px 16px; } .tunnel-stage { margin-top: 44px; } }
+/* no ring around him after a mouse click; a soft glow only for keyboard focus */
+.guard-mole:focus { outline: none; }
+.guard-mole:focus-visible { outline: none; filter: drop-shadow(0 0 10px rgba(200, 255, 46, 0.55)); }

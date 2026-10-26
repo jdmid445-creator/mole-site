@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import Mole from './Mole';
+import { LINES } from './GuardMole';
 import ChainIcon from './ChainIcon';
 
 // Hero visual: a clean preview of the swap box, with the creature peeking over the top.
@@ -18,6 +19,23 @@ export default function HeroStage() {
   const [petting, setPetting] = useState(false);
   const [dizzy, setDizzy] = useState(false);
   const boops = useRef([]);
+  // Talking: hidden under the card on load, pops up and says a line; each tap ducks, peeks, talks, pops back up.
+  const [phase, setPhase] = useState('hidden'); // hidden | rise | idle | down | peek | up
+  const [line, setLine] = useState('');
+  const [bubble, setBubble] = useState(false);
+  const lineIdx = useRef(Math.floor(Math.random() * 5));
+  const tt = useRef([]);
+  const later = (ms, fn) => tt.current.push(setTimeout(fn, ms));
+  const nextLine = () => { const l = LINES[lineIdx.current % LINES.length]; lineIdx.current += 1; return l; };
+  useEffect(() => {
+    let still = false;
+    try { still = window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch {}
+    setLine(nextLine());
+    if (still) { setPhase('idle'); setBubble(true); later(3000, () => setBubble(false)); }
+    else { later(900, () => setPhase('rise')); later(1350, () => setBubble(true)); later(1600, () => setPhase('idle')); later(4600, () => setBubble(false)); }
+    return () => tt.current.forEach(clearTimeout);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   const stroke = useRef({ x: null, dir: 0, turns: [], t: 0 });
 
   // Petting: quick back-and-forth strokes over him (3+ direction changes within ~0.9 s).
@@ -102,9 +120,14 @@ export default function HeroStage() {
       setTimeout(() => setDizzy(false), 3200);
       return;
     }
-    if (ducking || dizzy) return;
-    setDucking(true);
-    setTimeout(() => setDucking(false), 1700);
+    if (dizzy || phase !== 'idle') return;
+    setBubble(false);
+    setLine(nextLine());
+    setPhase('down');
+    later(320, () => setPhase('peek'));
+    later(700, () => setBubble(true));
+    later(3700, () => { setPhase('up'); setBubble(false); });
+    later(4200, () => setPhase('idle'));
   }
 
   return (
@@ -112,7 +135,7 @@ export default function HeroStage() {
       <button
         ref={btn}
         type="button"
-        className={`swap-mole${ducking ? ' is-ducking' : ''}${idle ? ' is-idle' : ''}${petting ? ' is-petting' : ''}${dizzy ? ' is-dizzy' : ''}`}
+        className={`swap-mole is-${phase}${ducking ? ' is-ducking' : ''}${idle ? ' is-idle' : ''}${petting ? ' is-petting' : ''}${dizzy ? ' is-dizzy' : ''}`}
         onClick={boop}
         onPointerMove={onPet}
         onPointerLeave={onLeave}
@@ -120,7 +143,7 @@ export default function HeroStage() {
       >
         <Mole size={170} id="mole-stage" title="Parallax creature" />
       </button>
-      {booped ? null : <span className={`mole-hint${hint ? ' is-on' : ''}`} aria-hidden="true">psst… boop me</span>}
+      <span className={`guard-bubble hero-bubble${bubble && !dizzy ? ' is-on' : ''}`} role="status" aria-live="polite">{line}</span>
 
       <div className="swap-card">
         <div className="swap-head">

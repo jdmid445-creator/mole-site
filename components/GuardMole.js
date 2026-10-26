@@ -5,7 +5,7 @@ import Mole from './Mole';
 
 // The creature guarding the swap card. Tap him: he ducks, peeks back up to his eyes, squints,
 // says something about keeping you private, then pops fully back up.
-const LINES = [
+export const LINES = [
   'Your funds, my tunnel. Nobody follows.',
   'I guard the gap between your wallets.',
   'No trail gets past me.',
@@ -43,7 +43,7 @@ export default function GuardMole({ variant = '' }) {
     const io = new IntersectionObserver((entries) => {
       inView = entries.some((e) => e.isIntersecting);
       clearTimeout(settle); if (inView) settle = setTimeout(go, 280);
-    }, { threshold: 0.6, rootMargin: '0px 0px -12% 0px' });
+    }, { threshold: 0.5 });
     io.observe(box.current);
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => { io.disconnect(); window.removeEventListener('scroll', onScroll); clearTimeout(settle); };

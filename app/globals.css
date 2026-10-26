@@ -846,3 +846,21 @@ html.motion .st-copy.is-lit { opacity: 1; transform: none; filter: none; }
 .guard-mole.is-hidden svg > circle { opacity: 0; }
 .guard-mole.is-rise .mole-body { transform: translateY(0); transition: transform 0.6s cubic-bezier(.3,1.6,.5,1); }
 .guard-mole.is-hidden, .guard-mole.is-rise { pointer-events: none; }
+
+/* Hero creature: same pop-up + talk behaviour as the others */
+.swap-mole .mole-body { transform-box: fill-box; }
+.swap-mole.is-hidden .mole-body { transform: translateY(240px); transition: none; animation: none; }
+.swap-mole.is-hidden svg > circle { opacity: 0; }
+.swap-mole.is-hidden .mole-paws { opacity: 0; }
+.swap-mole.is-rise .mole-body { transform: translateY(0); transition: transform 0.6s cubic-bezier(.3,1.6,.5,1); }
+.swap-mole.is-down .mole-body { transform: translateY(240px); transition: transform 0.32s cubic-bezier(.5,0,.3,1); }
+.swap-mole.is-down .mole-paws { opacity: 0; transition: opacity 0.2s ease; }
+.swap-mole.is-peek .mole-body { transform: translateY(14px); transition: transform 0.38s cubic-bezier(.3,1.5,.5,1); }
+.swap-mole.is-up .mole-body { transform: translateY(0); transition: transform 0.45s cubic-bezier(.3,1.6,.5,1); }
+.swap-mole.is-peek .mole-eye { animation: guard-glance 2.8s ease-in-out 0.35s both; transform: scaleY(0.3); transition: transform 0.15s ease 0.25s; }
+.swap-mole.is-rise .mole-body, .swap-mole.is-down .mole-body, .swap-mole.is-peek .mole-body, .swap-mole.is-up .mole-body { animation: none; }
+.swap-mole.is-hidden, .swap-mole.is-rise { pointer-events: none; }
+.swap-mole .mole-paws { transition: opacity 0.3s ease; }
+.hero-bubble { right: 6px; top: -56px; border-radius: 16px 16px 4px 16px; }
+@media (max-width: 480px) { .hero-bubble { right: 0; top: -54px; } }
+@media (prefers-reduced-motion: reduce) { .swap-mole.is-peek .mole-eye { animation: none; } }

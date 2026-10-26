@@ -1,5 +1,6 @@
 import TunnelApp from '@/components/TunnelApp';
 import NetworkStatus from '@/components/NetworkStatus';
+import GuardMole from '@/components/GuardMole';
 
 export const metadata = {
   title: 'Make a crossing — Parallax',
@@ -18,7 +19,8 @@ export default function TunnelPage() {
         <div className="hero-in tunnel-status" style={{ '--d': '260ms' }}>
           <NetworkStatus />
         </div>
-        <div className="hero-in" style={{ '--d': '320ms' }}>
+        <div className="hero-in tunnel-stage" style={{ '--d': '320ms' }}>
+          <GuardMole />
           <TunnelApp />
         </div>
       </div>

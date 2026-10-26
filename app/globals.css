@@ -946,3 +946,10 @@ html.motion .st-copy.is-lit { opacity: 1; transform: none; filter: none; }
 @media (min-width: 721px) and (max-width: 1299px) { .docs-body > .page-title, .docs-body > .lede { padding-right: 170px; } }
 @media (max-width: 720px) { .guard-bubble.guard-bubble-docs { top: 22px; } }
 @media (max-width: 1100px) { .peek-track { margin-top: 28px !important; } }
+/* Pac-Man creature that eats the statement's line of bars */
+.st-pac { position: absolute; left: 0; top: 50%; width: clamp(54px, 6vw, 76px); margin-top: calc(clamp(54px, 6vw, 76px) / -2); opacity: 0; pointer-events: none; z-index: 1;
+  filter: drop-shadow(0 0 18px rgba(123, 98, 240, 0.55)); transition: opacity 0.25s ease; will-change: transform; }
+.st-pac svg { display: block; width: 100%; height: auto; }
+.st-bars span { transition: opacity 0.12s ease, scale 0.12s ease; }
+.st-bars span.is-eaten { opacity: 0; scale: 1 0; }
+.st-bars span.is-regrow { transition: opacity 0.7s ease calc(var(--i) * 18ms), scale 0.7s cubic-bezier(.3,1.4,.5,1) calc(var(--i) * 18ms); }

@@ -907,7 +907,7 @@ html.motion .st-copy.is-lit { opacity: 1; transform: none; filter: none; }
 @media (max-width: 720px) { .guard.guard-ghost { right: 4px; } .guard-bubble.guard-bubble-ghost { top: -46px; } .peek-ghost { margin-top: 72px; } }
 
 /* My Crossings: peeks over the "Your crossings" box */
-.peek-track { margin-top: -40px; }
+.peek-track { margin-top: 0; }
 .peek-track .recent { margin-top: 0; }
 .guard.guard-track { right: 28px; }
 .guard-bubble.guard-bubble-track { right: -150px; top: -22px; border-radius: 16px 16px 16px 4px; }
@@ -919,7 +919,7 @@ html.motion .st-copy.is-lit { opacity: 1; transform: none; filter: none; }
 .guard.guard-docs { top: -6px; right: 24px; height: 126px; overflow: hidden; }
 .guard.guard-docs .guard-mole { top: 0; }
 .guard.guard-docs .guard-mole svg > ellipse { display: block; }
-.guard-bubble.guard-bubble-docs { right: 0; top: -58px; }
+.guard-bubble.guard-bubble-docs { right: 0; top: -14px; }
 .docs-body > :not(.guard):not(.guard-bubble) { position: relative; z-index: 1; }
 @media (max-width: 720px) {
   .docs-body { padding-top: 150px; }
@@ -929,4 +929,4 @@ html.motion .st-copy.is-lit { opacity: 1; transform: none; filter: none; }
 }
 .peek-track { max-width: 760px; margin-left: auto; margin-right: auto; }
 .peek-track .recent { background: #0e0b1d; }
-@media (min-width: 1300px) { .guard.guard-docs { right: -200px; } .guard-bubble.guard-bubble-docs { right: -230px; } }
+@media (min-width: 1300px) { .guard.guard-docs { right: -200px; } .guard-bubble.guard-bubble-docs { right: -250px; } }

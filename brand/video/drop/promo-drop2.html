@@ -364,7 +364,7 @@ function mole(id, { o = 1, up = 1, lookX = 0, lookY = 0, blink = 0, happy = 0, h
   $(`${id}-eyes`).setAttribute('transform', `translate(${lookX.toFixed(1)} ${lookY.toFixed(1)})`);
   const ry = Math.max(1.5, 16 * (1 - blink) * (1 - 0.7 * happy));
   $(`${id}-e1`).setAttribute('ry', ry.toFixed(2)); $(`${id}-e2`).setAttribute('ry', ry.toFixed(2));
-  $(`${id}-hole`).style.opacity = hole; $(`${id}-glow`).style.opacity = (0.4 + 0.6 * up).toFixed(3);
+  $(`${id}-hole`).style.opacity = hole; $(`${id}-glow`).style.opacity = clamp(up).toFixed(3); // no glow until he's actually up
 }
 // The body must vanish into the hole: clip everything below the hole's centre line.
 ['m0', 'm1', 'm2', 'm3', 'm4', 'm5', 'm6', 'm7'].forEach((id) => document.querySelector(`#${id}-c rect`).setAttribute('height', '500') || document.querySelector(`#${id}-c rect`).setAttribute('y', '-200'));

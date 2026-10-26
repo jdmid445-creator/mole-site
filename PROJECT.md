@@ -267,3 +267,4 @@ References from owner: blackout.exchange, vanish.trade/us, veilit.xyz, web-4.app
 - Official CA (owner, 2026-10-26): 6QBFU9GJ5ZU1c27pRhGudqCXLoFchhsahr1Hi8wwpump — in the drop video end card (brand/video/drop/parallax-drop-final.mp4, Brand Launch). Not yet on the site (asked owner first: pre-launch posting could get sniped).
 - RULE (owner, 2026-10-26 17:01): do NOT put the CA anywhere public (site, posts) until owner says launch is live (planned 2026-10-27). Only the drop video file + article draft contain it.
 - Drop video FINAL (owner: "its perfect"): first 0.3 s trimmed (video + audio together), 44.2 s. brand/video/drop/parallax-drop-final.mp4. Contains the CA: post only at launch.
+- Final fix: two near-black glitch frames (first frame of parallel render batches captured before load) → recorder now warms up before capturing; re-rendered; full-file scan shows no dark frames or jumps.

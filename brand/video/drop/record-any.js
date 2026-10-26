@@ -6,5 +6,7 @@ const warp = (T) => { for (let i = 1; i < P.length; i++) { const [s0, t0] = P[i 
 (async () => { const b = await chromium.launch(); const p = await (await b.newContext({ viewport: { width: 1920, height: 1080 } })).newPage();
   await p.goto('file://' + __dirname + '/' + (process.env.PAGE || 'promo-3d4.html') + '', { waitUntil: 'networkidle' }); await p.waitForFunction(() => window.__ready);
   const FPS = 30, N = Math.round(TOTAL * FPS); console.log('length', TOTAL.toFixed(2), 's,', N, 'frames');
+  await p.evaluate(() => document.fonts.ready); await p.evaluate(() => Promise.all([...document.images].map((i) => i.decode().catch(() => {}))));
+  { const w0 = Number(process.env.FROM || 0) / FPS; for (let k = 0; k < 3; k++) { await p.evaluate(([t, w]) => window.render(t, w), [warp(w0), w0]); await p.waitForTimeout(150); } } // warm-up: never capture a half-loaded first frame
   for (let f = Number(process.env.FROM || 0); f < Math.min(N, Number(process.env.TO || N)); f++) { const Tw = f / FPS; await p.evaluate(([t, w]) => window.render(t, w), [warp(Tw), Tw]); await p.screenshot({ path: `${process.env.OUT || 'sframes2'}/f${String(f).padStart(4, '0')}.png` }); }
   await b.close(); })();

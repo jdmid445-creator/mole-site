@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import GhostWallet from '@/components/GhostWallet';
+import GuardMole from '@/components/GuardMole';
 
 export const metadata = {
   title: 'Ghost wallet — Parallax',
@@ -15,7 +16,8 @@ export default function GhostPage() {
           A brand-new wallet with no history and no link to yours. Make one, then use it as the far side of a{' '}
           <Link href="/tunnel">crossing</Link>.
         </p>
-        <div className="hero-in ghost-wrap" style={{ '--d': '320ms' }}>
+        <div className="hero-in ghost-wrap peek-stage peek-ghost" style={{ '--d': '320ms' }}>
+          <GuardMole variant="ghost" intro="Your keys. Yours to keep." />
           <GhostWallet />
         </div>
         <div className="ghost-notes hero-in" style={{ '--d': '420ms' }}>

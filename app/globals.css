@@ -898,3 +898,10 @@ html.motion .st-copy.is-lit { opacity: 1; transform: none; filter: none; }
   .closing-card { padding-bottom: 170px; }
   .guard-bubble.guard-bubble-closing { bottom: 100px; }
 }
+
+/* Ghost wallet page: peeks over the card's top-right corner, bubble up and to his right */
+.peek-ghost { margin-top: -28px; }
+.guard.guard-ghost { right: 28px; }
+.guard-bubble.guard-bubble-ghost { right: -150px; top: -22px; border-radius: 16px 16px 16px 4px; }
+@media (max-width: 1100px) { .guard-bubble.guard-bubble-ghost { right: 0; top: -40px; border-radius: 16px 16px 4px 16px; } .peek-ghost { margin-top: 0; } }
+@media (max-width: 720px) { .guard.guard-ghost { right: 4px; } .guard-bubble.guard-bubble-ghost { top: -46px; } .peek-ghost { margin-top: 40px; } }

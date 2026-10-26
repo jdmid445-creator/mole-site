@@ -80,7 +80,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .header-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 68px; flex-wrap: wrap; }
 .site-header .header-row { max-width: none; padding: 0 var(--edge); min-height: 64px; }
 :root { --edge: clamp(14px, 1.25vw, 24px); }
-.brand svg { margin-left: -3px; translate: 0 -3px; } /* the creature sits low in its square; lift it to line up with the word */
+.brand svg { margin-left: -3px; translate: 0 -1.5px; } /* the creature sits low in its square; lift it to line up with the word */
 .brand { display: inline-flex; align-items: center; gap: 10px; color: var(--text); font-weight: 700; font-size: 1.15rem; letter-spacing: -0.02em; }
 .brand:hover { text-decoration: none; }
 .nav { display: flex; align-items: center; gap: 24px; flex-wrap: wrap; }

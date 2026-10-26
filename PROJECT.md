@@ -235,4 +235,4 @@ References from owner: blackout.exchange, vanish.trade/us, veilit.xyz, web-4.app
 - X article rewritten in founder voice like @_LaunchX post (owner reference): bold opener, short lines, problem → "Today, I am introducing PARALLAX" → "Here is how it works" 1–4 → free/privacy-not-hiding → product first + CA warning → "here is where I need you" → Web / How it works links.
 - "meme coin" → "cryptocurrency" in footer and terms (owner). The no-promised-value / can-lose-everything wording kept.
 - Ghost wallet: "Open it in" row of app links under each new wallet (owner ask). Solana: Phantom, Solflare, Backpack, Axiom; EVM: MetaMask, Rabby, Phantom; BTC: Trust, Sparrow, BlueWallet; DOGE/LTC: Trust; XRP: Trust, Xaman; Tron: TronLink, Trust. Official download/home pages, open in a new tab. Solana import text now mentions Axiom.
-- Header/footer logo creature lifted 3px so it lines up with the "Parallax" word (owner nitpick).
+- Header/footer logo creature lifted 1.5px (3px was a touch high) so it lines up with the "Parallax" word (owner nitpick).

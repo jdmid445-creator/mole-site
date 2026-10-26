@@ -189,13 +189,13 @@ export default function TunnelApp() {
     };
   }, []);
 
-  // Restore the last pair on this device only.
+  // Restore the last chain pair on this device only. Wallet addresses are never saved, so the boxes always start blank.
   useEffect(() => {
     const saved = readSaved();
     if (!saved) return;
     if (getChain(saved.fromChainKey)) setFromChainKey(saved.fromChainKey);
     if (getChain(saved.toChainKey)) setToChainKey(saved.toChainKey);
-    if (typeof saved.recipient === 'string') setRecipient(saved.recipient);
+    if ('recipient' in saved) writeSaved({ fromChainKey: saved.fromChainKey, toChainKey: saved.toChainKey }); // wipe any address older versions saved
   }, []);
 
   useEffect(() => {
@@ -513,7 +513,7 @@ export default function TunnelApp() {
     try {
       const { units, quotes } = await requestQuotes(false, sender || manualRefund);
       if (quotes.some((q) => !q.depositAddress)) throw new Error('The network did not return a deposit address. Try again.');
-      writeSaved({ fromChainKey, toChainKey, recipient: recipient.trim() });
+      writeSaved({ fromChainKey, toChainKey });
 
       id = `${Date.now()}`;
       const mode = autoSend ? 'wallet' : 'deposit';
@@ -605,7 +605,7 @@ export default function TunnelApp() {
   }
 
   function rememberBeforeLeaving() {
-    writeSaved({ fromChainKey, toChainKey, recipient: recipient.trim() });
+    writeSaved({ fromChainKey, toChainKey });
   }
 
   const status = swap ? overallStatus(swap.parts) : '';

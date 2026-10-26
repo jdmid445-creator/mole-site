@@ -303,11 +303,11 @@ export default function TunnelApp() {
     if (fromToken.assetId === toToken.assetId) throw new Error('Pick a different asset or chain for the other side.');
     const units = toUnits(amount, fromToken.decimals);
     let refundAddr = (refund || '').trim();
-    if (refundAddr && hasChecksumTypo(fromChainKey, refundAddr)) throw new Error('Refund address: it has a typo (its capital letters don\'t match). Copy it again from your wallet.');
+    if (refundAddr && hasChecksumTypo(fromChainKey, refundAddr)) throw new Error('Your wallet address: it has a typo (its capital letters don\'t match). Copy it again from your wallet.');
     if (!isValidAddress(fromChainKey, refundAddr)) {
       const placeholder = PREVIEW_REFUND[fromChainKey] || PREVIEW_REFUND[fromChain.wallet];
       if (preview && placeholder) refundAddr = placeholder;
-      else throw new Error(`Refund address: enter ${addressHint(fromChainKey).toLowerCase()} you control.`);
+      else throw new Error(`Your wallet address: enter ${addressHint(fromChainKey).toLowerCase()} (the one you're sending from).`);
     }
     if (splitOn) {
       if (pctTotal !== 100) throw new Error(`The split adds up to ${pctTotal}%. It needs to be exactly 100%.`);
@@ -679,9 +679,9 @@ export default function TunnelApp() {
               <>
                 <p className="pay-note">You'll get a one-time deposit address (with a QR code). Send your {fromChain.native} to it from any wallet or exchange.</p>
                 <label className="field">
-                  <span>Refund address</span>
-                  <input placeholder={addressHint(fromChainKey)} value={manualRefund} onChange={(e) => setManualRefund(e.target.value)} />
-                  <small className="field-hint">If anything fails, your coins come back here. Use a wallet you control, not an exchange deposit address.</small>
+                  <span>Your wallet address (the one you're sending from)</span>
+                  <input id="pay-from-address" placeholder={addressHint(fromChainKey)} value={manualRefund} onChange={(e) => setManualRefund(e.target.value)} />
+                  <small className="field-hint">If anything fails, your coins come back here. If you're sending from an exchange, put your own wallet here instead, not the exchange's.</small>
                 </label>
               </>
             ) : (
@@ -705,9 +705,9 @@ export default function TunnelApp() {
                         : `You'll get a one-time deposit address (with a QR code). Send your ${fromToken?.symbol || fromChain.native} to it from${walletKind === 'solana' ? ' Axiom,' : ''} an exchange, or any wallet. Nothing to connect.`}
                     </p>
                     <label className="field">
-                      <span>Refund address</span>
-                      <input placeholder={addressHint(fromChainKey)} value={manualRefund} onChange={(e) => setManualRefund(e.target.value)} />
-                      <small className="field-hint">If anything fails, your coins come back here. Use a wallet you control, not an exchange deposit address.</small>
+                      <span>{payFrom ? `Your ${payFrom} wallet address` : "Your wallet address (the one you're sending from)"}</span>
+                      <input id="pay-from-address" placeholder={addressHint(fromChainKey)} value={manualRefund} onChange={(e) => setManualRefund(e.target.value)} />
+                      <small className="field-hint">If anything fails, your coins come back here. If you're sending from an exchange, put your own wallet here instead, not the exchange's.</small>
                     </label>
                   </>
                 ) : walletMatches ? (
@@ -760,6 +760,7 @@ export default function TunnelApp() {
                 busyId={picker.busyId}
                 onPick={onPickWallet}
                 onManual={picker.kind === 'solana' ? () => { setPayMode('manual'); setPayFrom('Axiom'); setPicker(null); setError(''); } : null}
+                onEnterAddress={() => { setPayMode('manual'); setPayFrom(''); setPicker(null); setError(''); setTimeout(() => document.getElementById('pay-from-address')?.focus(), 50); }}
                 onClose={() => setPicker(null)}
               />
             ) : null}

@@ -773,3 +773,4 @@ html.motion .st-copy.is-lit { opacity: 1; transform: none; filter: none; }
 .wallet-quick { display: flex; flex-wrap: wrap; gap: 8px; }
 .wallet-quick .ghost-app { appearance: none; font: inherit; font-weight: 600; font-size: 0.9rem; cursor: pointer; }
 .wallet-quick .ghost-app:disabled { opacity: 0.5; cursor: default; }
+.wpick-none { display: grid; gap: 12px; justify-items: start; }

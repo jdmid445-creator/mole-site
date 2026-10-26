@@ -3,7 +3,7 @@
 import { INSTALL } from '@/lib/wallets';
 
 // Lists the wallets this browser actually has. If there are none, shows where to get one.
-export default function WalletPicker({ kind, chainLabel, wallets, onPick, onClose, onManual, busyId }) {
+export default function WalletPicker({ kind, chainLabel, wallets, onPick, onClose, onManual, onEnterAddress, busyId }) {
   const label = chainLabel || (kind === 'solana' ? 'Solana' : 'browser');
   // Hide install links for wallets already here ("Rabby Wallet" counts as Rabby, "Coinbase Wallet" as Coinbase).
   const names = wallets.map((w) => w.name.toLowerCase());
@@ -33,9 +33,15 @@ export default function WalletPicker({ kind, chainLabel, wallets, onPick, onClos
           ))}
         </ul>
       ) : (
-        <p className="muted small wpick-note">
-          Install a wallet extension, then refresh this page. Or close this and send manually with a refund address.
-        </p>
+        <div className="wpick-none">
+          <p className="muted small wpick-note">
+            There's no {label} wallet extension in this browser. Paying from Axiom, an exchange, or a wallet on your phone?
+            Type your address and send it yourself.
+          </p>
+          {onEnterAddress ? (
+            <button type="button" className="btn" onClick={onEnterAddress}>Enter my address instead</button>
+          ) : null}
+        </div>
       )}
 
       {onManual ? (
@@ -53,9 +59,9 @@ export default function WalletPicker({ kind, chainLabel, wallets, onPick, onClos
         </>
       ) : null}
 
-      {suggestions.length ? (
+      {suggestions.length && wallets.length ? (
         <>
-          <p className="wpick-sub">{wallets.length ? 'Other wallets' : 'Get a wallet'}</p>
+          <p className="wpick-sub">Other wallets</p>
           <ul className="wpick-list">
             {suggestions.map((w) => (
               <li key={w.id}>

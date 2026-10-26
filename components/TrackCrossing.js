@@ -60,7 +60,7 @@ export default function TrackCrossing() {
         const data = await res.json().catch(() => ({}));
         if (cancelled) return;
         if (!res.ok || data.error) {
-          if (res.status >= 400 && res.status < 500) {
+          if (res.status === 400 || res.status === 404) {
             // Not found / bad address: show it once and stop asking.
             stop();
             setResult(null);

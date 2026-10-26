@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { GHOST_KINDS, createGhostWallet, downloadBackup } from '@/lib/ghost';
 import ChainIcon from './ChainIcon';
 import CopyButton from './CopyButton';
@@ -13,6 +13,8 @@ export default function GhostWallet({ initialKind = 'solana', lockKind = false, 
   const [revealed, setRevealed] = useState(false);
   const [saved, setSaved] = useState(false);
   const [busy, setBusy] = useState(false);
+  const kindRef = useRef(kind);
+  kindRef.current = kind;
   const [error, setError] = useState('');
 
   async function generate() {
@@ -20,8 +22,10 @@ export default function GhostWallet({ initialKind = 'solana', lockKind = false, 
     setError('');
     setRevealed(false);
     setSaved(false);
+    const forKind = kind;
     try {
-      setWallet(await createGhostWallet(kind));
+      const w = await createGhostWallet(forKind);
+      setWallet((cur) => (kindRef.current === forKind ? w : cur)); // ignore if you switched type meanwhile
     } catch (e) {
       setError(e?.message || 'Could not create a wallet.');
     } finally {
@@ -40,7 +44,7 @@ export default function GhostWallet({ initialKind = 'solana', lockKind = false, 
       {!lockKind ? (
         <div className="ghost-kinds" role="group" aria-label="Wallet type">
           {Object.entries(GHOST_KINDS).map(([k, v]) => (
-            <button key={k} type="button" className={kind === k ? 'is-active' : ''} aria-pressed={kind === k} onClick={() => { setKind(k); discard(); }}>
+            <button key={k} type="button" className={kind === k ? 'is-active' : ''} aria-pressed={kind === k} disabled={busy} onClick={() => { setKind(k); discard(); }}>
               <ChainIcon chain={v.icon} size={18} />
               {v.label}
             </button>

@@ -220,3 +220,13 @@ References from owner: blackout.exchange, vanish.trade/us, veilit.xyz, web-4.app
 - Petting blush removed (owner). Eyes "stuck" looking right: cause was the last cursor position being kept when idle, then a CSS idle animation snapping them to center 2 s later. Rewrote: one JS system drives the eyes (cursor follow → eases back to center 2.5 s after the mouse stops or leaves the window → a glance left/right every ~8–11 s), all via one eased transition, so nothing can snap or stick.
 - Blush back, subtle: smaller cheeks (9×4.5 vs 14×7), 50% opacity (was 75%), slightly further in.
 - Track page: "randomly says Checking…" — after a not-found result it re-polled every 6 s forever and flashed the button. Fixed: stop polling on 4xx; "Checking…" only for checks you start; error clears when you type; same address can be re-checked; URL keeps ?d= so the page can be refreshed/shared.
+- Full tech QA (2026-10-25) after "make sure all the tech on every page works". Independent code review + live tests. Fixed:
+  - Swap: live price now shows as soon as you type an amount (before, it waited for a destination address; price checks use a placeholder destination, real swaps never do).
+  - Swap: double-click on "Swap privately" could start two swaps → one swap at a time (lock + button busy while the wallet connects).
+  - Swap: an older price reply could overwrite a newer form → sequence bumped on every change.
+  - Swap: "Start over" mid-approval could let the abandoned run change the new swap → each run only touches its own swap and stops prompting.
+  - Swap status: ignores empty/UNKNOWN replies (was flipping to "Checking…"), never goes backwards from a finished status, no overlapping checks; split swaps with one part done show "in progress", incomplete deposits shown.
+  - Solana: blockhash "confirmed" (longer to approve), sends are confirmed; if the tx expires/fails you're told nothing was sent and can pay by hand (new /api/solana/confirm).
+  - EVM: verifies the wallet really is on the right network after switch/add; chainId included in the transaction.
+  - Native-token check uses contract address only. XRP destination warning (no exchange addresses). "Tick the box" error clears when ticked.
+  - Ghost: wallet-type tabs locked while generating (no wrong-type wallet). Track: only 400/404 stop checking.

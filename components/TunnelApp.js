@@ -39,7 +39,7 @@ const STATUS_TEXT = {
 
 function isNative(token, chain) {
   if (!token || !chain) return false;
-  return !token.contractAddress || token.symbol === chain.native;
+  return !token.contractAddress;
 }
 
 function sortTokens(list, chain) {
@@ -90,6 +90,8 @@ function overallStatus(parts) {
   if (s.some((x) => x === 'FAILED')) return 'FAILED';
   if (s.some((x) => ['KNOWN_DEPOSIT_TX', 'PROCESSING'].includes(x))) return 'PROCESSING';
   if (s.every((x) => TERMINAL.has(x))) return s.includes('SUCCESS') ? 'SUCCESS' : 'REFUNDED';
+  if (s.some((x) => x === 'INCOMPLETE_DEPOSIT')) return 'INCOMPLETE_DEPOSIT';
+  if (s.some((x) => x === 'SUCCESS' || x === 'REFUNDED')) return 'PROCESSING'; // some parts done, others still moving
   return 'PENDING_DEPOSIT';
 }
 
@@ -200,25 +202,29 @@ export default function TunnelApp() {
   useEffect(() => {
     if (!active) return undefined;
     const id = swapRef.current?.id;
+    let running = false;
     const tick = async () => {
       const cur = swapRef.current;
-      if (!cur || cur.id !== id) return;
-      await Promise.all(
+      if (!cur || cur.id !== id || running) return;
+      running = true;
+      try { await Promise.all(
         cur.parts.map(async (p, i) => {
           if (TERMINAL.has(p.status)) return;
           try {
             const res = await fetch(`/api/status?depositAddress=${encodeURIComponent(p.depositAddress)}`);
             const data = await res.json();
-            if (!data || data.error) return;
+            if (!data || data.error || !data.status || data.status === 'UNKNOWN') return;
             const update = Object.fromEntries(Object.entries(data).filter(([, v]) => v !== null && v !== undefined));
             setSwap((s) =>
-              s && s.id === id ? { ...s, parts: s.parts.map((q, j) => (j === i ? { ...q, ...update } : q)) } : s
+              s && s.id === id
+                ? { ...s, parts: s.parts.map((q, j) => (j === i && !TERMINAL.has(q.status) ? { ...q, ...update } : q)) }
+                : s
             );
           } catch {
             // Keep polling; network blips are normal.
           }
         })
-      );
+      ); } finally { running = false; }
     };
     tick();
     const t = setInterval(tick, 6000);
@@ -279,7 +285,7 @@ export default function TunnelApp() {
     tron: 'TUEZSdKsoDHQMeZwihtdoBiN46zxhGWYdH',
   };
 
-  function validate(refund, { preview = false } = {}) {
+  function validate(refund, { preview = false, priceOnly = false } = {}) {
     if (!fromToken || !toToken) throw new Error('Pick what you send and what you receive.');
     if (fromToken.assetId === toToken.assetId) throw new Error('Pick a different asset or chain for the other side.');
     const units = toUnits(amount, fromToken.decimals);
@@ -295,8 +301,12 @@ export default function TunnelApp() {
     }
     const dests = destinations(units);
     const seen = new Set();
+    // For the live price only: an empty/unfinished destination gets a placeholder so the price shows as soon as you type
+    // an amount. Nothing is created by a price check, and real swaps never use this.
+    const destPlaceholder = PREVIEW_REFUND[toChainKey] || PREVIEW_REFUND[toChain?.wallet];
     dests.forEach((d, i) => {
       const label = splitOn ? `Wallet ${i + 1}` : 'Destination';
+      if (priceOnly && !isValidAddress(toChainKey, d.address) && destPlaceholder) { d.address = destPlaceholder; d.placeholder = true; return; }
       if (!isValidAddress(toChainKey, d.address)) throw new Error(`${label}: enter ${addressHint(toChainKey).toLowerCase()}.`);
       const key = d.address.toLowerCase();
       if (seen.has(key)) throw new Error(`${label} is used twice. Each part should land in a different wallet.`);
@@ -328,7 +338,7 @@ export default function TunnelApp() {
   }
 
   async function requestQuotes(dry, refund) {
-    const { units, dests, refundAddr } = validate(refund, { preview: dry });
+    const { units, dests, refundAddr } = validate(refund, { preview: dry, priceOnly: dry });
     const results = await Promise.allSettled(dests.map((d) => quoteOne(dry, d, refundAddr)));
     const failed = results.findIndex((r) => r.status === 'rejected');
     if (failed !== -1) {
@@ -341,6 +351,7 @@ export default function TunnelApp() {
   // Live price: re-quote (dry run, nothing is created) shortly after the person stops typing.
   const quoteSeq = useRef(0);
   useEffect(() => {
+    const seq = ++quoteSeq.current; // any reply from an earlier version of the form is now ignored
     if (swap || !amount || !Number(amount) || !fromToken || !toToken) {
       setPreview(null);
       setPreviewNote('');
@@ -348,14 +359,13 @@ export default function TunnelApp() {
     }
     let ready = true;
     try {
-      validate(useWallet ? (walletMatches ? wallet.address : '') : manualRefund, { preview: true });
+      validate(useWallet ? (walletMatches ? wallet.address : '') : manualRefund, { preview: true, priceOnly: true });
     } catch (e) {
       ready = false;
       setPreview(null);
       setPreviewNote('');
     }
     if (!ready) return undefined;
-    const seq = ++quoteSeq.current;
     setPreviewNote('loading');
     const t = setTimeout(async () => {
       try {
@@ -423,28 +433,42 @@ export default function TunnelApp() {
   }
 
   // The one button. With a wallet: opens it to approve, then the swap runs. Without: hands out deposit addresses.
+  const swapLock = useRef(false);
   async function onSwap() {
-    setError('');
-    if (!ack) {
-      setError('Tick the box to confirm you understand what Parallax hides and what it does not.');
-      return;
-    }
-    if (!useWallet) {
-      await runSwap('');
-      return;
-    }
+    if (swapLock.current) return; // a second click while the first is still going does nothing
+    swapLock.current = true;
     try {
-      validate('', { preview: true });
-    } catch (e) {
-      setError(e?.message || 'Check the form.');
-      return;
+      setError('');
+      if (!ack) {
+        setError('Tick the box to confirm you understand what Parallax hides and what it does not.');
+        return;
+      }
+      if (!useWallet) {
+        await runSwap('');
+        return;
+      }
+      try {
+        validate('', { preview: true });
+      } catch (e) {
+        setError(e?.message || 'Check the form.');
+        return;
+      }
+      let address = '';
+      if (walletMatches) address = wallet.address;
+      else {
+        setBusy('open');
+        try { address = await chooseWallet({ thenSwap: true }); } finally { setBusy(''); }
+      }
+      if (address) await runSwap(address);
+    } finally {
+      swapLock.current = false;
     }
-    const address = walletMatches ? wallet.address : await chooseWallet({ thenSwap: true });
-    if (address) await runSwap(address);
   }
 
   async function runSwap(senderAddress) {
     setBusy('open');
+    let id = '';
+    const mine = () => swapRef.current?.id === id;
     const sender = senderAddress || '';
     const autoSend =
       Boolean(sender) &&
@@ -455,9 +479,9 @@ export default function TunnelApp() {
       if (quotes.some((q) => !q.depositAddress)) throw new Error('The network did not return a deposit address. Try again.');
       writeSaved({ fromChainKey, toChainKey, recipient: recipient.trim() });
 
-      const id = `${Date.now()}`;
+      id = `${Date.now()}`;
       const mode = autoSend ? 'wallet' : 'deposit';
-      setSwap({
+      const created = {
         id,
         split: quotes.length > 1,
         payFrom: autoSend ? '' : payFrom,
@@ -475,7 +499,9 @@ export default function TunnelApp() {
           txHash: '',
           mode,
         })),
-      });
+      };
+      swapRef.current = created; // record it now, not after the next render, so the checks below see it
+      setSwap(created);
 
       if (!autoSend) return;
 
@@ -495,6 +521,7 @@ export default function TunnelApp() {
       } else {
         // EVM wallets approve one transfer at a time.
         for (let i = 0; i < quotes.length; i += 1) {
+          if (!mine()) return; // the person started over; stop asking their wallet
           const q = quotes[i];
           const txHash = isNative(fromToken, fromChain)
             ? await sendEvmNative({ from: sender, to: q.depositAddress, wei: q.units, chainId: fromChain.chainId })
@@ -510,16 +537,18 @@ export default function TunnelApp() {
         }
       }
     } catch (e) {
+      if (id && !mine()) return; // an abandoned run must not change a newer swap
       const msg = e?.message || 'Something went wrong.';
       setError(/reject|denied|cancel/i.test(msg) ? 'You cancelled in your wallet. You can send it yourself below, or start over.' : msg);
       // Anything not yet sent can still be paid by hand.
-      setSwap((s) => (s ? { ...s, parts: s.parts.map((p) => (p.txHash ? p : { ...p, mode: 'deposit' })) } : s));
+      setSwap((s) => (s && (!id || s.id === id) ? { ...s, parts: s.parts.map((p) => (p.txHash ? p : { ...p, mode: 'deposit' })) } : s));
     } finally {
-      setBusy('');
+      if (!id || mine() || !swapRef.current) setBusy('');
     }
   }
 
   function reset() {
+    swapRef.current = null;
     setSwap(null);
     setPreview(null);
     setAmount('');
@@ -711,6 +740,9 @@ export default function TunnelApp() {
                   <span>Destination wallet (a fresh one is best)</span>
                   <input placeholder={addressHint(toChainKey)} value={recipient} onChange={(e) => { setRecipient(e.target.value); setPreview(null); }} />
                 </label>
+                {toChainKey === 'xrp' ? (
+                  <p className="hint">Use your own XRP wallet, not an exchange deposit address. Exchanges need a destination tag, and funds sent without one can be lost.</p>
+                ) : null}
                 {ghostKind ? (
                   ghostFor === 'single' ? (
                     <GhostWallet
@@ -842,7 +874,7 @@ export default function TunnelApp() {
           ) : null}
 
           <label className="check">
-            <input type="checkbox" checked={ack} onChange={(e) => setAck(e.target.checked)} />
+            <input type="checkbox" checked={ack} onChange={(e) => { setAck(e.target.checked); if (e.target.checked && /Tick the box/.test(error)) setError(''); }} />
             <span>
               I understand Parallax hides the link between my wallets, not the deposit or the arrival themselves, and that
               this site never holds my funds.

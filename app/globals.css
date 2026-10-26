@@ -774,3 +774,5 @@ html.motion .st-copy.is-lit { opacity: 1; transform: none; filter: none; }
 .wallet-quick .ghost-app { appearance: none; font: inherit; font-weight: 600; font-size: 0.9rem; cursor: pointer; }
 .wallet-quick .ghost-app:disabled { opacity: 0.5; cursor: default; }
 .wpick-none { display: grid; gap: 12px; justify-items: start; }
+.field-tag { font-style: normal; margin-left: 6px; padding: 2px 8px; border-radius: 999px; background: rgba(207, 198, 255, 0.1); color: var(--lilac); font-size: 0.72rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; vertical-align: 1px; }
+.fill-from { display: grid; gap: 8px; }

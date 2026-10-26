@@ -157,7 +157,8 @@ export default function TunnelApp() {
   const toToken = toTokens.find((t) => t.assetId === toAssetId) || toTokens[0] || null;
 
   const walletMatches = Boolean(wallet.address && wallet.type === fromChain?.wallet);
-  const useWallet = fromChain?.wallet !== 'deposit' && payMode === 'wallet';
+  // Connected wallet + its address in the From box = approve in the wallet. Anything else = get a deposit address and send it yourself.
+  const useWallet = fromChain?.wallet !== 'deposit' && walletMatches && manualRefund.trim() === wallet.address;
   const pctTotal = parts.reduce((a, p) => a + (Number(p.pct) || 0), 0);
 
   useEffect(() => {
@@ -413,6 +414,8 @@ export default function TunnelApp() {
     try {
       const address = kind === 'solana' ? await connectSolana(w.id) : await connectEvm(w.id);
       setWallet({ type: kind, address, name: w.name });
+      setManualRefund(address);
+      setPayFrom('');
       setPicker(null);
       return address;
     } catch (e) {
@@ -675,78 +678,46 @@ export default function TunnelApp() {
               </label>
             </div>
 
-            {walletKind === 'deposit' ? (
-              <>
-                <p className="pay-note">You'll get a one-time deposit address (with a QR code). Send your {fromChain.native} to it from any wallet or exchange.</p>
-                <label className="field">
-                  <span>Your wallet address (the one you're sending from)</span>
-                  <input id="pay-from-address" placeholder={addressHint(fromChainKey)} value={manualRefund} onChange={(e) => setManualRefund(e.target.value)} />
-                  <small className="field-hint">If anything fails, your coins come back here. If you're sending from an exchange, put your own wallet here instead, not the exchange's.</small>
-                </label>
-              </>
-            ) : (
-              <>
-                <div className="pay-how">
-                  <span className="pay-how-label">How do you want to pay?</span>
-                  <div className="split-toggle" role="group" aria-label="How to pay">
-                    <button type="button" className={payMode === 'wallet' ? 'is-active' : ''} aria-pressed={payMode === 'wallet'} onClick={() => { setPayMode('wallet'); setPayFrom(''); setError(''); }}>
-                      Connect a wallet
-                    </button>
-                    <button type="button" className={payMode === 'manual' ? 'is-active' : ''} aria-pressed={payMode === 'manual'} onClick={() => { setPayMode('manual'); setPicker(null); setError(''); setNeedApp(false); }}>
-                      Send it yourself
-                    </button>
-                  </div>
+            <label className="field">
+              <span>{payFrom ? `Your ${payFrom} wallet address` : 'Your wallet address'} <em className="field-tag">sending from</em></span>
+              <input id="pay-from-address" placeholder={addressHint(fromChainKey)} value={manualRefund} onChange={(e) => setManualRefund(e.target.value)} autoComplete="off" spellCheck="false" />
+              <small className="field-hint">If anything fails, your coins come back here.</small>
+            </label>
+            {walletKind !== 'deposit' && useWallet ? (
+              <p className="wallet-line">
+                Connected with {wallet.name || 'your wallet'}. It pops up to approve when you swap.
+                <button type="button" className="wallet-switch" onClick={() => { setWallet({ type: '', address: '', name: '' }); setManualRefund(''); }}>Disconnect</button>
+              </p>
+            ) : walletKind !== 'deposit' && appLinks.length ? (
+              <div className="open-in">
+                <p className="open-in-title">On your phone? Open Parallax in your wallet app to approve in one tap:</p>
+                <div className="open-in-row">
+                  {appLinks.map((l) => (
+                    <a key={l.name} className="btn" href={l.href} onClick={rememberBeforeLeaving}>
+                      Open in {l.name}
+                    </a>
+                  ))}
                 </div>
-                {payMode === 'manual' ? (
-                  <>
-                    <p className="pay-note">
-                      {payFrom
-                        ? `You'll get a one-time deposit address (with a QR code). In ${payFrom}, tap Withdraw and send your ${fromToken?.symbol || fromChain.native} to it. Nothing to connect.`
-                        : `You'll get a one-time deposit address (with a QR code). Send your ${fromToken?.symbol || fromChain.native} to it from${walletKind === 'solana' ? ' Axiom,' : ''} an exchange, or any wallet. Nothing to connect.`}
-                    </p>
-                    <label className="field">
-                      <span>{payFrom ? `Your ${payFrom} wallet address` : "Your wallet address (the one you're sending from)"}</span>
-                      <input id="pay-from-address" placeholder={addressHint(fromChainKey)} value={manualRefund} onChange={(e) => setManualRefund(e.target.value)} />
-                      <small className="field-hint">If anything fails, your coins come back here. If you're sending from an exchange, put your own wallet here instead, not the exchange's.</small>
-                    </label>
-                  </>
-                ) : walletMatches ? (
-                  <p className="wallet-line">
-                    Paying with {wallet.name || 'your wallet'}: <code className="mono">{short(wallet.address)}</code>
-                    <button type="button" className="wallet-switch" onClick={() => chooseWallet()}>Change</button>
-                  </p>
-                ) : appLinks.length ? (
-                  <div className="open-in">
-                    <p className="open-in-title">On your phone? Open Parallax in your wallet app to swap:</p>
-                    <div className="open-in-row">
-                      {appLinks.map((l) => (
-                        <a key={l.name} className="btn" href={l.href} onClick={rememberBeforeLeaving}>
-                          Open in {l.name}
-                        </a>
-                      ))}
-                    </div>
-                  </div>
-                ) : (
-                  <p className="pay-note">{picker?.busyId ? 'Check your wallet…' : 'Tap your wallet to connect it. You approve the swap once.'}</p>
-                )}
-                {payMode === 'wallet' && !walletMatches && !appLinks.length && INSTALL[walletKind] ? (
-                  <div className="wallet-quick" role="group" aria-label="Wallets">
-                    {INSTALL[walletKind].map((w) => (
-                      <button key={w.id} type="button" className="ghost-app" onClick={() => quickWallet(w)} disabled={Boolean(picker?.busyId)}>
-                        <img src={w.icon} alt="" width="20" height="20" />
-                        {w.name}
-                      </button>
-                    ))}
-                    {walletKind === 'solana' ? (
-                      <button type="button" className="ghost-app" onClick={() => { setPayMode('manual'); setPayFrom('Axiom'); setPicker(null); setError(''); }}>
-                        <span className="ghost-app-tile" aria-hidden="true">A</span>
-                        Axiom
-                      </button>
-                    ) : null}
-                  </div>
-                ) : null}
-              </>
-            )}
+              </div>
+            ) : walletKind !== 'deposit' && INSTALL[walletKind] ? (
+              <div className="fill-from">
+                <span className="pay-how-label">{picker?.busyId ? 'Check your wallet…' : 'Or fill it in from your wallet:'}</span>
+                <div className="wallet-quick" role="group" aria-label="Fill in from a wallet">
+                  {INSTALL[walletKind].map((w) => (
+                    <button key={w.id} type="button" className="ghost-app" onClick={() => quickWallet(w)} disabled={Boolean(picker?.busyId)}>
+                      <img src={w.icon} alt="" width="20" height="20" />
+                      {w.name}
+                    </button>
+                  ))}
+                  {walletKind === 'solana' ? (
+                    <button type="button" className="ghost-app" onClick={() => { setPayFrom('Axiom'); setError(''); document.getElementById('pay-from-address')?.focus(); }}>
+                      <span className="ghost-app-tile" aria-hidden="true">A</span>
+                      Axiom
+                    </button>
+                  ) : null}
+                </div>
+              </div>
+            ) : null}
             {picker && picker.kind === walletKind ? (
               <WalletPicker
                 kind={picker.kind}
@@ -754,8 +725,8 @@ export default function TunnelApp() {
                 wallets={picker.wallets}
                 busyId={picker.busyId}
                 onPick={onPickWallet}
-                onManual={picker.kind === 'solana' ? () => { setPayMode('manual'); setPayFrom('Axiom'); setPicker(null); setError(''); } : null}
-                onEnterAddress={() => { setPayMode('manual'); setPayFrom(''); setPicker(null); setError(''); setTimeout(() => document.getElementById('pay-from-address')?.focus(), 50); }}
+                onManual={picker.kind === 'solana' ? () => { setPayFrom('Axiom'); setPicker(null); setError(''); document.getElementById('pay-from-address')?.focus(); } : null}
+                onEnterAddress={() => { setPicker(null); setError(''); setTimeout(() => document.getElementById('pay-from-address')?.focus(), 50); }}
                 onClose={() => setPicker(null)}
               />
             ) : null}
@@ -799,7 +770,7 @@ export default function TunnelApp() {
             {!splitOn ? (
               <>
                 <label className="field">
-                  <span>Destination wallet (a fresh one is best)</span>
+                  <span>Your private wallet address <em className="field-tag">receiving into</em></span>
                   <input placeholder={addressHint(toChainKey)} value={recipient} onChange={(e) => { setRecipient(e.target.value); setPreview(null); }} />
                 </label>
                 {toChainKey === 'xrp' ? (

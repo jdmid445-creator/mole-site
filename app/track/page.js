@@ -17,7 +17,7 @@ export default function TrackPage() {
         </p>
         <div className="hero-in" style={{ '--d': '320ms' }}>
           <TrackCrossing />
-          <RecentCrossings />
+          <RecentCrossings showEmpty />
         </div>
       </div>
     </section>

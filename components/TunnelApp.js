@@ -664,30 +664,39 @@ export default function TunnelApp() {
 
             {walletKind === 'deposit' ? (
               <>
-                <p className="pay-note">You'll get an address to send your {fromChain.native} to, from any wallet or exchange.</p>
+                <p className="pay-note">You'll get a one-time deposit address (with a QR code). Send your {fromChain.native} to it from any wallet or exchange.</p>
                 <label className="field">
-                  <span>Refund address: if anything fails, your coins come back here</span>
+                  <span>Refund address</span>
                   <input placeholder={addressHint(fromChainKey)} value={manualRefund} onChange={(e) => setManualRefund(e.target.value)} />
+                  <small className="field-hint">If anything fails, your coins come back here. Use a wallet you control, not an exchange deposit address.</small>
                 </label>
-              </>
-            ) : payMode === 'manual' ? (
-              <>
-                <p className="pay-note">
-                  {payFrom
-                    ? `You'll get an address to send to. In ${payFrom}, use Withdraw and paste it. No connecting needed.`
-                    : "You'll get an address to send to, from Axiom, an exchange, or any wallet. No connecting needed."}
-                </p>
-                <label className="field">
-                  <span>{payFrom ? `Your ${payFrom} wallet address (refunds go back here)` : 'Refund address: if anything fails, your coins come back here'}</span>
-                  <input placeholder={addressHint(fromChainKey)} value={manualRefund} onChange={(e) => setManualRefund(e.target.value)} />
-                </label>
-                <button type="button" className="text-link" onClick={() => { setPayMode('wallet'); setPayFrom(''); setError(''); }}>
-                  Use my {fromChain.label} wallet instead
-                </button>
               </>
             ) : (
               <>
-                {walletMatches ? (
+                <div className="pay-how">
+                  <span className="pay-how-label">How do you want to pay?</span>
+                  <div className="split-toggle" role="group" aria-label="How to pay">
+                    <button type="button" className={payMode === 'wallet' ? 'is-active' : ''} aria-pressed={payMode === 'wallet'} onClick={() => { setPayMode('wallet'); setPayFrom(''); setError(''); }}>
+                      Connect a wallet
+                    </button>
+                    <button type="button" className={payMode === 'manual' ? 'is-active' : ''} aria-pressed={payMode === 'manual'} onClick={() => { setPayMode('manual'); setPicker(null); setError(''); setNeedApp(false); }}>
+                      Send it yourself
+                    </button>
+                  </div>
+                </div>
+                {payMode === 'manual' ? (
+                  <>
+                    <p className="pay-note">
+                      You'll get a one-time deposit address (with a QR code). Send your {fromToken?.symbol || fromChain.native} to it from
+                      {walletKind === 'solana' ? ' Axiom,' : ''} an exchange, or any wallet. Nothing to connect.
+                    </p>
+                    <label className="field">
+                      <span>Refund address</span>
+                      <input placeholder={addressHint(fromChainKey)} value={manualRefund} onChange={(e) => setManualRefund(e.target.value)} />
+                      <small className="field-hint">If anything fails, your coins come back here. Use a wallet you control, not an exchange deposit address.</small>
+                    </label>
+                  </>
+                ) : walletMatches ? (
                   <p className="wallet-line">
                     Paying with {wallet.name || 'your wallet'}: <code className="mono">{short(wallet.address)}</code>
                     <button type="button" className="wallet-switch" onClick={() => chooseWallet()}>Change</button>
@@ -704,18 +713,10 @@ export default function TunnelApp() {
                     </div>
                   </div>
                 ) : (
-                  <p className="pay-note">Your wallet pops up when you swap. Approve once and it's done.</p>
+                  <p className="pay-note">
+                    {walletKind === 'solana' ? 'Phantom, Solflare or Backpack' : 'MetaMask, Rabby or Coinbase Wallet'} pops up when you swap. Approve once and it's done.
+                  </p>
                 )}
-                <div className="pay-alt">
-                  {walletKind === 'solana' ? (
-                    <button type="button" className="text-link" onClick={() => { setPayMode('manual'); setPayFrom('Axiom'); setPicker(null); setError(''); }}>
-                      Paying from Axiom?
-                    </button>
-                  ) : null}
-                  <button type="button" className="text-link" onClick={() => { setPayMode('manual'); setPayFrom(''); setPicker(null); setError(''); }}>
-                    No wallet here? Pay from any wallet or exchange
-                  </button>
-                </div>
               </>
             )}
             {picker && picker.kind === walletKind ? (
@@ -954,7 +955,7 @@ export default function TunnelApp() {
             <div className="deposit-box">
               {pendingDeposits.length === 1 && !swap.split ? (
                 <p>
-                  {swap.payFrom ? `In ${swap.payFrom}, tap Withdraw and send exactly ` : 'Send exactly '}
+                  {swap.payFrom ? `In ${swap.payFrom}, tap Withdraw and send exactly ` : 'From any wallet or exchange, send exactly '}
                   <strong>{pendingDeposits[0].amountIn} {swap.symbolIn}</strong> on {fromChain.label} to this deposit address:
                 </p>
               ) : (

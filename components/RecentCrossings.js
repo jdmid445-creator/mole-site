@@ -23,7 +23,7 @@ function when(ts) {
 }
 
 // "Your recent crossings": only what this browser saved. Hidden when there is nothing to show.
-export default function RecentCrossings({ title = 'Your recent crossings' }) {
+export default function RecentCrossings({ title = 'Your recent crossings', showEmpty = false }) {
   const [list, setList] = useState([]);
   useEffect(() => {
     const sync = () => setList(loadRecent());
@@ -32,7 +32,15 @@ export default function RecentCrossings({ title = 'Your recent crossings' }) {
     window.addEventListener('storage', sync);
     return () => { window.removeEventListener(RECENT_EVENT, sync); window.removeEventListener('storage', sync); };
   }, []);
-  if (!list.length) return null;
+  if (!list.length) {
+    if (!showEmpty) return null;
+    return (
+      <section className="recent recent-empty" aria-label={title}>
+        <h2 className="recent-title">{title}</h2>
+        <p className="muted small">Crossings you start on this device show up here, so you can find them again even if you close the tab. They're saved only in this browser.</p>
+      </section>
+    );
+  }
   return (
     <section className="recent" aria-label={title}>
       <div className="recent-head">

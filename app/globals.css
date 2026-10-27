@@ -968,3 +968,8 @@ html.motion .st-copy.is-lit { opacity: 1; transform: none; filter: none; }
   .swap-mole { top: 8px; }
   .hero-bubble { top: -8px; }
 }
+@media (min-width: 960px) {
+  .hero-swap { padding-top: 100px; }
+  .swap-mole { top: -22px; }
+  .hero-bubble { top: -38px; }
+}

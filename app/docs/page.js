@@ -136,7 +136,7 @@ export default function Docs() {
 
           <h2 id="token">$PARALLAX</h2>
           <p>
-            $PARALLAX is the community cryptocurrency, live on pump.fun on Solana. It isn’t needed to use Parallax, carries no
+            $PARALLAX is the community cryptocurrency on pump.fun (Solana). It isn’t needed to use Parallax, carries no
             promised value or returns, and nothing here is financial advice.
           </p>
         </article>

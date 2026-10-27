@@ -227,7 +227,7 @@ export default function Home() {
           <div>
             <h2 className="section-title">$PARALLAX</h2>
             <p className="lede narrow">
-              The cryptocurrency for the community behind Parallax, live on pump.fun. Parallax itself stays free.
+              The cryptocurrency for the community behind Parallax, {ca ? 'live on' : 'launching on'} pump.fun. Parallax itself stays free.
             </p>
           </div>
           <dl className="facts">

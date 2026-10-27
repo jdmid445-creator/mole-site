@@ -291,3 +291,4 @@ References from owner: blackout.exchange, vanish.trade/us, veilit.xyz, web-4.app
 - 2026-10-26: Tab and bookmark title is now just 'Parallax' on every page (owner request). Link previews on X still show 'Parallax — Private cross-chain swaps'.
 - 2026-10-27 LAUNCH: CA 6QBFU9GJ5ZU1c27pRhGudqCXLoFchhsahr1Hi8wwpump set in lib/site.js. It shows in the CA bar and the $PARALLAX section with pump.fun and DexScreener links. Dev wallet box removed (owner won't post it). 'launching on pump.fun' changed to 'live on pump.fun'. Also: the desktop hero now has room for the bubble inside the box (hero-swap padding-top 130px at 960px and up).
 - 2026-10-27: Hero bubble space tightened (padding-top 100px at 960px and up). The bubble now sits 11–27px below the box top and 18px above his head, at every desktop width.
+- 2026-10-27 09:18: Owner asked to hide the CA for now. It's behind a switch: SHOW_CA in lib/site.js (false = hidden). Set it to true to restore.

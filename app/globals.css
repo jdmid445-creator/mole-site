@@ -950,3 +950,7 @@ html.motion .st-copy.is-lit { opacity: 1; transform: none; filter: none; }
 .guard.guard-track { right: 24px; }
 @media (min-width: 1101px) { .guard-bubble.guard-bubble-track { right: auto; left: calc(100% - 40px); top: 16px; } }
 @media (max-width: 480px) { .guard { right: 4px; } }
+/* Only his visible body is clickable: the transparent corners of his square never block buttons under them */
+.guard-mole, .swap-mole { pointer-events: none; }
+.guard-mole .mole-body, .swap-mole .mole-body { pointer-events: auto; cursor: pointer; }
+.guard-mole.is-hidden .mole-body, .guard-mole.is-rise .mole-body, .swap-mole.is-hidden .mole-body, .swap-mole.is-rise .mole-body { pointer-events: none; }

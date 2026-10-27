@@ -962,3 +962,9 @@ html.motion .st-copy.is-lit { opacity: 1; transform: none; filter: none; }
 .hero-panel { overflow: visible; }
 .hero-bubble { top: -51px; }
 @media (max-width: 480px) { .hero-bubble { top: -49px; } }
+/* Desktop: room inside the hero box for his bubble, so it is never hidden under the menu bar */
+@media (min-width: 960px) {
+  .hero-swap { padding-top: 130px; }
+  .swap-mole { top: 8px; }
+  .hero-bubble { top: -8px; }
+}

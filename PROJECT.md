@@ -293,3 +293,8 @@ References from owner: blackout.exchange, vanish.trade/us, veilit.xyz, web-4.app
 - 2026-10-27: Hero bubble space tightened (padding-top 100px at 960px and up). The bubble now sits 11–27px below the box top and 18px above his head, at every desktop width.
 - 2026-10-27 09:18: Owner asked to hide the CA for now. It's behind a switch: SHOW_CA in lib/site.js (false = hidden). Set it to true to restore.
 - 2026-10-27 09:38: CA back on (SHOW_CA = true).
+
+## Handoff (2026-10-27)
+- Site is launched; CA live (SHOW_CA = true in lib/site.js).
+- Re-runnable checks are in qa/: sweep.js (161-check full sweep), ca.js (CA everywhere), overlap.js (bubbles and paws at 11 sizes). Run them with Playwright against https://mole-site-mu.vercel.app.
+- Secrets (1Click/NEAR Intents key, Helius key) live only in Vercel environment variables, never in the repo.

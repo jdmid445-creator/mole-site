@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import Mole from '@/components/Mole';
 
-export const metadata = { title: 'Page not found — Parallax' };
+export const metadata = { title: 'Parallax' };
 
 export default function NotFound() {
   return (

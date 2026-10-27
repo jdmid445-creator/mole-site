@@ -227,7 +227,7 @@ export default function Home() {
           <div>
             <h2 className="section-title">$PARALLAX</h2>
             <p className="lede narrow">
-              The cryptocurrency for the community behind Parallax, launching on pump.fun. Parallax itself stays free.
+              The cryptocurrency for the community behind Parallax, live on pump.fun. Parallax itself stays free.
             </p>
           </div>
           <dl className="facts">
@@ -241,19 +241,6 @@ export default function Home() {
                   </span>
                 ) : (
                   <span className="muted">Posted here at launch. Ignore any address you see before then.</span>
-                )}
-              </dd>
-            </div>
-            <div>
-              <dt>Dev wallet</dt>
-              <dd>
-                {SITE.devWallet ? (
-                  <span className="mono-row">
-                    <code className="mono">{SITE.devWallet}</code>
-                    <CopyButton value={SITE.devWallet} />
-                  </span>
-                ) : (
-                  <span className="muted">Published at launch, so anyone can watch it.</span>
                 )}
               </dd>
             </div>

@@ -9,6 +9,6 @@ export async function GET() {
     heliusKey: Boolean(process.env.HELIUS_API_KEY),
     nearIntentsKey: Boolean(process.env.NEAR_INTENTS_JWT),
     confidentiality: confidentialityLevel(),
-    tokenContract: Boolean(process.env.NEXT_PUBLIC_TOKEN_CA),
+    tokenContract: true,
   });
 }

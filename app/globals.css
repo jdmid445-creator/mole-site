@@ -957,3 +957,8 @@ html.motion .st-copy.is-lit { opacity: 1; transform: none; filter: none; }
 /* No browser focus ring around the hero creature after a tap; keyboard focus gets a soft glow instead */
 .swap-mole:focus { outline: none; }
 .swap-mole:focus-visible { outline: none; filter: drop-shadow(0 0 10px rgba(200, 255, 46, 0.55)); }
+
+/* Hero box no longer cuts off his speech bubble; messages sit 5px lower */
+.hero-panel { overflow: visible; }
+.hero-bubble { top: -51px; }
+@media (max-width: 480px) { .hero-bubble { top: -49px; } }

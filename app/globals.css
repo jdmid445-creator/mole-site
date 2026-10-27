@@ -954,3 +954,6 @@ html.motion .st-copy.is-lit { opacity: 1; transform: none; filter: none; }
 .guard-mole, .swap-mole { pointer-events: none; }
 .guard-mole .mole-body, .swap-mole .mole-body { pointer-events: auto; cursor: pointer; }
 .guard-mole.is-hidden .mole-body, .guard-mole.is-rise .mole-body, .swap-mole.is-hidden .mole-body, .swap-mole.is-rise .mole-body { pointer-events: none; }
+/* No browser focus ring around the hero creature after a tap; keyboard focus gets a soft glow instead */
+.swap-mole:focus { outline: none; }
+.swap-mole:focus-visible { outline: none; filter: drop-shadow(0 0 10px rgba(200, 255, 46, 0.55)); }

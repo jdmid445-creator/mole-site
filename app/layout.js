@@ -20,7 +20,7 @@ const siteUrl =
 
 export const metadata = {
   metadataBase: new URL(siteUrl),
-  title: 'Parallax — private cross-chain swaps',
+  title: 'Parallax',
   description: 'Move value between chains without a public link between your wallets. Powered by NEAR Intents confidential swaps.',
   icons: {
     icon: [{ url: '/favicon.ico', sizes: '48x48' }, { url: '/icon.svg', type: 'image/svg+xml' }],

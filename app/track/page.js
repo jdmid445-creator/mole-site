@@ -3,7 +3,7 @@ import RecentCrossings from '@/components/RecentCrossings';
 import GuardMole from '@/components/GuardMole';
 
 export const metadata = {
-  title: 'My Crossings — Parallax',
+  title: 'Parallax',
   description: 'Your recent Parallax crossings on this device, and live status for any crossing by its deposit address.',
 };
 

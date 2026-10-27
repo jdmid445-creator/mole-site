@@ -3,7 +3,7 @@ import NetworkStatus from '@/components/NetworkStatus';
 import GuardMole from '@/components/GuardMole';
 
 export const metadata = {
-  title: 'Make a crossing — Parallax',
+  title: 'Parallax',
   description: 'Move value privately between chains. Non-custodial, powered by NEAR Intents confidential swaps.',
 };
 

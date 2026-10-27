@@ -3,7 +3,7 @@ import GhostWallet from '@/components/GhostWallet';
 import GuardMole from '@/components/GuardMole';
 
 export const metadata = {
-  title: 'Ghost wallet — Parallax',
+  title: 'Parallax',
   description: 'Create a fresh wallet with no history and no link to your own, right in your browser.',
 };
 

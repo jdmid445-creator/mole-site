@@ -1,5 +1,5 @@
 export const metadata = {
-  title: 'Terms & privacy limits — Parallax',
+  title: 'Parallax',
 };
 
 export default function Terms() {

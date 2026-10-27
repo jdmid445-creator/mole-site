@@ -2,7 +2,7 @@ import Link from 'next/link';
 import GuardMole from '@/components/GuardMole';
 
 export const metadata = {
-  title: 'Docs — Parallax',
+  title: 'Parallax',
   description: 'How Parallax works: crossings, privacy model, fees, supported chains, security and limits.',
 };
 
